@@ -126,7 +126,7 @@ export async function sendEmail(to, subject, text) {
   "items": [
     {
       "id": "prod-1",
-      "name": "Eladio Carrion Oversized",
+      "name": "Eladio Carrión Oversized",
       "price": 75000,
       "quantity": 1,
       "image": "images/Productos/Producto 1/Eladio-Back.jpg",

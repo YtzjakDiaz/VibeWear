@@ -153,26 +153,64 @@ function getOrders() {
   return orders;
 }
 
-// ========== NOTIFICACIONES ==========
-function showNotification(msg, duration = 3000) {
+// ========== NOTIFICACIONES PUSH MEJORADAS ==========
+function showNotification(msg, type = 'success', duration = 3000) {
   const notif = document.createElement('div');
+  
+  const typeConfig = {
+    success: { bg: 'rgba(74, 222, 128, 0.15)', border: '#4ade80', color: '#4ade80', icon: '✓' },
+    error: { bg: 'rgba(255, 107, 157, 0.15)', border: '#ff6b9d', color: '#ff6b9d', icon: '✕' },
+    info: { bg: 'rgba(224, 162, 201, 0.15)', border: '#e0a2c9', color: '#e0a2c9', icon: 'ℹ' }
+  };
+  
+  const config = typeConfig[type] || typeConfig.success;
+  
   notif.style.cssText = `
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:var(--pink);
-    color:white;
-    padding:15px 20px;
-    border-radius:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    z-index:9998;
-    animation:slideIn 0.3s ease;
-    font-family:var(--font-body);
-    font-weight:600;
-    letter-spacing:0.5px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: ${config.bg};
+    border: 1.5px solid ${config.border};
+    color: ${config.color};
+    padding: 16px 24px;
+    border-radius: 8px;
+    z-index: 9999;
+    animation: slideInUp 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
   `;
-  notif.textContent = msg;
+  
+  notif.innerHTML = `<span style="font-size: 16px;">${config.icon}</span><span>${msg}</span>`;
   document.body.appendChild(notif);
+  
+  setTimeout(() => {
+    notif.style.animation = 'slideOutDown 0.3s ease';
+    setTimeout(() => notif.remove(), 300);
+  }, duration);
+}
+
+// Agregar animaciones globales
+if (!document.querySelector('style[data-notifications]')) {
+  const style = document.createElement('style');
+  style.setAttribute('data-notifications', 'true');
+  style.textContent = `
+    @keyframes slideInUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes slideOutDown {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(100px); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+}
   setTimeout(() => notif.remove(), duration);
 }
 

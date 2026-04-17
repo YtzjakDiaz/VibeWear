@@ -179,6 +179,28 @@
 
           <hr style="border:none;border-top:1px solid rgba(224,162,201,0.2);margin:40px 0;" />
 
+          <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin:40px 0 25px;">Notificaciones</h3>
+
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <p style="color:var(--white);font-weight:600;margin:0 0 8px 0;">Notificaciones Push</p>
+                <p style="color:var(--gray);font-size:12px;margin:0;">Recibe alertas sobre nuevos productos y estado de órdenes</p>
+              </div>
+              <label style="position:relative;display:inline-block;width:50px;height:24px;">
+                <input type="checkbox" id="pushNotificationsToggle" style="opacity:0;width:0;height:0;" />
+                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#444;transition:0.4s;border-radius:24px;"></span>
+                <span style="position:absolute;content:'';height:18px;width:18px;left:3px;bottom:3px;background-color:white;transition:0.4s;border-radius:50%;"></span>
+              </label>
+            </div>
+
+            <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
+              <p style="color:var(--gray);font-size:13px;margin:0;"><strong>💡 Tip:</strong> Habilita las notificaciones para recibir alertas sobre productos que te interesan, ofertas especiales y actualizaciones de tus órdenes.</p>
+            </div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(224,162,201,0.2);margin:40px 0;" />
+
           <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin:40px 0 25px;">Información de Seguridad</h3>
 
           <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
@@ -511,6 +533,9 @@
       setTimeout(() => notif.remove(), 3000);
     }
   </script>
+
+  <!-- PUSH NOTIFICATIONS -->
+  <script src="push-notifications.js"></script>
 
 </body>
 </html>

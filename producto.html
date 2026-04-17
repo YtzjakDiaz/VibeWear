@@ -214,8 +214,8 @@
     // Base de datos de productos
     const productos = {
       'prod-1': {
-        nombre: 'Eladio Carrion Oversized',
-        titulo: 'ELADIO CARRION\nOVERSIZED',
+        nombre: 'Eladio Carrión Oversized',
+        titulo: 'ELADIO CARRIÓN\nOVERSIZED',
         categoria: 'Camisetas',
         precio: 75000,
         precioAnterior: 0,
@@ -1035,34 +1035,43 @@
 
     async function submitReview() {
       if (currentRating === 0) {
-        showNotification('Por favor selecciona una calificación');
+        showNotification('Por favor selecciona una calificación', 'info');
         return;
       }
       const comment = document.getElementById('reviewComment').value;
       if (!comment.trim()) {
-        showNotification('Por favor escribe una reseña');
+        showNotification('Por favor escribe una reseña', 'info');
         return;
       }
-      const name = document.getElementById('reviewName').value || 'Usuario';
+      const name = document.getElementById('reviewName').value || 'Usuario Anónimo';
+      
+      // Guardar en localStorage como respaldo
+      addReview(currentProductId, currentRating, comment, name);
       
       try {
-        const success = await window.saveReviewToFirebase(currentProductId, currentRating, comment, name);
-        if (success) {
-          showNotification('Reseña publicada ✓');
-          // Dar un pequeño delay para que Firebase procese el documento
-          setTimeout(() => {
-            renderReviews();
-          }, 500);
+        // Intentar guardar en Firebase si está disponible
+        if (window.saveReviewToFirebase) {
+          const success = await window.saveReviewToFirebase(currentProductId, currentRating, comment, name);
+          if (success) {
+            showNotification('✓ Reseña publicada correctamente', 'success');
+          }
+        } else {
+          showNotification('✓ Reseña guardada localmente', 'success');
+        }
+        
+        // Limpiar formulario
+        setTimeout(() => {
+          if (window.renderReviews) {
+            window.renderReviews();
+          }
           document.getElementById('reviewComment').value = '';
           document.getElementById('reviewName').value = '';
           currentRating = 0;
           document.querySelectorAll('.rating-star').forEach(s => s.style.opacity = '0.5');
-        } else {
-          showNotification('Error al publicar reseña ✗');
-        }
+        }, 300);
       } catch (error) {
-        console.error('Error:', error);
-        showNotification('Error al publicar reseña ✗');
+        console.error('Error al publicar reseña:', error);
+        showNotification('✓ Reseña guardada en dispositivo', 'success');
       }
     }
 

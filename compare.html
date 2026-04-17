@@ -53,7 +53,7 @@
           <label style="display:block;font-size:11px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">Producto 1</label>
           <select id="product1" onchange="updateComparison()" style="width:100%;padding:10px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);">
             <option value="">Seleccionar...</option>
-            <option value="prod-1">Eladio Carrion Oversized</option>
+            <option value="prod-1">Eladio Carrión Oversized</option>
             <option value="prod-2">Pokémon Gengar Hoodie</option>
             <option value="prod-3">Álvarito Díaz Oversized</option>
             <option value="prod-4">Snoopy Slim</option>
@@ -64,7 +64,7 @@
           <label style="display:block;font-size:11px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">Producto 2</label>
           <select id="product2" onchange="updateComparison()" style="width:100%;padding:10px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);">
             <option value="">Seleccionar...</option>
-            <option value="prod-1">Eladio Carrion Oversized</option>
+            <option value="prod-1">Eladio Carrión Oversized</option>
             <option value="prod-2">Pokémon Gengar Hoodie</option>
             <option value="prod-3">Álvarito Díaz Oversized</option>
             <option value="prod-4">Snoopy Slim</option>
@@ -75,7 +75,7 @@
           <label style="display:block;font-size:11px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">Producto 3</label>
           <select id="product3" onchange="updateComparison()" style="width:100%;padding:10px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);">
             <option value="">Seleccionar...</option>
-            <option value="prod-1">Eladio Carrion Oversized</option>
+            <option value="prod-1">Eladio Carrión Oversized</option>
             <option value="prod-2">Pokémon Gengar Hoodie</option>
             <option value="prod-3">Álvarito Díaz Oversized</option>
             <option value="prod-4">Snoopy Slim</option>
@@ -113,12 +113,41 @@
 
   <script>
     const productData = {
-      'prod-1': { nombre: 'Eladio Carrion', precio: 75000, material: '100% Algodón', color: 'Blanco/Negro', categoria: 'Camisetas' },
-      'prod-2': { nombre: 'Pokémon Gengar', precio: 111000, material: '100% Algodón', color: 'Rosa', categoria: 'Hoodies' },
-      'prod-3': { nombre: 'Álvarito Díaz', precio: 70000, material: '100% Algodón', color: 'Negro', categoria: 'Camisetas' },
-      'prod-4': { nombre: 'Snoopy Slim', precio: 60000, material: '100% Algodón', color: 'Multicolor', categoria: 'Camisetas' },
-      'prod-5': { nombre: 'Alvaro Salas', precio: 75000, material: '100% Algodón', color: 'Negro/Azul', categoria: 'Camisetas' }
+      'prod-1': { nombre: 'Eladio Carrión', precio: 75000, material: '100% Algodón', color: 'Blanco/Negro', categoria: 'Camisetas', imagen: 'images/Productos/Producto 1/', fit: 'Oversized' },
+      'prod-2': { nombre: 'Pokémon Gengar', precio: 111000, material: '100% Algodón', color: 'Rosa', categoria: 'Hoodies', imagen: 'images/Productos/Producto 2/', fit: 'Oversized' },
+      'prod-3': { nombre: 'Álvarito Díaz', precio: 70000, material: '100% Algodón', color: 'Negro', categoria: 'Camisetas', imagen: 'images/Productos/Producto 3/', fit: 'Regular' },
+      'prod-4': { nombre: 'Snoopy Slim', precio: 60000, material: '100% Algodón', color: 'Multicolor', categoria: 'Camisetas', imagen: 'images/Productos/Producto 4/', fit: 'Slim' },
+      'prod-5': { nombre: 'Alvaro Salas', precio: 75000, material: '100% Algodón', color: 'Negro/Azul', categoria: 'Camisetas', imagen: 'images/Productos/Producto 5/', fit: 'Oversized' },
+      'prod-6': { nombre: 'Merch Exclusivo', precio: 85000, material: '100% Algodón Premium', color: 'Blanco', categoria: 'Hoodies', imagen: 'images/Productos/Producto 6/', fit: 'Oversized' },
+      'prod-7': { nombre: 'Limited Edition', precio: 95000, material: '100% Algodón', color: 'Rosa/Negro', categoria: 'Camisetas', imagen: 'images/Productos/Producto 7/', fit: 'Oversized' },
+      'prod-8': { nombre: 'Collab Especial', precio: 105000, material: '100% Algodón', color: 'Azul', categoria: 'Hoodies', imagen: 'images/Productos/Producto 8/', fit: 'Regular' }
     };
+
+    function addToCartFromCompare(productId) {
+      const product = productData[productId];
+      if (!product) return;
+      
+      const item = {
+        id: productId,
+        nombre: product.nombre,
+        precio: product.precio,
+        cantidad: 1,
+        imagen: product.imagen
+      };
+      
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const existing = cart.find(p => p.id === productId);
+      
+      if (existing) {
+        existing.cantidad++;
+      } else {
+        cart.push(item);
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      showNotification('✓ Agregado al carrito', 'success');
+    }
 
     function updateComparison() {
       const prod1 = document.getElementById('product1').value;
@@ -131,27 +160,35 @@
         return;
       }
 
-      let table = '<table class="comparison-table"><thead><tr><th>Especificación</th>';
+      let table = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:rgba(224,162,201,0.1);border-bottom:2px solid rgba(224,162,201,0.3);"><th style="padding:15px;text-align:left;color:var(--pink);font-family:var(--font-heading);">Especificación</th>';
       products.forEach(p => {
-        table += `<th>${productData[p].nombre}</th>`;
+        table += `<th style="padding:15px;text-align:center;color:var(--white);font-family:var(--font-heading);">${productData[p].nombre}</th>`;
       });
       table += '</tr></thead><tbody>';
       
-      const specs = ['Precio', 'Material', 'Color', 'Categoría'];
-      const fields = ['precio', 'material', 'color', 'categoria'];
+      const specs = [
+        { label: 'Precio', field: 'precio', format: 'currency' },
+        { label: 'Material', field: 'material', format: 'text' },
+        { label: 'Color', field: 'color', format: 'text' },
+        { label: 'Fit', field: 'fit', format: 'text' },
+        { label: 'Categoría', field: 'categoria', format: 'text' }
+      ];
       
-      specs.forEach((spec, idx) => {
-        table += `<tr><td>${spec}</td>`;
+      specs.forEach((spec) => {
+        table += `<tr style="border-bottom:1px solid rgba(224,162,201,0.1);"><td style="padding:15px;color:var(--gray);font-weight:bold;background:rgba(224,162,201,0.05);">${spec.label}</td>`;
         products.forEach(p => {
-          const value = fields[idx] === 'precio' ? '$' + productData[p][fields[idx]].toLocaleString('es-CO') : productData[p][fields[idx]];
-          table += `<td style="color:var(--pink);font-weight:bold;">${value}</td>`;
+          let value = productData[p][spec.field];
+          if (spec.format === 'currency') {
+            value = '$' + value.toLocaleString('es-CO');
+          }
+          table += `<td style="padding:15px;text-align:center;color:var(--pink);font-weight:bold;">${value}</td>`;
         });
         table += '</tr>';
       });
 
-      table += '<tr><td style="background:rgba(224,162,201,0.1);">Agregar al Carrito</td>';
+      table += '<tr style="background:rgba(224,162,201,0.08);border-top:2px solid rgba(224,162,201,0.2);"><td style="padding:15px;color:var(--gray);">Agregar al Carrito</td>';
       products.forEach(p => {
-        table += `<td style="background:rgba(224,162,201,0.05);"><a href="producto.html#${p}" class="btn-primary" style="display:inline-block;padding:8px 16px;font-size:11px;text-decoration:none;">Ver</a></td>`;
+        table += `<td style="padding:15px;text-align:center;"><button onclick="addToCartFromCompare('${p}')" style="background:var(--pink);border:none;color:var(--black);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-weight:bold;font-size:12px;transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Agregar</button></td>`;
       });
       table += '</tr></tbody></table>';
 

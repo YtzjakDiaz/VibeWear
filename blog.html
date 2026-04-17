@@ -125,6 +125,14 @@
     </div>
   </div>
 
+  <!-- MODAL DE ARTÍCULOS -->
+  <div id="articleModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;overflow-y:auto;padding:40px 20px;">
+    <div style="max-width:800px;margin:0 auto;background:var(--black-soft);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:40px;">
+      <button onclick="closeArticleModal()" style="float:right;background:none;border:none;color:var(--pink);font-size:24px;cursor:pointer;font-weight:bold;">✕</button>
+      <div id="articleContent"></div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer style="margin-top:100px;">
     <div class="footer-grid">
@@ -148,14 +156,138 @@
   <script src="shared.js"></script>
 
   <script>
+    // Base de datos de artículos del blog
+    const articulos = {
+      'fotografia': {
+        titulo: 'Cómo Fotografiar Tu Fit',
+        categoria: 'Fotografía',
+        fecha: '16 de Abril, 2026',
+        icono: '📸',
+        gradiente: 'linear-gradient(135deg, #ff6b9d 0%, #e0a2c9 100%)',
+        contenido: `
+          <h2 style="color:var(--pink);margin-bottom:20px;font-family:var(--font-heading);">Cómo Fotografiar Tu Fit</h2>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            En la era del streetwear, saber capturar tu mejor look es casi tan importante como elegir la ropa correcta. 
+            Aquí te compartimos los mejores tips para fotografiar tu fit como un profesional.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">1. Iluminación Natural</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            La luz natural es tu mejor aliado. Busca una ventana grande durante el día o sal al exterior durante el 
+            "golden hour" (al atardecer). Evita las sombras duras que distorsionan los colores de tu ropa.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">2. Ángulos que Favorecen</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            Prueba con diferentes ángulos: foto frontal para mostrar el outfit completo, un poco de lado para darle 
+            dimensión, y detalle (enfocando el calzado o accesorios especiales). La cámara ligeramente arriba suele favorecer.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">3. Postura y Movimiento</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            No te quedes rígido. Camina, ajusta tu ropa, mira hacia un lado. El movimiento natural se ve mejor en fotos. 
+            Cruza los brazos, inclina ligeramente la cabeza, o pon un pie adelante del otro.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">4. Accesorios que Hablen</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            Captura detalles: tus sneakers, accesorios, la textura del tejido. Estos detalles hacen que un fit se destaque 
+            y demuestran que realmente pensaste en cada pieza.
+          </p>
+        `
+      },
+      'colores': {
+        titulo: 'Colores que Dominan 2026',
+        categoria: 'Estilo',
+        fecha: '14 de Abril, 2026',
+        icono: '🎨',
+        gradiente: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        contenido: `
+          <h2 style="color:var(--pink);margin-bottom:20px;font-family:var(--font-heading);">Paleta de Colores 2026</h2>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            El streetwear en 2026 se define por una mezcla audaz de colores vibrantes y tonos neutrales sofisticados. 
+            Te presentamos la paleta que domina esta temporada.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">Colores en Tendencia</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;"><span style="color:var(--pink);">● Rosa Neón:</span> El rosa viene fuerte este año. Combina bien con negros y grises.</p>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;"><span style="color:var(--pink);">● Negro Clásico:</span> Siempre vigente. Es la base perfecta para cualquier outfit.</p>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;"><span style="color:var(--pink);">● Blanco Off-White:</span> Más sofisticado que el blanco puro, perfecto para capas.</p>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;"><span style="color:var(--pink);">● Azul Profundo:</span> Remplaza al negro en muchas ocasiones, más versátil.</p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">Cómo Combinar</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            La regla de oro: 60% neutro, 30% color secundario, 10% acento. Un hoodie negro (60%), camiseta rosa (30%), 
+            y unos sneakers con detalles rosas (10%) = fit perfecto.
+          </p>
+        `
+      },
+      'oversized': {
+        titulo: 'Oversized vs Fitted',
+        categoria: 'Tendencias',
+        fecha: '10 de Abril, 2026',
+        icono: '🔥',
+        gradiente: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        contenido: `
+          <h2 style="color:var(--pink);margin-bottom:20px;font-family:var(--font-heading);">Oversized vs Fitted: La batalla del fit</h2>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            Una de las decisiones más importantes en el streetwear es elegir entre oversized o fitted. Ambos tienen 
+            sus ventajas, y aquí te explicamos cuándo usar cada uno.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">Oversized: La Comodidad Urbana</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            El oversized es cómodo, accesible y define el streetwear moderno. Ideal para días relajados, conciertos, 
+            o cuando quieres lucir casual pero coordinado. Funciona mejor con perfiles más delgados.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">Fitted: Elegancia Urbana</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            El fitted es más sofisticado, destaca mejor la silueta y funciona para perfiles variados. 
+            Úsalo cuando quieras un look más "pulido" o para salidas especiales.
+          </p>
+          <h3 style="color:var(--white);margin-top:30px;margin-bottom:15px;">La Solución: Layering</h3>
+          <p style="color:var(--gray);line-height:1.8;margin-bottom:15px;">
+            La verdadera tendencia es combinar ambos. Un hoodie oversized sobre una camiseta fitted, o una chaqueta 
+            fitted con pants oversized, crea balance perfecto.
+          </p>
+        `
+      }
+    };
+
+    // Hacer que los artículos sean clickeables
+    document.querySelectorAll('.blog-card').forEach((card, index) => {
+      card.style.cursor = 'pointer';
+      const keys = Object.keys(articulos);
+      const articleKey = keys[index];
+      
+      if (articulos[articleKey]) {
+        card.onclick = () => openArticleModal(articleKey);
+      }
+    });
+
+    function openArticleModal(key) {
+      const article = articulos[key];
+      if (!article) return;
+      
+      document.getElementById('articleContent').innerHTML = article.contenido;
+      document.getElementById('articleModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeArticleModal() {
+      document.getElementById('articleModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal al hacer click fuera del contenido
+    document.getElementById('articleModal').addEventListener('click', function(e) {
+      if (e.target === this) closeArticleModal();
+    });
+
     function subscribeFromBlog() {
       const email = document.getElementById('newsletterEmail').value;
       if (!email) {
-        showNotification('Por favor ingresa tu email');
+        showNotification('Por favor ingresa tu email', 'info');
         return;
       }
       if (subscribeNewsletter(email)) {
         document.getElementById('newsletterEmail').value = '';
+        showNotification('¡Suscripción confirmada!', 'success');
+      } else {
+        showNotification('Ya estás suscrito', 'info');
       }
     }
     
