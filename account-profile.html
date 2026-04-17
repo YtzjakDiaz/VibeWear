@@ -204,19 +204,20 @@
   <script type="module">
     import { getCurrentUser, onAuthChange, logout, changePassword, updateUserProfile, getErrorMessage } from './firebase-auth.js';
     import { getOrdersByEmail } from './firebase-orders.js';
+    import { auth } from './firebase-config.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
 
     let currentUser = null;
 
-    // Verificar autenticación al cargar
-    window.addEventListener('DOMContentLoaded', async () => {
-      const user = getCurrentUser();
-      
+    // Verificar autenticación al cargar - Esperar a Firebase
+    onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // Redirigir al login
+        // No hay usuario autenticado, redirigir al login
         window.location.href = 'login.html';
         return;
       }
 
+      // Usuario autenticado, cargar perfil
       currentUser = user;
       loadUserProfile();
       loadUserOrders();

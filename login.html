@@ -30,14 +30,17 @@
   <section style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:140px 20px 40px;">
     <div style="width:100%;max-width:450px;position:relative;">
 
+      <!-- GLOBAL ERROR MESSAGE -->
+      <div id="globalError" style="display:none;background:rgba(255,107,157,0.1);border:1px solid #ff6b9d;color:#ff6b9d;padding:12px;border-radius:6px;font-size:12px;text-align:center;margin-bottom:20px;"></div>
+
       <!-- TAB BUTTONS -->
       <div style="display:flex;gap:0;margin-bottom:40px;background:rgba(255,255,255,0.02);border:1px solid rgba(224,162,201,0.2);border-radius:8px;overflow:hidden;">
         <button id="loginTab" onclick="switchTab('login')" style="flex:1;padding:16px;background:var(--pink);color:var(--black);border:none;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;">Inicia Sesión</button>
-        <button id="registerTab" onclick="switchTab('register')" style="flex:1;padding:16px;background:transparent;color:var(--pink);border:none;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='rgba(224,162,201,0.1)'" onmouseout="this.style.background='transparent'">Crear Cuenta</button>
+        <button id="registerTab" onclick="switchTab('register')" style="flex:1;padding:16px;background:var(--pink);color:var(--black);border:none;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;">Crear Cuenta</button>
       </div>
 
       <!-- LOGIN FORM -->
-      <form id="loginForm" style="display:flex;flex-direction:column;gap:20px;opacity:1;transition:opacity 0.35s ease;">
+      <form id="loginForm" style="display:flex;flex-direction:column;gap:20px;opacity:1;transition:opacity 0.35s ease;position:relative;pointer-events:auto;">
         <h1 style="font-family:var(--font-display);font-size:32px;color:var(--white);margin-bottom:10px;letter-spacing:2px;">INICIA SESIÓN</h1>
         <p style="color:var(--gray);margin-bottom:20px;font-size:14px;">Accede a tu cuenta para ver pedidos y perfil</p>
 
@@ -227,6 +230,9 @@
         errorDiv.style.color = '#4ade80';
         errorDiv.style.display = 'block';
         
+        // Limpiar globalError
+        document.getElementById('globalError').style.display = 'none';
+        
         setTimeout(() => {
           window.location.href = 'account-profile.html';
         }, 2000);
@@ -280,6 +286,9 @@
         errorDiv.style.color = '#4ade80';
         errorDiv.style.display = 'block';
         
+        // Limpiar globalError
+        document.getElementById('globalError').style.display = 'none';
+        
         setTimeout(() => {
           window.location.href = 'account-profile.html';
         }, 2000);
@@ -291,28 +300,56 @@
 
     // GOOGLE LOGIN
     window.loginGoogleHandler = async function() {
+      const globalError = document.getElementById('globalError');
       try {
+        globalError.textContent = '🔄 Iniciando sesión con Google...';
+        globalError.style.background = 'rgba(74,222,128,0.1)';
+        globalError.style.borderColor = '#4ade80';
+        globalError.style.color = '#4ade80';
+        globalError.style.display = 'block';
+
         const user = await loginWithGoogle();
         if (user) {
-          window.location.href = 'account-profile.html';
+          globalError.textContent = '✅ Bienvenido! Redirigiendo...';
+          setTimeout(() => {
+            window.location.href = 'account-profile.html';
+          }, 1500);
         }
       } catch (error) {
         if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-          alert(getErrorMessage(error));
+          globalError.textContent = getErrorMessage(error);
+          globalError.style.background = 'rgba(255,107,157,0.1)';
+          globalError.style.borderColor = '#ff6b9d';
+          globalError.style.color = '#ff6b9d';
+          globalError.style.display = 'block';
         }
       }
     };
 
     // GITHUB LOGIN
     window.loginGitHubHandler = async function() {
+      const globalError = document.getElementById('globalError');
       try {
+        globalError.textContent = '🔄 Iniciando sesión con GitHub...';
+        globalError.style.background = 'rgba(74,222,128,0.1)';
+        globalError.style.borderColor = '#4ade80';
+        globalError.style.color = '#4ade80';
+        globalError.style.display = 'block';
+
         const user = await loginWithGitHub();
         if (user) {
-          window.location.href = 'account-profile.html';
+          globalError.textContent = '✅ Bienvenido! Redirigiendo...';
+          setTimeout(() => {
+            window.location.href = 'account-profile.html';
+          }, 1500);
         }
       } catch (error) {
         if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-          alert(getErrorMessage(error));
+          globalError.textContent = getErrorMessage(error);
+          globalError.style.background = 'rgba(255,107,157,0.1)';
+          globalError.style.borderColor = '#ff6b9d';
+          globalError.style.color = '#ff6b9d';
+          globalError.style.display = 'block';
         }
       }
     };
