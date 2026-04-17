@@ -27,7 +27,7 @@
   </nav>
 
   <!-- LOGIN CONTAINER -->
-  <section style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
+  <section style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:140px 20px 40px;">
     <div style="width:100%;max-width:450px;position:relative;">
 
       <!-- TAB BUTTONS -->
@@ -151,8 +151,10 @@
         
         loginTab.style.background = 'var(--pink)';
         loginTab.style.color = 'var(--black)';
+        loginTab.style.transition = 'all 0.3s';
         registerTab.style.background = 'transparent';
         registerTab.style.color = 'var(--pink)';
+        registerTab.style.transition = 'all 0.3s';
       } else {
         loginForm.style.opacity = '0';
         loginForm.style.pointerEvents = 'none';
@@ -164,8 +166,10 @@
         
         loginTab.style.background = 'transparent';
         loginTab.style.color = 'var(--pink)';
+        loginTab.style.transition = 'all 0.3s';
         registerTab.style.background = 'var(--pink)';
         registerTab.style.color = 'var(--black)';
+        registerTab.style.transition = 'all 0.3s';
       }
     };
 
@@ -225,7 +229,7 @@
         
         setTimeout(() => {
           window.location.href = 'account-profile.html';
-        }, 1500);
+        }, 2000);
       } catch (error) {
         errorDiv.textContent = getErrorMessage(error);
         errorDiv.style.display = 'block';
@@ -278,7 +282,7 @@
         
         setTimeout(() => {
           window.location.href = 'account-profile.html';
-        }, 1500);
+        }, 2000);
       } catch (error) {
         errorDiv.textContent = getErrorMessage(error);
         errorDiv.style.display = 'block';
