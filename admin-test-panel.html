@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Panel - VibeWear Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #e0a2c9;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 32px;
+      letter-spacing: 2px;
+    }
+    .section {
+      background: rgba(224, 162, 201, 0.05);
+      border: 1px solid rgba(224, 162, 201, 0.2);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+    h2 {
+      color: #e0a2c9;
+      font-size: 20px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .btn {
+      background: #e0a2c9;
+      color: #0a0a0a;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .btn:hover {
+      opacity: 0.85;
+      transform: translateY(-2px);
+    }
+    .btn.danger {
+      background: #ff6b9d;
+    }
+    .btn.secondary {
+      background: transparent;
+      border: 1.5px solid #e0a2c9;
+    }
+    .info-box {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #e0a2c9;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #ccc;
+    }
+    .success {
+      color: #4ade80;
+    }
+    .error {
+      color: #ff6b9d;
+    }
+    code {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(224, 162, 201, 0.2);
+      color: #fff;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      margin-top: 10px;
+      resize: vertical;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(224, 162, 201, 0.15);
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .card strong {
+      color: #e0a2c9;
+    }
+    .list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .list-item {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border-left: 2px solid #e0a2c9;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧪 VibeWear - Test Panel</h1>
+  <p style="text-align: center; color: #999; margin-bottom: 40px;">Panel de prueba para Firebase, órdenes y notificaciones</p>
+
+  <!-- FIRESTORE ORDERS -->
+  <div class="section">
+    <h2>📦 Órdenes en Firebase</h2>
+    
+    <button class="btn" onclick="loadOrdersFromFirebase()">📥 Cargar órdenes de Firebase</button>
+    <button class="btn secondary" onclick="createTestOrder()">➕ Crear orden de prueba</button>
+    <button class="btn danger" onclick="deleteAllTestOrders()">🗑️ Limpiar órdenes de prueba</button>
+
+    <textarea id="firestoreOutput" placeholder="Los resultados aparecerán aquí..."></textarea>
+  </div>
+
+  <!-- ÓRDENES LOCALES -->
+  <div class="section">
+    <h2>💾 Órdenes en localStorage</h2>
+    
+    <button class="btn" onclick="viewLocalOrders()">👁️ Ver órdenes locales</button>
+    <button class="btn" onclick="viewLocalOrderCount()">📊 Contar órdenes</button>
+    <button class="btn danger" onclick="clearLocalOrders()">🗑️ Limpiar localStorage</button>
+
+    <textarea id="localOutput" placeholder="Las órdenes locales aparecerán aquí..."></textarea>
+  </div>
+
+  <!-- EMAIL NOTIFICATIONS -->
+  <div class="section">
+    <h2>📧 Notificaciones por Email</h2>
+    
+    <button class="btn" onclick="viewEmailLog()">📬 Ver log de emails</button>
+    <button class="btn" onclick="testEmailValidation()">✔️ Test validación email</button>
+    <button class="btn danger" onclick="clearEmailLog()">🗑️ Limpiar log de emails</button>
+
+    <textarea id="emailOutput" placeholder="El log de emails aparecerá aquí..."></textarea>
+  </div>
+
+  <!-- VALIDACIONES -->
+  <div class="section">
+    <h2>🔍 Test de Validaciones</h2>
+
+    <div style="margin-top: 15px;">
+      <label style="display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Email:</label>
+      <input type="text" id="testEmail" placeholder="test@example.com" style="width: 100%; padding: 10px; border: 1px solid rgba(224, 162, 201, 0.2); border-radius: 6px; background: rgba(255, 255, 255, 0.02); color: #fff; font-family: monospace;">
+      <button class="btn" style="margin-top: 10px;" onclick="validateTestEmail()">Validar Email</button>
+    </div>
+
+    <div style="margin-top: 15px;">
+      <label style="display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Teléfono:</label>
+      <input type="text" id="testPhone" placeholder="+57 300 123 4567" style="width: 100%; padding: 10px; border: 1px solid rgba(224, 162, 201, 0.2); border-radius: 6px; background: rgba(255, 255, 255, 0.02); color: #fff; font-family: monospace;">
+      <button class="btn" style="margin-top: 10px;" onclick="validateTestPhone()">Validar Teléfono</button>
+    </div>
+
+    <textarea id="validationOutput" placeholder="Resultados de validación..."></textarea>
+  </div>
+
+  <!-- ESTADÍSTICAS -->
+  <div class="section">
+    <h2>📊 Estadísticas</h2>
+    
+    <button class="btn" onclick="showStats()">📈 Ver estadísticas</button>
+
+    <div id="statsContainer" style="margin-top: 15px;"></div>
+  </div>
+
+  <!-- CART INFO -->
+  <div class="section">
+    <h2>🛒 Información del Carrito</h2>
+    
+    <button class="btn" onclick="viewCartInfo()">👁️ Ver carrito actual</button>
+    <button class="btn danger" onclick="clearCart()">🗑️ Vaciar carrito</button>
+
+    <textarea id="cartOutput" placeholder="Info del carrito..."></textarea>
+  </div>
+
+  <script src="cart.js"></script>
+  <script type="module">
+    import { saveOrderToFirestore, getOrdersByEmail, getAllOrders } from './firebase-orders.js';
+    import { getEmailLog, clearEmailLog, validateEmail, validatePhone } from './notifications-email.js';
+
+    // FIREBASE OPERATIONS
+    window.loadOrdersFromFirebase = async function() {
+      try {
+        const output = document.getElementById('firestoreOutput');
+        output.value = 'Cargando órdenes de Firebase...\n\n';
+        
+        const orders = await getAllOrders();
+        
+        if (orders.length === 0) {
+          output.value = '❌ No hay órdenes en Firestore\n\nCrea una orden completando el checkout.';
+          return;
+        }
+
+        output.value = `✅ ${orders.length} órdenes encontradas:\n\n`;
+        orders.forEach((order, i) => {
+          output.value += `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Orden #${i + 1}
+ID: ${order.id}
+Email: ${order.email}
+Total: $${order.total?.toLocaleString('es-CO') || 'N/A'}
+Status: ${order.status}
+Fecha: ${order.createdAt?.toLocaleString('es-CO') || 'N/A'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+        });
+      } catch (error) {
+        document.getElementById('firestoreOutput').value = `❌ Error: ${error.message}`;
+        console.error(error);
+      }
+    };
+
+    window.createTestOrder = async function() {
+      try {
+        const testOrder = {
+          name: 'Test Customer',
+          email: 'test@vibewear.com',
+          phone: '3206045846',
+          address: 'Calle Test 123',
+          city: 'Barranquilla',
+          zipCode: '080001',
+          items: [{id: 'test-1', name: 'Test Product', price: 50000, quantity: 1}],
+          subtotal: 50000,
+          tax: 9500,
+          shipping: 8000,
+          total: 67500,
+          status: 'Pendiente',
+          date: new Date().toLocaleDateString('es-CO'),
+          id: 'VW-TEST-' + Date.now()
+        };
+
+        const docId = await saveOrderToFirestore(testOrder);
+        document.getElementById('firestoreOutput').value = `✅ Orden de prueba creada:\nID Firestore: ${docId}\nID Orden: ${testOrder.id}`;
+      } catch (error) {
+        document.getElementById('firestoreOutput').value = `❌ Error: ${error.message}`;
+      }
+    };
+
+    window.deleteAllTestOrders = async function() {
+      if (!confirm('¿Estás seguro? Esta acción no se puede deshacer.')) return;
+      
+      document.getElementById('firestoreOutput').value = 'Para eliminar órdenes, accede a Firebase Console → Firestore → orders\nEsta función está deshabilitada por seguridad.';
+    };
+
+    // LOCAL STORAGE OPERATIONS
+    window.viewLocalOrders = function() {
+      const orders = JSON.parse(localStorage.getItem('vibewear-orders')) || [];
+      let output = `✅ ${orders.length} órdenes en localStorage:\n\n`;
+      
+      if (orders.length === 0) {
+        output = 'No hay órdenes en localStorage';
+      } else {
+        orders.forEach((order, i) => {
+          output += `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Orden #${i + 1}
+ID: ${order.id}
+Email: ${order.email}
+Total: $${order.total?.toLocaleString('es-CO')}
+Status: ${order.status}
+Fecha: ${order.date}
+Tracking: ${order.tracking}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+        });
+      }
+      
+      document.getElementById('localOutput').value = output;
+    };
+
+    window.viewLocalOrderCount = function() {
+      const orders = JSON.parse(localStorage.getItem('vibewear-orders')) || [];
+      const totalSpent = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+      
+      document.getElementById('localOutput').value = `
+📊 ESTADÍSTICAS DE ÓRDENES:
+
+Total de órdenes: ${orders.length}
+Dinero total gastado: $${totalSpent.toLocaleString('es-CO')}
+Promedio por orden: $${orders.length > 0 ? (totalSpent / orders.length).toLocaleString('es-CO') : 0}
+
+Puntos de lealtad: ${parseInt(localStorage.getItem('vibewear-loyalty-points')) || 0}
+
+Últimas 3 órdenes:
+${orders.slice(-3).reverse().map((o, i) => `${i + 1}. ${o.id} - $${o.total?.toLocaleString('es-CO')} (${o.date})`).join('\n')}
+`;
+    };
+
+    window.clearLocalOrders = function() {
+      if (!confirm('¿Limpiar todas las órdenes locales?')) return;
+      localStorage.removeItem('vibewear-orders');
+      document.getElementById('localOutput').value = '✅ Órdenes locales eliminadas';
+    };
+
+    // EMAIL LOG
+    window.viewEmailLog = function() {
+      const log = getEmailLog();
+      let output = `📧 ${log.length} emails en el log:\n\n`;
+      
+      if (log.length === 0) {
+        output = 'No hay emails en el log\n\nCrea una orden para generar un email de confirmación.';
+      } else {
+        log.forEach((email, i) => {
+          output += `
+${i + 1}. ${email.subject}
+   To: ${email.to}
+   Status: ${email.status}
+   Sent: ${email.sentAt}
+`;
+        });
+      }
+      
+      document.getElementById('emailOutput').value = output;
+    };
+
+    window.testEmailValidation = function() {
+      const testEmails = [
+        'test@vibewear.com',
+        'invalid.email',
+        'user+tag@example.co.uk',
+        'fake@',
+        'test@test'
+      ];
+
+      let output = '✔️ TEST DE VALIDACIÓN DE EMAIL:\n\n';
+      testEmails.forEach(email => {
+        const isValid = validateEmail(email);
+        output += `${isValid ? '✅' : '❌'} ${email}\n`;
+      });
+
+      document.getElementById('emailOutput').value = output;
+    };
+
+    window.clearEmailLog = function() {
+      if (!confirm('¿Limpiar el log de emails?')) return;
+      clearEmailLog();
+      document.getElementById('emailOutput').value = '✅ Log de emails eliminado';
+    };
+
+    // VALIDACIONES
+    window.validateTestEmail = function() {
+      const email = document.getElementById('testEmail').value;
+      const isValid = validateEmail(email);
+      document.getElementById('validationOutput').value = `
+Email: ${email}
+Válido: ${isValid ? '✅ SÍ' : '❌ NO'}
+
+Reglas de validación:
+✓ Debe contener @
+✓ Debe tener dominio (.com, .co, etc)
+✓ No debe tener espacios
+`;
+    };
+
+    window.validateTestPhone = function() {
+      const phone = document.getElementById('testPhone').value;
+      const isValid = validatePhone(phone);
+      const digitsOnly = phone.replace(/\D/g, '').length;
+      
+      document.getElementById('validationOutput').value = `
+Teléfono: ${phone}
+Válido: ${isValid ? '✅ SÍ' : '❌ NO'}
+Dígitos: ${digitsOnly}
+
+Reglas de validación:
+✓ Mínimo 10 dígitos
+✓ Máximo 15 dígitos
+✓ Acepta: números, espacios, guiones, paréntesis, +
+`;
+    };
+
+    // STATS
+    window.showStats = function() {
+      const orders = JSON.parse(localStorage.getItem('vibewear-orders')) || [];
+      const cart = window.getCart();
+      const emailLog = getEmailLog();
+      const loyaltyPoints = parseInt(localStorage.getItem('vibewear-loyalty-points')) || 0;
+
+      let html = `
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+  <div class="card">
+    <strong>📦 Total Órdenes</strong><br>
+    <span style="font-size: 24px; color: #e0a2c9;">
+${orders.length}
+    </span>
+  </div>
+  <div class="card">
+    <strong>💰 Dinero Total</strong><br>
+    <span style="font-size: 24px; color: #e0a2c9;">
+$${orders.reduce((sum, o) => sum + (o.total || 0), 0).toLocaleString('es-CO')}
+    </span>
+  </div>
+  <div class="card">
+    <strong>🛒 Items en Carrito</strong><br>
+    <span style="font-size: 24px; color: #e0a2c9;">
+${cart.length}
+    </span>
+  </div>
+  <div class="card">
+    <strong>📧 Emails Enviados</strong><br>
+    <span style="font-size: 24px; color: #e0a2c9;">
+${emailLog.length}
+    </span>
+  </div>
+  <div class="card">
+    <strong>⭐ Puntos Lealtad</strong><br>
+    <span style="font-size: 24px; color: #e0a2c9;">
+${loyaltyPoints}
+    </span>
+  </div>
+  <div class="card">
+    <strong>📊 Ticket Promedio</strong><br>
+    <span style="font-size: 24px; color: #e0a2c9;">
+$${orders.length > 0 ? Math.round(orders.reduce((sum, o) => sum + (o.total || 0), 0) / orders.length).toLocaleString('es-CO') : 0}
+    </span>
+  </div>
+</div>
+`;
+      document.getElementById('statsContainer').innerHTML = html;
+    };
+
+    // CART
+    window.viewCartInfo = function() {
+      const cart = window.getCart();
+      const cartTotal = window.getCartTotal();
+      const subtotal = window.getCartSubtotal();
+      
+      let output = `🛒 CARRITO ACTUAL:\n\n`;
+      
+      if (cart.length === 0) {
+        output += 'El carrito está vacío';
+      } else {
+        output += `Items: ${cart.length}\n`;
+        output += `Subtotal: $${subtotal.toLocaleString('es-CO')}\n`;
+        output += `IVA (19%): $${(subtotal * 0.19).toLocaleString('es-CO')}\n`;
+        output += `Envío: $${window.getShippingCost(subtotal).toLocaleString('es-CO')}\n`;
+        output += `Total: $${cartTotal.toLocaleString('es-CO')}\n\n`;
+        output += '━━━━━━━━━━━━━━━━\nItems:\n';
+        
+        cart.forEach((item, i) => {
+          output += `\n${i + 1}. ${item.name}\n`;
+          output += `   Cantidad: ${item.quantity}\n`;
+          output += `   Precio: $${item.price.toLocaleString('es-CO')}\n`;
+          output += `   Subtotal: $${(item.price * item.quantity).toLocaleString('es-CO')}`;
+        });
+      }
+      
+      document.getElementById('cartOutput').value = output;
+    };
+
+    // CART FUNCTIONS FROM CART.JS
+    window.clearCart = function() {
+      if (!confirm('¿Vaciar el carrito?')) return;
+      window.clearCart?.();
+      viewCartInfo();
+    };
+  </script>
+
+</body>
+</html>

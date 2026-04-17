@@ -105,7 +105,10 @@
           <span class="product-badge badge-hot">🔥 Hot</span>
           <img src="images/Productos/Producto 1/Eladio-Back.jpg" alt="VW Oversized Tee" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80'" />
           <div class="product-overlay">
-            <a href="producto.html#prod-1" class="btn-card">Ver Producto</a>
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-1" class="btn-card">Ver Detalles</a>
+              <button onclick="addToCart('prod-1', 'Eladio Carrion Oversized', 75000, 'images/Productos/Producto 1/Eladio-Back.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
           </div>
         </div>
         <div class="product-info">
@@ -123,7 +126,10 @@
           <span class="product-badge badge-sale">−20%</span>
           <img src="images/Productos/Producto 2/hoodie.jpg" alt="Pink Vibe Hoodie" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80'" />
           <div class="product-overlay">
-            <a href="producto.html#prod-2" class="btn-card">Ver Producto</a>
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-2" class="btn-card">Ver Detalles</a>
+              <button onclick="addToCart('prod-2', 'Pokémon Gengar Hoodie', 111000, 'images/Productos/Producto 2/hoodie.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
           </div>
         </div>
         <div class="product-info">
@@ -144,7 +150,10 @@
           <span class="product-badge badge-new">New</span>
           <img src="images/Productos/Producto 3/Álvarito.jpg" alt="Street Jogger Set" onerror="this.src='https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&q=80'" />
           <div class="product-overlay">
-            <a href="producto.html#prod-3" class="btn-card">Ver Producto</a>
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-3" class="btn-card">Ver Detalles</a>
+              <button onclick="addToCart('prod-3', 'Álvarito Díaz Oversized', 70000, 'images/Productos/Producto 3/Álvarito.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
           </div>
         </div>
         <div class="product-info">
@@ -162,7 +171,10 @@
           <span class="product-badge badge-new">New</span>
           <img src="images/Productos/Producto 4/Snoopy-3.jpg" alt="VW Cargo Pants" onerror="this.src='https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80'" />
           <div class="product-overlay">
-            <a href="producto.html#prod-4" class="btn-card">Ver Producto</a>
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-4" class="btn-card">Ver Detalles</a>
+              <button onclick="addToCart('prod-4', 'Snoopy Slim', 60000, 'images/Productos/Producto 4/Snoopy-3.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
           </div>
         </div>
         <div class="product-info">
@@ -310,148 +322,39 @@
     function toggleNav() {
       document.getElementById('navLinks').classList.toggle('open');
     }
-
-    // Shopping Cart - Sistema mejorado
-    let cart = JSON.parse(localStorage.getItem('vibewear-cart')) || {};
     
-    function updateCartCount() {
-      const total = Object.values(cart).reduce((sum, item) => sum + (item.qty || 1), 0);
-      document.getElementById('cartCount').textContent = total;
+    function formatPrice(price) {
+      return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(price);
     }
     
-    function toggleCart() {
-      const panel = document.getElementById('cartPanel');
-      if (!panel) {
-        createCartPanel();
-        return;
-      }
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    }
-    
-    function createCartPanel() {
-      const html = `<div id="cartPanel" style="position:fixed;top:70px;right:20px;width:380px;background:white;border:2px solid var(--pink);border-radius:8px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:9999;max-height:600px;overflow-y:auto;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:2px solid var(--pink);padding-bottom:10px;">
-          <h3 style="margin:0;color:var(--pink);font-size:16px;font-weight:bold;">🛒 Carrito de Compras</h3>
-          <button onclick="document.getElementById('cartPanel').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--pink);transition:transform 0.3s;">×</button>
-        </div>
-        <div id="cartItems" style="margin-bottom:15px;max-height:350px;overflow-y:auto;"></div>
-        <div id="cartEmpty" style="text-align:center;color:#999;padding:30px 20px;font-size:13px;">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" style="margin-bottom:10px;">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-          <p>Tu carrito está vacío</p>
-          <a href="catalogo.html" style="color:var(--pink);text-decoration:underline;font-size:12px;">Ver catálogo</a>
-        </div>
-        <div id="cartTotal" style="border-top:2px solid var(--pink);border-bottom:2px solid var(--pink);padding:12px 0;font-weight:bold;margin:15px 0;display:none;text-align:right;">
-          <span style="color:#666;font-size:12px;">Total: </span>
-          <span id="totalPrice" style="font-size:18px;color:var(--pink);">$0</span>
-        </div>
-        <button id="checkoutBtn" onclick="checkout()" style="display:none;width:100%;padding:12px;background:var(--pink);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold;margin-top:10px;transition:background 0.3s;font-family:var(--font-sub);letter-spacing:1px;">PROCEDER AL PAGO</button>
-      </div>`;
-      document.body.insertAdjacentHTML('beforeend', html);
-      renderCart();
-    }
-    
-    function renderCart() {
-      const itemsDiv = document.getElementById('cartItems');
-      const emptyDiv = document.getElementById('cartEmpty');
-      const totalDiv = document.getElementById('cartTotal');
-      const checkoutBtn = document.getElementById('checkoutBtn');
-      
-      if (Object.keys(cart).length === 0) {
-        itemsDiv.innerHTML = '';
-        emptyDiv.style.display = 'block';
-        totalDiv.style.display = 'none';
-        checkoutBtn.style.display = 'none';
-        return;
-      }
-      
-      emptyDiv.style.display = 'none';
-      totalDiv.style.display = 'block';
-      checkoutBtn.style.display = 'block';
-      
-      let total = 0;
-      itemsDiv.innerHTML = Object.entries(cart).map(([id, item]) => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
-        return `<div style="display:flex;flex-direction:column;padding:12px;border-bottom:1px solid #eee;background:#f9f9f9;border-radius:4px;margin-bottom:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
-            <div style="flex:1;">
-              <p style="margin:0;font-weight:bold;font-size:13px;color:var(--pink);">${item.name}</p>
-            </div>
-            <button onclick="removeFromCart('${id}')" style="background:#ff6b9d;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-weight:bold;transition:background 0.3s;">✕</button>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:6px;background:white;border:1px solid #ddd;border-radius:4px;padding:2px;">
-              <button onclick="changeCartQty('${id}', -1)" style="background:none;border:none;padding:4px 6px;cursor:pointer;font-size:12px;color:var(--pink);font-weight:bold;">−</button>
-              <span style="min-width:20px;text-align:center;font-size:12px;font-weight:bold;">${item.qty}</span>
-              <button onclick="changeCartQty('${id}', 1)" style="background:none;border:none;padding:4px 6px;cursor:pointer;font-size:12px;color:var(--pink);font-weight:bold;">+</button>
-            </div>
-            <span style="font-weight:bold;color:var(--pink);font-size:12px;">$${subtotal.toLocaleString('es-CO')}</span>
-          </div>
-        </div>`;
-      }).join('');
-      
-      document.getElementById('totalPrice').textContent = '$' + total.toLocaleString('es-CO');
-    }
-    
-    function changeCartQty(prodId, delta) {
-      if (cart[prodId]) {
-        const newQty = cart[prodId].qty + delta;
-        if (newQty <= 0) {
-          removeFromCart(prodId);
-        } else {
-          cart[prodId].qty = newQty;
-          localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-          updateCartCount();
-          renderCart();
-        }
-      }
-    }
-    
-    function addToCart(prodId, name, price) {
-      if (!cart[prodId]) {
-        cart[prodId] = { name, price, qty: 1 };
-      } else {
-        cart[prodId].qty++;
-      }
-      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-      updateCartCount();
-      
-      const panel = document.getElementById('cartPanel');
-      if (!panel) createCartPanel();
-      renderCart();
-      panel.style.display = 'block';
-      
-      showNotification(`${name} agregado al carrito!`);
-    }
-    
-    function removeFromCart(prodId) {
-      delete cart[prodId];
-      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCart();
-    }
-    
-    function checkout() {
-      alert('Funcionalidad de pago en desarrollo. Carrito: ' + Object.keys(cart).length + ' artículos');
-    }
-    
-    function showNotification(msg) {
+    function showNotification(msg, duration = 3000) {
       const notif = document.createElement('div');
-      notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--pink);color:white;padding:15px 20px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9998;animation:slideIn 0.3s ease;';
+      notif.style.cssText = `
+        position:fixed;
+        bottom:20px;
+        right:20px;
+        background:var(--pink);
+        color:white;
+        padding:15px 20px;
+        border-radius:8px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        z-index:9998;
+        animation:slideIn 0.3s ease;
+        font-family:var(--font-body);
+        font-weight:600;
+        letter-spacing:0.5px;
+      `;
       notif.textContent = msg;
       document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
+      setTimeout(() => notif.remove(), duration);
     }
-    
-    updateCartCount();
   </script>
 
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp">💬</a>
+
+  <!-- CARRITO SCRIPT -->
+  <script src="cart.js"></script>
 
   <!-- SHARED FUNCTIONS -->
   <script src="shared.js"></script>

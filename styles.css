@@ -1698,4 +1698,10 @@ footer {
   /* TICKET */
   .ticker { padding: 10px 0; }
   .ticker-item { padding: 0 16px; font-size: 10px; }
+  
+  /* CARRITO MODAL MOBILE */
+  #cartModal {
+    max-width: 100% !important;
+  }
+}
 }
