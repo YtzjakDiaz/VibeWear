@@ -1073,23 +1073,29 @@ footer {
   z-index: 999;
   width: 60px;
   height: 60px;
-  background: #25d366;
+  background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: all 0.3s;
-  font-size: 28px;
   outline: none;
   border: none;
   text-decoration: none;
+  padding: 0;
+}
+
+.whatsapp-float img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 
 .whatsapp-float:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 .whatsapp-float:focus {
@@ -1354,7 +1360,8 @@ input[type="checkbox"]#terms:focus {
   .social-share { gap: 8px; }
   .share-btn { width: 35px; height: 35px; font-size: 12px; }
   .coupon-input-group { flex-direction: column; }
-  .whatsapp-float { width: 55px; height: 55px; font-size: 26px; }
+  .whatsapp-float { width: 55px; height: 55px; }
+  .whatsapp-float img { width: 33px; height: 33px; }
 }
 
 /* ===== TABLET RESPONSIVE ===== */
@@ -1502,10 +1509,10 @@ input[type="checkbox"]#terms:focus {
   .whatsapp-float { 
     width: 48px; 
     height: 48px; 
-    font-size: 22px;
     bottom: 20px;
     right: 20px;
   }
+  .whatsapp-float img { width: 28px; height: 28px; }
   
   /* SHARE & SOCIAL */
   .share-btn { width: 32px; height: 32px; font-size: 11px; }
@@ -1650,10 +1657,10 @@ input[type="checkbox"]#terms:focus {
   .whatsapp-float { 
     width: 44px; 
     height: 44px; 
-    font-size: 20px;
     bottom: 16px;
     right: 16px;
   }
+  .whatsapp-float img { width: 26px; height: 26px; }
   
   /* SHARE & SOCIAL */
   .share-btn { width: 28px; height: 28px; font-size: 10px; }
@@ -1776,10 +1783,10 @@ input[type="checkbox"]#terms:focus {
   .whatsapp-float { 
     width: 40px; 
     height: 40px; 
-    font-size: 18px;
     bottom: 12px;
     right: 12px;
   }
+  .whatsapp-float img { width: 24px; height: 24px; }
   
   /* FORMS */
   .form-input, .form-textarea, .form-select { 
