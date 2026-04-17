@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Producto - VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR 1.PNG " />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="page-enter">
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-brand">
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer;">
+        <div class="nav-logo">
+          <img src="images/logo.png" alt="VibeWear Logo" onerror="this.style.display='none';this.parentNode.innerHTML='VW';" />
+        </div>
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+      </a>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div style="display:flex;gap:15px;align-items:center;">
+      <div class="nav-cart" onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cartCount">0</span>
+      </div>
+
+      <button onclick="loginWithGoogle()" style="background:var(--pink);border:none;color:var(--black);padding:10px 20px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:8px;" title="Mi cuenta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Mi cuenta
+      </button>
+    </div>
+    <div class="nav-hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div style="padding:110px 60px 0;background:var(--black)">
+    <p style="font-family:var(--font-sub);font-size:11px;letter-spacing:2px;color:var(--gray);text-transform:uppercase">
+      <a href="index.html" style="color:var(--gray);transition:color 0.3s" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--gray)'">Inicio</a>
+      <span style="margin:0 10px;color:var(--pink)">›</span>
+      <a href="catalogo.html" style="color:var(--gray);transition:color 0.3s" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--gray)'">Catálogo</a>
+      <span style="margin:0 10px;color:var(--pink)">›</span>
+      <span style="color:var(--white)" id="breadcrumbName">Producto</span>
+    </p>
+  </div>
+
+  <!-- PRODUCT LAYOUT -->
+  <section class="product-page" style="padding-top:40px">
+    <div class="product-layout">
+
+      <!-- GALLERY -->
+      <div class="product-gallery" style="animation:fadeInLeft 0.8s ease both">
+        <div class="product-main-img">
+          <span class="product-badge" id="badgeMain" style="position:absolute;top:20px;left:20px;z-index:2"></span>
+          <img src="" alt="" id="mainImg" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=800&q=85'" />
+        </div>
+        <div class="product-thumbs" id="thumbsContainer"></div>
+      </div>
+
+      <!-- DETAILS -->
+      <div class="product-details" style="animation:fadeInRight 0.8s ease 0.2s both">
+        <p class="product-brand">✦ VibeWear Collection 2025</p>
+        <h1 class="product-title" id="productTitle">PRODUCTO</h1>
+
+        <div class="product-rating">
+          <span class="stars" id="stars">★★★★★</span>
+          <span class="rating-count" id="ratingCount">4.9 (248 reseñas)</span>
+        </div>
+
+        <div class="product-price-wrap">
+          <span class="product-price-strike" id="priceOld" style="display:none"></span>
+          <span class="product-price-main" id="priceMain">$149.900</span>
+          <span id="discountBadge" style="font-family:var(--font-sub);font-size:11px;color:var(--black);background:var(--pink);padding:4px 10px;border-radius:50px;letter-spacing:1px;font-weight:600;display:none"></span>
+        </div>
+
+        <p class="product-desc" id="productDesc"></p>
+
+        <!-- SIZES -->
+        <div class="size-section">
+          <p class="size-label">Talla — <span style="color:var(--pink);cursor:pointer">Guía de tallas →</span></p>
+          <div class="size-grid">
+            <button class="size-btn sold-out">XS</button>
+            <button class="size-btn" onclick="selectSize(this)">S</button>
+            <button class="size-btn active" onclick="selectSize(this)">M</button>
+            <button class="size-btn" onclick="selectSize(this)">L</button>
+            <button class="size-btn" onclick="selectSize(this)">XL</button>
+            <button class="size-btn" onclick="selectSize(this)">XXL</button>
+          </div>
+        </div>
+
+        <!-- COLORS -->
+        <div class="color-section">
+          <p class="size-label">Color — <span id="colorName" style="color:var(--white)">Rosa Humo</span></p>
+          <div class="color-dots" id="colorDots"></div>
+        </div>
+
+        <!-- QTY & ADD -->
+        <div class="product-actions">
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <input class="qty-val" type="text" value="1" id="qty" readonly />
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+            <span style="font-family:var(--font-sub);font-size:11px;letter-spacing:1.5px;color:var(--pink)">✔ En stock</span>
+          </div>
+          <button class="btn-buy" onclick="addToCart()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Agregar al Carrito
+          </button>
+          <button id="wishlistBtn" class="btn-outline" style="text-align:center;width:50px;padding:0;border:1.5px solid rgba(224,162,201,0.3);" onclick="toggleProductWishlist()" title="Agregar a favoritos">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wishlist-heart-svg">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+          <a href="contacto.html" class="btn-outline" style="text-align:center">Consultar disponibilidad</a>
+        </div>
+
+        <!-- OPCIONES RÁPIDAS -->
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap">
+          <a href="compare.html" class="btn-outline" style="text-align:center;flex:1;min-width:120px;">⚖️ Comparar</a>
+        </div>
+
+        <!-- META -->
+        <div class="product-meta">
+          <div class="meta-row"><span class="meta-key">SKU</span><span class="meta-val" id="metaSKU">VW-PROD-001</span></div>
+          <div class="meta-row"><span class="meta-key">Material</span><span class="meta-val" id="metaMaterial">Algodón 100%</span></div>
+          <div class="meta-row"><span class="meta-key">Envío</span><span class="meta-val">Gratis en compras +$150.000</span></div>
+          <div class="meta-row"><span class="meta-key">Entrega</span><span class="meta-val">3–5 días hábiles</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELATED -->
+    <div style="margin-top:100px">
+      <div class="section-header">
+        <div>
+          <span class="section-label">✦ También te puede gustar</span>
+          <h2 class="section-title">MÁS <span>DROPS</span></h2>
+        </div>
+        <a href="catalogo.html" class="btn-outline">Ver Catálogo</a>
+      </div>
+      <div class="products-grid" id="relatedProducts"></div>
+    </div>
+  </section>
+
+  <!-- REVIEWS SECTION -->
+  <section style="padding:60px;max-width:1200px;margin:0 auto;">
+    <h2 class="section-title" style="margin-bottom:40px;">RESEÑAS<br/><span id="reviewCount">0</span></h2>
+    
+    <!-- ADD REVIEW FORM -->
+    <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:30px;margin-bottom:40px;">
+      <h3 style="font-family:var(--font-heading);font-size:24px;margin-bottom:20px;color:var(--white);">Comparte tu opinión</h3>
+      <div style="display:grid;gap:15px;">
+        <div>
+          <label style="display:block;font-size:12px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;">Calificación</label>
+          <div style="display:flex;gap:10px;">
+            <button class="rating-star" onclick="selectRating(1)" style="font-size:24px;cursor:pointer;opacity:0.5;transition:opacity 0.3s;">★</button>
+            <button class="rating-star" onclick="selectRating(2)" style="font-size:24px;cursor:pointer;opacity:0.5;transition:opacity 0.3s;">★</button>
+            <button class="rating-star" onclick="selectRating(3)" style="font-size:24px;cursor:pointer;opacity:0.5;transition:opacity 0.3s;">★</button>
+            <button class="rating-star" onclick="selectRating(4)" style="font-size:24px;cursor:pointer;opacity:0.5;transition:opacity 0.3s;">★</button>
+            <button class="rating-star" onclick="selectRating(5)" style="font-size:24px;cursor:pointer;opacity:0.5;transition:opacity 0.3s;">★</button>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;">Tu nombre</label>
+          <input type="text" id="reviewName" placeholder="Anónimo" style="width:100%;padding:10px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;">Tu reseña</label>
+          <textarea id="reviewComment" placeholder="¿Qué te pareció?" style="width:100%;padding:10px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);min-height:80px;"></textarea>
+        </div>
+        <button onclick="submitReview()" class="btn-primary" style="width:100%;padding:12px;letter-spacing:1px;text-transform:uppercase;font-size:12px;font-weight:bold;border:none;cursor:pointer;">Publicar Reseña</button>
+      </div>
+    </div>
+
+    <!-- REVIEWS LIST -->
+    <div id="reviewsList" style="display:grid;gap:15px;"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+        <p class="footer-desc">Streetwear auténtico para los que definen su propio estilo.</p>
+      </div>
+      <div><h4 class="footer-col-title">Tienda</h4><ul class="footer-links"><li><a href="catalogo.html">Catálogo</a></li><li><a href="#">Hoodies</a></li><li><a href="#">Camisetas</a></li></ul></div>
+      <div><h4 class="footer-col-title">Ayuda</h4><ul class="footer-links"><li><a href="contacto.html">Contacto</a></li><li><a href="#">Envíos</a></li><li><a href="#">Devoluciones</a></li></ul></div>
+      <div><h4 class="footer-col-title">Marca</h4><ul class="footer-links"><li><a href="#">Nuestra Historia</a></li><li><a href="#">Blog</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 <span>VibeWear</span>. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><span class="toast-icon">✦</span><span id="toastMsg">¡Agregado al carrito!</span></div>
+
+  <script>
+    // Base de datos de productos
+    const productos = {
+      'prod-1': {
+        nombre: 'Eladio Carrion Oversized',
+        titulo: 'ELADIO CARRION\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 1/Eladio-Back.jpg',
+        imagenes: ['images/Productos/Producto 1/Eladio-Back.jpg', 'images/Productos/Producto 1/Eladio-Front.jpg'],
+        descripcion: 'Camiseta oversized premium con estampado de Eladio Carrión. Tela 100% algodón de alta calidad con acabado suave.',
+        sku: 'VW-TSH-2025-001',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}, {color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 156
+      },
+      'prod-2': {
+        nombre: 'Pokémon Gengar Hoodie',
+        titulo: 'POKÉMON\nGENGAR\nHOODIE',
+        categoria: 'Hoodies',
+        precio: 111000,
+        precioAnterior: 126900,
+        descuento: 20,
+        badge: '−20%',
+        imagenUrl: 'images/Productos/Producto 2/hoodie.jpg',
+        imagenes: ['images/Productos/Producto 2/hoodie.jpg'],
+        descripcion: 'Hoodie oversized con diseño Pokémon Gengar. Tela cómoda y de alta calidad, perfecta para cualquier ocasión.',
+        sku: 'VW-HDR-2025-001',
+        material: '80% Algodón, 20% Poliéster',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 248
+      },
+      'prod-3': {
+        nombre: 'Álvarito Díaz Oversized',
+        titulo: 'ÁLVARITO DÍAZ\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 70000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 3/Álvarito.jpg',
+        imagenes: ['images/Productos/Producto 3/Álvarito.jpg', 'images/Productos/Producto 3/Álvarito-2.jpg'],
+        descripcion: 'Camiseta oversized con estampado de Álvarito Díaz. Diseño único y exclusivo para VibeWear.',
+        sku: 'VW-TSH-2025-003',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#e0a2c9', nombre: 'Rosa'}],
+        stars: 5,
+        reviews: 134
+      },
+      'prod-4': {
+        nombre: 'Snoopy Slim',
+        titulo: 'SNOOPY\nSLIM',
+        categoria: 'Camisetas',
+        precio: 60000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 4/Snoopy-3.jpg',
+        imagenes: ['images/Productos/Producto 4/Snoopy-3.jpg'],
+        descripcion: 'Camiseta slim fit con diseño de Snoopy. Corte clásico y elegante.',
+        sku: 'VW-TSH-2025-004',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 167
+      },
+      'prod-5': {
+        nombre: 'Sayonara Oversized',
+        titulo: 'SAYONARA\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 70000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 5/Alvarito.jpg',
+        imagenes: ['images/Productos/Producto 5/Alvarito.jpg', 'images/Productos/Producto 5/Alvarito-2.jpg'],
+        descripcion: 'Camiseta oversized con diseño Sayonara. Perfecto para un look relajado y moderno.',
+        sku: 'VW-TSH-2025-005',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#2c3e50', nombre: 'Azul Marino'}],
+        stars: 5,
+        reviews: 145
+      },
+      'prod-6': {
+        nombre: 'BadBunny Albums',
+        titulo: 'BAD BUNNY\nALBUMS',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 6/BadBunny.jpg',
+        imagenes: ['images/Productos/Producto 6/BadBunny.jpg'],
+        descripcion: 'Camiseta con estampado de Bad Bunny Albums. Diseño iconográfico.',
+        sku: 'VW-TSH-2025-006',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 189
+      },
+      'prod-7': {
+        nombre: 'Blessd Oversized',
+        titulo: 'BLESSD\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 7/Blessd.jpg',
+        imagenes: ['images/Productos/Producto 7/Blessd.jpg', 'images/Productos/Producto 7/Blessd-2.jpg'],
+        descripcion: 'Camiseta oversized con estampado de Blessd. Diseño urbano exclusivo.',
+        sku: 'VW-TSH-2025-007',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#4a4a4a', nombre: 'Gris Oscuro'}],
+        stars: 5,
+        reviews: 123
+      },
+      'prod-8': {
+        nombre: 'Gustavo Cerati Oversized',
+        titulo: 'GUSTAVO CERATI\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 8/Gustavo-Cerati-1.jpg',
+        imagenes: ['images/Productos/Producto 8/Gustavo-Cerati-1.jpg', 'images/Productos/Producto 8/Gustavo-Cerati-2.jpg'],
+        descripcion: 'Camiseta oversized con tributo a Gustavo Cerati. Diseño nostálgico.',
+        sku: 'VW-TSH-2025-008',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#8b0000', nombre: 'Rojo Profundo'}],
+        stars: 5,
+        reviews: 156
+      },
+      'prod-9': {
+        nombre: 'Kanye West Oversized',
+        titulo: 'KANYE WEST\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 9/KanyeWest-1.jpg',
+        imagenes: ['images/Productos/Producto 9/KanyeWest-1.jpg', 'images/Productos/Producto 9/KanyeWest-2.jpg'],
+        descripcion: 'Camiseta oversized con estampado de Kanye West. Diseño icónico.',
+        sku: 'VW-TSH-2025-009',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#d4af37', nombre: 'Dorado'}],
+        stars: 5,
+        reviews: 178
+      },
+      'prod-10': {
+        nombre: 'Sabrina Carpenter',
+        titulo: 'SABRINA\nCARPENTER',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 10/Sabrina-Carpenter-1.jpg',
+        imagenes: ['images/Productos/Producto 10/Sabrina-Carpenter-1.jpg'],
+        descripcion: 'Camiseta con estampado de Sabrina Carpenter. Diseño de artista pop.',
+        sku: 'VW-TSH-2025-010',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 201
+      },
+      'prod-11': {
+        nombre: 'Snoopy Slim',
+        titulo: 'SNOOPY\nSLIM',
+        categoria: 'Camisetas',
+        precio: 60000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 11/Snoopy.jpg',
+        imagenes: ['images/Productos/Producto 11/Snoopy.jpg'],
+        descripcion: 'Camiseta slim fit con otro diseño de Snoopy. Clásico y atemporal.',
+        sku: 'VW-TSH-2025-011',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 134
+      },
+      'prod-12': {
+        nombre: 'Yan Block Oversized',
+        titulo: 'YAN BLOCK\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 12/Yan-Block.jpg',
+        imagenes: ['images/Productos/Producto 12/Yan-Block.jpg', 'images/Productos/Producto 12/Yan-Block-2.jpg'],
+        descripcion: 'Camiseta oversized con diseño Yan Block. Exclusivo VibeWear.',
+        sku: 'VW-TSH-2025-012',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#696969', nombre: 'Gris'}],
+        stars: 5,
+        reviews: 145
+      },
+      'prod-13': {
+        nombre: 'Trueno Oversized',
+        titulo: 'TRUENO\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 13/Trueno-1.jpg',
+        imagenes: ['images/Productos/Producto 13/Trueno-1.jpg', 'images/Productos/Producto 13/Trueno-2.jpg'],
+        descripcion: 'Camiseta oversized con estampado de Trueno. Diseño urbano.',
+        sku: 'VW-TSH-2025-013',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#2f4f4f', nombre: 'Verde Oscuro'}],
+        stars: 5,
+        reviews: 167
+      },
+      'prod-14': {
+        nombre: 'Tyler The Creator Oversized',
+        titulo: 'TYLER THE\nCREATOR\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 70000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 14/Tyler-The-Creator.jpg',
+        imagenes: ['images/Productos/Producto 14/Tyler-The-Creator.jpg'],
+        descripcion: 'Camiseta oversized con estampado de Tyler The Creator. Diseño artístico.',
+        sku: 'VW-TSH-2025-014',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 156
+      },
+      'prod-15': {
+        nombre: 'Stitch Slim',
+        titulo: 'STITCH\nSLIM',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 15/Stitch.jpg',
+        imagenes: ['images/Productos/Producto 15/Stitch.jpg'],
+        descripcion: 'Camiseta slim fit con diseño de Stitch. Adorable y divertido.',
+        sku: 'VW-TSH-2025-015',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 178
+      },
+      'prod-16': {
+        nombre: 'The Weeknd Oversized',
+        titulo: 'THE WEEKND\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 16/The-Weeknd--1.jpg',
+        imagenes: ['images/Productos/Producto 16/The-Weeknd--1.jpg', 'images/Productos/Producto 16/The-Weeknd--2.jpg'],
+        descripcion: 'Camiseta oversized con estampado de The Weeknd. Diseño artista.',
+        sku: 'VW-TSH-2025-016',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#8b0000', nombre: 'Vino'}],
+        stars: 5,
+        reviews: 201
+      },
+      'prod-17': {
+        nombre: 'Snoopy Slim',
+        titulo: 'SNOOPY\nSLIM',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 17/Snoopy-2.jpg',
+        imagenes: ['images/Productos/Producto 17/Snoopy-2.jpg'],
+        descripcion: 'Camiseta slim fit con otro diseño de Snoopy. Variación especial.',
+        sku: 'VW-TSH-2025-017',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 145
+      },
+      'prod-18': {
+        nombre: 'Navidad Slim',
+        titulo: 'NAVIDAD\nSLIM',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 18/NAVIDAD1.jpg',
+        imagenes: ['images/Productos/Producto 18/NAVIDAD1.jpg'],
+        descripcion: 'Camiseta slim fit con diseño navideño. Perfecto para la temporada.',
+        sku: 'VW-TSH-2025-018',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 123
+      },
+      'prod-19': {
+        nombre: 'Black Clover Oversized',
+        titulo: 'BLACK CLOVER\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 19/Black-Clover-2.jpg',
+        imagenes: ['images/Productos/Producto 19/Black-Clover-2.jpg', 'images/Productos/Producto 19/Black-Clover-1.jpg'],
+        descripcion: 'Camiseta oversized con estampado de Black Clover. Diseño anime.',
+        sku: 'VW-TSH-2025-019',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#4b0082', nombre: 'Púrpura'}],
+        stars: 5,
+        reviews: 189
+      },
+      'prod-20': {
+        nombre: 'Dexter Morgan',
+        titulo: 'DEXTER\nMORGAN',
+        categoria: 'Camisetas',
+        precio: 75000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 20/Dexter-Morgan-1.jpg',
+        imagenes: ['images/Productos/Producto 20/Dexter-Morgan-1.jpg', 'images/Productos/Producto 20/Dexter-Morgan-2.jpg'],
+        descripcion: 'Camiseta con estampado de Dexter Morgan. Diseño serie de TV.',
+        sku: 'VW-TSH-2025-020',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#ff6b6b', nombre: 'Rojo'}],
+        stars: 5,
+        reviews: 167
+      },
+      'prod-21': {
+        nombre: 'Dragon Ball Slim',
+        titulo: 'DRAGON BALL\nSLIM',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 21/VillanosDB.jpg',
+        imagenes: ['images/Productos/Producto 21/VillanosDB.jpg'],
+        descripcion: 'Camiseta slim fit con diseño Dragon Ball. Clásico anime.',
+        sku: 'VW-TSH-2025-021',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 145
+      },
+      'prod-22': {
+        nombre: 'Naruto Slim',
+        titulo: 'NARUTO\nSLIM',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 22/Naruto.jpg',
+        imagenes: ['images/Productos/Producto 22/Naruto.jpg'],
+        descripcion: 'Camiseta slim fit con estampado Naruto. Anime icónico.',
+        sku: 'VW-TSH-2025-022',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 178
+      },
+      'prod-23': {
+        nombre: 'Urban Lemon Oversized',
+        titulo: 'URBAN LEMON\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 70000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 23/Lemon.jpg',
+        imagenes: ['images/Productos/Producto 23/Lemon.jpg'],
+        descripcion: 'Camiseta oversized con diseño Urban Lemon. Fresco y moderno.',
+        sku: 'VW-TSH-2025-023',
+        material: '100% Algodón',
+        colores: [{color: '#c3d0bd', nombre: 'Lemon'}],
+        stars: 5,
+        reviews: 134
+      },
+      'prod-24': {
+        nombre: 'High as Fu**',
+        titulo: 'HIGH AS\nFU**',
+        categoria: 'Camisetas',
+        precio: 70000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 24/High.jpg',
+        imagenes: ['images/Productos/Producto 24/High.jpg'],
+        descripcion: 'Camiseta con mensaje audaz y atrevido. Diseño expresivo.',
+        sku: 'VW-TSH-2025-024',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 156
+      },
+      'prod-25': {
+        nombre: 'Halloween Slim',
+        titulo: 'HALLOWEEN\nSLIM',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 25/Halloween.jpg',
+        imagenes: ['images/Productos/Producto 25/Halloween.jpg'],
+        descripcion: 'Camiseta slim fit con temática Halloween. Perfecta para la temporada.',
+        sku: 'VW-TSH-2025-025',
+        material: '100% Algodón',
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
+        stars: 5,
+        reviews: 189
+      },
+      'prod-26': {
+        nombre: 'Tired Dinosaur',
+        titulo: 'TIRED\nDINOSAUR',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '',
+        imagenUrl: 'images/Productos/Producto 26/Dinosaur.jpg',
+        imagenes: ['images/Productos/Producto 26/Dinosaur.jpg'],
+        descripcion: 'Camiseta con diseño divertido de dinosaurio cansado. Humor urbano.',
+        sku: 'VW-TSH-2025-026',
+        material: '100% Algodón',
+        colores: [{color: '#b09ec3', nombre: 'Lila'}],
+        stars: 5,
+        reviews: 145
+      },
+      'prod-27': {
+        nombre: 'Cartoon Edition',
+        titulo: 'CARTOON\nEDITION',
+        categoria: 'Camisetas',
+        precio: 65000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: 'New',
+        imagenUrl: 'images/Productos/Producto 27/Cartoon-Edition-1.jpg',
+        imagenes: ['images/Productos/Producto 27/Cartoon-Edition-1.jpg', 'images/Productos/Producto 27/Cartoon-Edition-2.jpg', 'images/Productos/Producto 27/Cartoon-Edition-3.jpg', 'images/Productos/Producto 27/Cartoon-Edition-4.jpg', 'images/Productos/Producto 27/Cartoon-Edition-5.jpg', 'images/Productos/Producto 27/Cartoon-Edition-6.jpg'],
+        descripcion: 'Camiseta con diseño de edición especial cartoon. Nostalgia animada.',
+        sku: 'VW-TSH-2025-027',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#ffffff', nombre: 'Blanco'}, {color: '#2c3e50', nombre: 'Azul Marino'}, {color: '#e74c3c', nombre: 'Rojo'}, {color: '#f39c12', nombre: 'Naranja'}, {color: '#16a085', nombre: 'Verde Esmeralda'}],
+        stars: 5,
+        reviews: 167
+      },
+      'prod-28': {
+        nombre: 'Evangelion Oversized',
+        titulo: 'EVANGELION\nOVERSIZED',
+        categoria: 'Camisetas',
+        precio: 70000,
+        precioAnterior: 0,
+        descuento: 0,
+        badge: '🔥 Hot',
+        imagenUrl: 'images/Productos/Producto 28/Evangelion.jpg',
+        imagenes: ['images/Productos/Producto 28/Evangelion.jpg'],
+        descripcion: 'Camiseta oversized con diseño Evangelion. Anime mecha clásico.',
+        sku: 'VW-TSH-2025-028',
+        material: '100% Algodón',
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
+        stars: 5,
+        reviews: 189
+      }
+    };
+
+    let currentProductId = 'prod-2';
+    let qty = 1;
+
+    function loadProduct(prodId) {
+      if (!productos[prodId]) prodId = 'prod-2';
+      currentProductId = prodId;
+      const prod = productos[prodId];
+
+      // Actualizar título de página
+      document.title = prod.nombre + ' — VibeWear | Streetwear';
+
+      // Breadcrumb
+      document.getElementById('breadcrumbName').textContent = prod.nombre;
+
+      // Galería
+      document.getElementById('mainImg').src = prod.imagenUrl;
+      document.getElementById('mainImg').alt = prod.nombre;
+
+      // Badge
+      const badge = document.getElementById('badgeMain');
+      if (prod.badge) {
+        badge.textContent = prod.badge;
+        badge.style.display = 'block';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      // Thumbs
+      const thumbsContainer = document.getElementById('thumbsContainer');
+      thumbsContainer.innerHTML = prod.imagenes.map((img, i) => `
+        <div class="product-thumb ${i === 0 ? 'active' : ''}" onclick="changeImg(this,'${img}')">
+          <img src="${img}" alt="thumb${i}" onerror="this.src='${img}'" />
+        </div>
+      `).join('');
+
+      // Título
+      document.getElementById('productTitle').textContent = prod.titulo;
+
+      // Rating
+      document.getElementById('stars').textContent = '★'.repeat(prod.stars);
+      document.getElementById('ratingCount').textContent = prod.stars + '.0 (' + prod.reviews + ' reseñas)';
+
+      // Precios
+      const priceOld = document.getElementById('priceOld');
+      const priceMain = document.getElementById('priceMain');
+      const discountBadge = document.getElementById('discountBadge');
+
+      if (prod.precioAnterior > 0) {
+        priceOld.textContent = '$' + prod.precioAnterior.toLocaleString();
+        priceOld.style.display = 'inline';
+        discountBadge.textContent = '−' + prod.descuento + '%';
+        discountBadge.style.display = 'inline-block';
+      } else {
+        priceOld.style.display = 'none';
+        discountBadge.style.display = 'none';
+      }
+      priceMain.textContent = '$' + prod.precio.toLocaleString();
+
+      // Descripción
+      document.getElementById('productDesc').textContent = prod.descripcion;
+
+      // Colores
+      const colorDots = document.getElementById('colorDots');
+      colorDots.innerHTML = prod.colores.map((c, i) => `
+        <div class="color-dot ${i === 0 ? 'active' : ''}" style="background:${c.color}${c.color === '#f5f5f5' || c.color === '#ffffff' ? ';border:1.5px solid rgba(255,255,255,0.2)' : ''}" title="${c.nombre}" onclick="selectColor(this,'${c.nombre}')"></div>
+      `).join('');
+      document.getElementById('colorName').textContent = prod.colores[0].nombre;
+
+      // Meta
+      document.getElementById('metaSKU').textContent = prod.sku;
+      document.getElementById('metaMaterial').textContent = prod.material;
+
+      // Reset cantidad
+      qty = 1;
+      document.getElementById('qty').value = 1;
+
+      // Cargar productos relacionados
+      loadRelatedProducts();
+      
+      // Cargar reseñas desde Firebase (con delay para asegurar que Firebase está listo)
+      setTimeout(() => {
+        if (typeof renderReviews === 'function' && window.getProductReviews) {
+          renderReviews();
+        }
+      }, 200);
+
+      // Scroll al top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function changeImg(thumb, url) {
+      document.querySelectorAll('.product-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      const img = document.getElementById('mainImg');
+      img.style.opacity = '0'; img.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        img.src = url;
+        img.style.opacity = '1'; img.style.transform = 'scale(1)';
+      }, 200);
+      img.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    }
+
+    function selectSize(btn) {
+      document.querySelectorAll('.size-btn:not(.sold-out)').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function selectColor(dot, name) {
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      document.getElementById('colorName').textContent = name;
+    }
+
+    function changeQty(delta) {
+      qty = Math.max(1, Math.min(10, qty + delta));
+      document.getElementById('qty').value = qty;
+    }
+
+    function addToCart() {
+      const product = productos[currentProductId];
+      // Agregar al carrito local
+      if (!cart[currentProductId]) {
+        cart[currentProductId] = { 
+          name: product.nombre, 
+          price: product.precio, 
+          qty: qty,
+          selectedSize: document.querySelector('.size-btn.active')?.textContent || 'M',
+          selectedColor: document.getElementById('colorName').textContent
+        };
+      } else {
+        cart[currentProductId].qty += qty;
+      }
+      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
+      updateCartCount();
+      
+      const panel = document.getElementById('cartPanel');
+      if (!panel) createCartPanel();
+      renderCart();
+      panel.style.display = 'block';
+      
+      showNotification(`${product.nombre} agregado al carrito!`);
+      qty = 1;
+      document.getElementById('qty').value = qty;
+    }
+
+    // Cargar producto desde URL hash
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.slice(1) || 'prod-2';
+      loadProduct(hash);
+    });
+
+    // Inicializar
+    const initialHash = window.location.hash.slice(1) || 'prod-2';
+    loadProduct(initialHash);
+
+    // Navbar scroll
+    window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20));
+    function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
+
+    // Related products
+    function loadRelatedProducts() {
+      const related = Object.entries(productos).filter(([id]) => id !== currentProductId).slice(0, 3);
+      const html = related.map(([id, p]) => `
+        <div class="product-card">
+          <div class="product-card-img">
+            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+            <img src="${p.imagenUrl}" alt="${p.nombre}" onerror="this.src='${p.imagenUrl}'"/>
+            <div class="product-overlay"><a href="producto.html#${id}" class="btn-card">Ver Producto</a></div>
+          </div>
+          <div class="product-info">
+            <p class="product-category">${p.categoria}</p>
+            <h3 class="product-name">${p.nombre}</h3>
+            <div class="product-footer"><span class="product-price">$${p.precio.toLocaleString()}</span><div class="product-wishlist">♡</div></div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('relatedProducts').innerHTML = html;
+    }
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.product-card').forEach((el,i) => {
+      el.style.opacity='0'; el.style.transform='translateY(30px)';
+      el.style.transition=`opacity 0.6s ease ${i*0.1}s, transform 0.6s ease ${i*0.1}s`;
+      observer.observe(el);
+    });
+
+    // Shopping Cart
+    let cart = JSON.parse(localStorage.getItem('vibewear-cart')) || {};
+    
+    function updateCartCount() {
+      const total = Object.values(cart).reduce((sum, item) => sum + (item.qty || 1), 0);
+      document.getElementById('cartCount').textContent = total;
+    }
+    
+    function toggleCart() {
+      const panel = document.getElementById('cartPanel');
+      if (!panel) {
+        createCartPanel();
+        return;
+      }
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function createCartPanel() {
+      const html = `<div id="cartPanel" style="position:fixed;top:70px;right:20px;width:380px;background:white;border:2px solid var(--pink);border-radius:12px;padding:20px;box-shadow:0 12px 32px rgba(0,0,0,0.2);z-index:9999;max-height:600px;overflow-y:auto;font-family:var(--font-main);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:3px solid var(--pink);padding-bottom:12px;">
+          <h3 style="margin:0;color:var(--pink);font-size:18px;font-weight:bold;font-family:var(--font-main);letter-spacing:1px;">🛒 Carrito de Compras</h3>
+          <button onclick="document.getElementById('cartPanel').style.display='none'" style="background:none;border:none;font-size:28px;cursor:pointer;color:var(--pink);transition:transform 0.3s;font-weight:bold;">×</button>
+        </div>
+        <div id="cartItems" style="margin-bottom:15px;max-height:350px;overflow-y:auto;"></div>
+        <div id="cartEmpty" style="text-align:center;color:#999;padding:30px 20px;font-size:14px;font-family:var(--font-main);">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" style="margin-bottom:10px;">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <p style="font-weight:500;">Tu carrito está vacío</p>
+          <a href="catalogo.html" style="color:var(--pink);text-decoration:underline;font-size:13px;font-weight:600;">Ver catálogo →</a>
+        </div>
+        <div id="cartTotal" style="border-top:3px solid var(--pink);border-bottom:3px solid var(--pink);padding:14px 0;font-weight:bold;margin:15px 0;display:none;text-align:right;font-family:var(--font-main);">
+          <span style="color:#666;font-size:13px;font-weight:600;letter-spacing:0.5px;">TOTAL: </span>
+          <span id="totalPrice" style="font-size:20px;color:var(--pink);font-weight:bold;">$0</span>
+        </div>
+        <div id="couponSection" style="display:none;margin:15px 0;padding:12px;background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:6px;">
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <input type="text" id="couponCode" placeholder="Código de cupón" style="flex:1;padding:8px 12px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:4px;color:var(--white);font-family:var(--font-body);font-size:11px;text-transform:uppercase;"/>
+            <button onclick="applyCouponCode()" style="background:var(--pink);color:var(--black);padding:8px 12px;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;letter-spacing:0.5px;">Aplicar</button>
+          </div>
+          <p id="couponMessage" style="font-size:11px;color:var(--gray);margin:0;"></p>
+        </div>
+        <button id="checkoutBtn" onclick="checkout()" style="display:none;width:100%;padding:14px;background:var(--pink);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold;margin-top:10px;transition:background 0.3s;font-family:var(--font-sub);letter-spacing:1.5px;font-size:13px;text-transform:uppercase;">PROCEDER AL PAGO</button>
+        <a href="catalogo.html" id="continueShopping" style="display:none;width:100%;padding:12px;background:rgba(224,162,201,0.1);color:var(--pink);border:2px solid var(--pink);border-radius:8px;cursor:pointer;font-weight:bold;margin-top:8px;text-align:center;text-decoration:none;font-family:var(--font-sub);letter-spacing:1.5px;display:block;font-size:13px;text-transform:uppercase;">SEGUIR COMPRANDO</a>
+      </div>`;
+      document.body.insertAdjacentHTML('beforeend', html);
+      renderCart();
+    }
+    
+    function renderCart() {
+      const itemsDiv = document.getElementById('cartItems');
+      const emptyDiv = document.getElementById('cartEmpty');
+      const totalDiv = document.getElementById('cartTotal');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      
+      if (Object.keys(cart).length === 0) {
+        itemsDiv.innerHTML = '';
+        emptyDiv.style.display = 'block';
+        totalDiv.style.display = 'none';
+        checkoutBtn.style.display = 'none';
+        return;
+      }
+      
+      emptyDiv.style.display = 'none';
+      totalDiv.style.display = 'block';
+      checkoutBtn.style.display = 'block';
+      
+      let total = 0;
+      itemsDiv.innerHTML = Object.entries(cart).map(([id, item]) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        return `<div style="display:flex;flex-direction:column;padding:14px;border-bottom:1px solid #eee;background:#f9f9f9;border-radius:6px;margin-bottom:10px;font-family:var(--font-main);">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+            <div style="flex:1;">
+              <p style="margin:0;font-weight:bold;font-size:14px;color:var(--pink);letter-spacing:0.5px;">${item.name}</p>
+              <p style="margin:6px 0 0;font-size:12px;color:#666;font-weight:500;">Talla: <strong>${item.selectedSize}</strong> | Color: <strong>${item.selectedColor}</strong></p>
+            </div>
+            <button onclick="removeFromCart('${id}')" style="background:#ff6b9d;color:white;border:none;border-radius:5px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:bold;transition:background 0.3s;hover:background:#ff5285;">✕</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:6px;background:white;border:2px solid var(--pink);border-radius:5px;padding:3px;">
+              <button onclick="changeCartQty('${id}', -1)" style="background:none;border:none;padding:4px 8px;cursor:pointer;font-size:13px;color:var(--pink);font-weight:bold;transition:color 0.3s;">−</button>
+              <span style="min-width:22px;text-align:center;font-size:12px;font-weight:bold;color:#333;">${item.qty}</span>
+              <button onclick="changeCartQty('${id}', 1)" style="background:none;border:none;padding:4px 8px;cursor:pointer;font-size:13px;color:var(--pink);font-weight:bold;transition:color 0.3s;">+</button>
+            </div>
+            <span style="font-weight:bold;color:var(--pink);font-size:13px;letter-spacing:0.5px;">$${subtotal.toLocaleString('es-CO')}</span>
+          </div>
+        </div>`;
+      }).join('');
+      
+      document.getElementById('totalPrice').textContent = '$' + total.toLocaleString('es-CO');
+    }
+    
+    function changeCartQty(prodId, delta) {
+      if (cart[prodId]) {
+        const newQty = cart[prodId].qty + delta;
+        if (newQty <= 0) {
+          removeFromCart(prodId);
+        } else {
+          cart[prodId].qty = newQty;
+          localStorage.setItem('vibewear-cart', JSON.stringify(cart));
+          updateCartCount();
+          renderCart();
+        }
+      }
+    }
+    
+    function removeFromCart(prodId) {
+      delete cart[prodId];
+      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCart();
+    }
+    
+    function checkout() {
+      alert('Funcionalidad de pago en desarrollo. Carrito: ' + Object.keys(cart).length + ' artículos');
+    }
+    
+    function showNotification(msg) {
+      const notif = document.createElement('div');
+      notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--pink);color:white;padding:15px 20px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9998;animation:slideIn 0.3s ease;';
+      notif.textContent = msg;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+    
+    updateCartCount();
+  </script>
+
+  <script src="shared.js"></script>
+  <script>
+    let currentRating = 0;
+
+    function renderStars(count) {
+      return '★'.repeat(count) + '☆'.repeat(5 - count);
+    }
+
+    function selectRating(rating) {
+      currentRating = rating;
+      document.querySelectorAll('.rating-star').forEach((star, idx) => {
+        star.style.opacity = idx < rating ? '1' : '0.5';
+      });
+    }
+
+    async function submitReview() {
+      if (currentRating === 0) {
+        showNotification('Por favor selecciona una calificación');
+        return;
+      }
+      const comment = document.getElementById('reviewComment').value;
+      if (!comment.trim()) {
+        showNotification('Por favor escribe una reseña');
+        return;
+      }
+      const name = document.getElementById('reviewName').value || 'Usuario';
+      
+      try {
+        const success = await window.saveReviewToFirebase(currentProductId, currentRating, comment, name);
+        if (success) {
+          showNotification('Reseña publicada ✓');
+          // Dar un pequeño delay para que Firebase procese el documento
+          setTimeout(() => {
+            renderReviews();
+          }, 500);
+          document.getElementById('reviewComment').value = '';
+          document.getElementById('reviewName').value = '';
+          currentRating = 0;
+          document.querySelectorAll('.rating-star').forEach(s => s.style.opacity = '0.5');
+        } else {
+          showNotification('Error al publicar reseña ✗');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al publicar reseña ✗');
+      }
+    }
+
+    async function renderReviews() {
+      const container = document.getElementById('reviewsList');
+      
+      if (!window.getProductReviews) {
+        console.warn('⚠️ Firebase no está listo aún');
+        return;
+      }
+      
+      console.log('📝 Intentando cargar reseñas');
+      console.log('currentProductId =', currentProductId);
+      console.log('tipo:', typeof currentProductId);
+      
+      try {
+        const prodReviews = await window.getProductReviews(currentProductId);
+        console.log('✓ Reseñas obtenidas:', prodReviews);
+        console.log('Total de reseñas:', prodReviews.length);
+        document.getElementById('reviewCount').textContent = prodReviews.length;
+        
+        if (prodReviews.length === 0) {
+          console.log('ℹ️ No hay reseñas para este producto');
+          container.innerHTML = '<p style="color: #999;">No hay reseñas aún. ¡Sé el primero!</p>';
+          return;
+        }
+        
+        container.innerHTML = prodReviews.map(review => {
+          const fechaFormato = review.fecha && review.fecha.toDate 
+            ? review.fecha.toDate().toLocaleDateString('es-CO') 
+            : (review.fecha ? new Date(review.fecha).toLocaleDateString('es-CO') : 'Fecha');
+          
+          return `
+            <div class="review-item" style="background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.15);border-radius:12px;padding:24px;margin:16px 0;transition:all 0.3s;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:12px;">
+                <div>
+                  <div class="review-rating" style="color:#ffc107;margin-bottom:8px;font-size:16px;letter-spacing:2px;">${renderStars(review.calificacion)}</div>
+                  <p class="review-author" style="color:var(--white);font-weight:600;font-size:13px;margin:0;letter-spacing:0.5px;">${review.usuario}</p>
+                </div>
+                <span style="color:var(--gray);font-size:11px;white-space:nowrap;letter-spacing:0.5px;">${fechaFormato}</span>
+              </div>
+              <p class="review-text" style="color:var(--gray);margin:12px 0 0 0;font-size:14px;line-height:1.6;font-family:var(--font-body);">"${review.comentario}"</p>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <span class="review-verified" style="background:rgba(224,162,201,0.2);color:var(--pink);font-size:10px;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;">✓ Verificado</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        console.log('✓ Reseñas renderizadas');
+      } catch (error) {
+        console.error('❌ Error al cargar reseñas:', error);
+        container.innerHTML = '<p style="color: #999;">Error al cargar reseñas</p>';
+      }
+    }
+
+    function toggleProductWishlist() {
+      const btn = document.getElementById('wishlistBtn');
+      const product = productos[currentProductId];
+      addToWishlist(currentProductId, product.nombre);
+      btn.style.opacity = isInWishlist(currentProductId) ? '1' : '0.5';
+    }
+
+    function applyCouponCode() {
+      const code = document.getElementById('couponCode').value;
+      if (!code) {
+        showNotification('Ingresa un código de cupón');
+        return;
+      }
+      const total = Object.values(cart).reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const result = applyCoupon(code, total);
+      document.getElementById('couponMessage').textContent = result.message;
+      if (result.success) {
+        document.getElementById('couponCode').value = '';
+      }
+    }
+
+    // Initialize
+    const product = productos[currentProductId];
+    document.getElementById('wishlistBtn').style.opacity = isInWishlist(currentProductId) ? '1' : '0.5';
+  </script>
+
+  <!-- Firebase Scripts - Se carga después de todas las variables globales -->
+  <script type="module">
+    import { saveReviewToFirebase, getProductReviews, displayReviews } from "./firebase-reviews.js";
+    window.saveReviewToFirebase = saveReviewToFirebase;
+    window.getProductReviews = getProductReviews;
+    window.displayReviews = displayReviews;
+    
+    console.log('✓ Firebase Reviews functions loaded');
+    
+    // Intentar cargar reseñas inicialmente
+    setTimeout(() => {
+      if (typeof window.renderReviews === 'function') {
+        console.log('Cargando reseñas inicialmente...');
+        window.renderReviews();
+      }
+    }, 300);
+  </script>
+
+  <!-- WHATSAPP FLOAT BUTTON -->
+  <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp">💬</a>
+</body>
+</html>
