@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body style="background:#0a0a0a">
+
+  <!-- NAVBAR SIMPLE -->
+  <nav class="navbar scrolled">
+    <div class="nav-brand">
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+        <div class="nav-logo" style="width:40px;height:40px;background:#e0a2c9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#0a0a0a;">VW</div>
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+      </a>
+    </div>
+    <div style="flex:1;"></div>
+    <a href="index.html" style="color:var(--gray);text-decoration:none;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--gray)'">← Volver</a>
+  </nav>
+
+  <!-- LOGIN CONTAINER -->
+  <section style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
+    <div style="width:100%;max-width:450px;">
+
+      <!-- TAB BUTTONS -->
+      <div style="display:flex;gap:0;margin-bottom:40px;background:rgba(255,255,255,0.02);border:1px solid rgba(224,162,201,0.2);border-radius:8px;overflow:hidden;">
+        <button id="loginTab" onclick="switchTab('login')" style="flex:1;padding:16px;background:var(--pink);color:var(--black);border:none;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;">Inicia Sesión</button>
+        <button id="registerTab" onclick="switchTab('register')" style="flex:1;padding:16px;background:transparent;color:var(--pink);border:none;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='rgba(224,162,201,0.1)'" onmouseout="this.style.background='transparent'">Crear Cuenta</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" style="display:flex;flex-direction:column;gap:20px;">
+        <h1 style="font-family:var(--font-display);font-size:32px;color:var(--white);margin-bottom:10px;letter-spacing:2px;">INICIA SESIÓN</h1>
+        <p style="color:var(--gray);margin-bottom:20px;font-size:14px;">Accede a tu cuenta para ver pedidos y perfil</p>
+
+        <div style="position:relative;">
+          <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Email</label>
+          <input type="email" id="loginEmail" placeholder="tu@email.com" required style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;transition:var(--transition);outline:none;" onchange="document.getElementById('loginError').style.display='none'" />
+        </div>
+
+        <div style="position:relative;">
+          <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;transition:var(--transition);outline:none;" onchange="document.getElementById('loginError').style.display='none'" />
+        </div>
+
+        <div id="loginError" style="display:none;background:rgba(255,107,157,0.1);border:1px solid #ff6b9d;color:#ff6b9d;padding:12px;border-radius:6px;font-size:12px;text-align:center;"></div>
+
+        <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;min-height:44px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+          Acceder
+        </button>
+
+        <button type="button" onclick="resetPassword()" style="background:transparent;color:var(--gray);border:1px solid rgba(224,162,201,0.3);padding:12px;border-radius:6px;font-family:var(--font-sub);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--pink)';this.style.color='var(--pink)'" onmouseout="this.style.borderColor='rgba(224,162,201,0.3)';this.style.color='var(--gray)'">
+          ¿Olvidaste tu contraseña?
+        </button>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="registerForm" style="display:none;flex-direction:column;gap:20px;">
+        <h1 style="font-family:var(--font-display);font-size:32px;color:var(--white);margin-bottom:10px;letter-spacing:2px;">CREAR CUENTA</h1>
+        <p style="color:var(--gray);margin-bottom:20px;font-size:14px;">Únete a VibeWear y disfruta de beneficios exclusivos</p>
+
+        <div style="position:relative;">
+          <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Nombre Completo</label>
+          <input type="text" id="registerName" placeholder="Juan Pérez" required style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;transition:var(--transition);outline:none;" onchange="document.getElementById('registerError').style.display='none'" />
+        </div>
+
+        <div style="position:relative;">
+          <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Email</label>
+          <input type="email" id="registerEmail" placeholder="tu@email.com" required style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;transition:var(--transition);outline:none;" onchange="document.getElementById('registerError').style.display='none'" />
+        </div>
+
+        <div style="position:relative;">
+          <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Contraseña</label>
+          <input type="password" id="registerPassword" placeholder="Mín. 6 caracteres" required style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;transition:var(--transition);outline:none;" onchange="validateRegisterPassword()" />
+          <div id="passwordHints" style="display:none;margin-top:8px;font-size:12px;color:var(--gray);"></div>
+        </div>
+
+        <div style="position:relative;">
+          <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Confirmar Contraseña</label>
+          <input type="password" id="registerConfirm" placeholder="Repite tu contraseña" required style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;transition:var(--transition);outline:none;" onchange="document.getElementById('registerError').style.display='none'" />
+        </div>
+
+        <label style="display:flex;align-items:center;gap:10px;color:var(--gray);font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="registerTerms" required style="width:18px;height:18px;cursor:pointer;" />
+          <span>Acepto los términos y condiciones</span>
+        </label>
+
+        <div id="registerError" style="display:none;background:rgba(255,107,157,0.1);border:1px solid #ff6b9d;color:#ff6b9d;padding:12px;border-radius:6px;font-size:12px;text-align:center;"></div>
+
+        <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;min-height:44px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+          Crear Cuenta
+        </button>
+      </form>
+
+      <!-- DIVIDER -->
+      <div style="display:flex;align-items:center;gap:15px;margin:30px 0;opacity:0.5;">
+        <div style="flex:1;height:1px;background:rgba(224,162,201,0.2);"></div>
+        <span style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;">O continúa con</span>
+        <div style="flex:1;height:1px;background:rgba(224,162,201,0.2);"></div>
+      </div>
+
+      <!-- SOCIAL BUTTONS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <button type="button" onclick="loginGoogleHandler()" style="background:rgba(255,255,255,0.05);color:var(--white);border:1.5px solid rgba(255,255,255,0.1);padding:14px;border-radius:6px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;" onmouseover="this.style.borderColor='var(--pink)';this.style.background='rgba(224,162,201,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.background='rgba(255,255,255,0.05)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Google
+        </button>
+        <button type="button" onclick="loginGitHubHandler()" style="background:rgba(255,255,255,0.05);color:var(--white);border:1.5px solid rgba(255,255,255,0.1);padding:14px;border-radius:6px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;" onmouseover="this.style.borderColor='var(--pink)';this.style.background='rgba(224,162,201,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.background='rgba(255,255,255,0.05)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="cart.js"></script>
+  <script type="module">
+    import { loginWithEmail, registerWithEmail, loginWithGoogle, loginWithGitHub, validatePassword, getErrorMessage } from './firebase-auth.js';
+
+    // Funciones globales
+    window.switchTab = function(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const loginTab = document.getElementById('loginTab');
+      const registerTab = document.getElementById('registerTab');
+
+      if (tab === 'login') {
+        loginForm.style.display = 'flex';
+        registerForm.style.display = 'none';
+        loginTab.style.background = 'var(--pink)';
+        loginTab.style.color = 'var(--black)';
+        registerTab.style.background = 'transparent';
+        registerTab.style.color = 'var(--pink)';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'flex';
+        loginTab.style.background = 'transparent';
+        loginTab.style.color = 'var(--pink)';
+        registerTab.style.background = 'var(--pink)';
+        registerTab.style.color = 'var(--black)';
+      }
+    };
+
+    window.validateRegisterPassword = function() {
+      const password = document.getElementById('registerPassword').value;
+      const hints = document.getElementById('passwordHints');
+      const validation = validatePassword(password);
+
+      if (password.length > 0) {
+        hints.style.display = 'block';
+        hints.innerHTML = validation.errors.map(e => `❌ ${e}`).join('<br>');
+        if (validation.isValid) {
+          hints.innerHTML = '✅ Contraseña válida';
+          hints.style.color = '#4ade80';
+        }
+      } else {
+        hints.style.display = 'none';
+      }
+    };
+
+    window.resetPassword = async function() {
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) {
+        document.getElementById('loginError').textContent = 'Ingresa tu email primero';
+        document.getElementById('loginError').style.display = 'block';
+        return;
+      }
+
+      try {
+        const { resetPassword: reset } = await import('./firebase-auth.js');
+        await reset(email);
+        document.getElementById('loginError').textContent = `✅ Email enviado a ${email}`;
+        document.getElementById('loginError').style.background = 'rgba(74,222,128,0.1)';
+        document.getElementById('loginError').style.borderColor = '#4ade80';
+        document.getElementById('loginError').style.color = '#4ade80';
+        document.getElementById('loginError').style.display = 'block';
+      } catch (error) {
+        document.getElementById('loginError').textContent = getErrorMessage(error);
+        document.getElementById('loginError').style.display = 'block';
+      }
+    };
+
+    // LOGIN HANDLER
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
+
+      try {
+        await loginWithEmail(email, password);
+        errorDiv.textContent = 'Bienvenido de vuelta! 🎉';
+        errorDiv.style.background = 'rgba(74,222,128,0.1)';
+        errorDiv.style.borderColor = '#4ade80';
+        errorDiv.style.color = '#4ade80';
+        errorDiv.style.display = 'block';
+        
+        setTimeout(() => {
+          window.location.href = 'account-profile.html';
+        }, 1500);
+      } catch (error) {
+        errorDiv.textContent = getErrorMessage(error);
+        errorDiv.style.display = 'block';
+      }
+    });
+
+    // REGISTER HANDLER
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value;
+      const confirm = document.getElementById('registerConfirm').value;
+      const terms = document.getElementById('registerTerms').checked;
+      const errorDiv = document.getElementById('registerError');
+
+      // Validaciones
+      if (name.length < 3) {
+        errorDiv.textContent = 'El nombre debe tener al menos 3 caracteres';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      if (password !== confirm) {
+        errorDiv.textContent = 'Las contraseñas no coinciden';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const validation = validatePassword(password);
+      if (!validation.isValid) {
+        errorDiv.textContent = 'Contraseña muy débil. ' + validation.errors[0];
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      if (!terms) {
+        errorDiv.textContent = 'Debes aceptar los términos y condiciones';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        await registerWithEmail(email, password, name);
+        errorDiv.textContent = 'Cuenta creada exitosamente! ✅';
+        errorDiv.style.background = 'rgba(74,222,128,0.1)';
+        errorDiv.style.borderColor = '#4ade80';
+        errorDiv.style.color = '#4ade80';
+        errorDiv.style.display = 'block';
+        
+        setTimeout(() => {
+          window.location.href = 'account-profile.html';
+        }, 1500);
+      } catch (error) {
+        errorDiv.textContent = getErrorMessage(error);
+        errorDiv.style.display = 'block';
+      }
+    });
+
+    // GOOGLE LOGIN
+    window.loginGoogleHandler = async function() {
+      try {
+        await loginWithGoogle();
+        window.location.href = 'account-profile.html';
+      } catch (error) {
+        if (error.code !== 'auth/popup-closed-by-user') {
+          alert(getErrorMessage(error));
+        }
+      }
+    };
+
+    // GITHUB LOGIN
+    window.loginGitHubHandler = async function() {
+      try {
+        await loginWithGitHub();
+        window.location.href = 'account-profile.html';
+      } catch (error) {
+        if (error.code !== 'auth/popup-closed-by-user') {
+          alert(getErrorMessage(error));
+        }
+      }
+    };
+  </script>
+
+</body>
+</html>
