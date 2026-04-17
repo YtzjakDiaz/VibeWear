@@ -187,10 +187,8 @@
                 <p style="color:var(--white);font-weight:600;margin:0 0 8px 0;">Notificaciones Push</p>
                 <p style="color:var(--gray);font-size:12px;margin:0;">Recibe alertas sobre nuevos productos y estado de órdenes</p>
               </div>
-              <label style="position:relative;display:inline-block;width:50px;height:24px;">
-                <input type="checkbox" id="pushNotificationsToggle" style="opacity:0;width:0;height:0;" />
-                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#444;transition:0.4s;border-radius:24px;"></span>
-                <span style="position:absolute;content:'';height:18px;width:18px;left:3px;bottom:3px;background-color:white;transition:0.4s;border-radius:50%;"></span>
+              <label style="display:flex;align-items:center;cursor:pointer;">
+                <input type="checkbox" id="pushNotificationsToggle" onchange="handleNotificationToggle(this)" />
               </label>
             </div>
 
@@ -532,10 +530,61 @@
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 3000);
     }
+
+    // Manejador de Toggle de Notificaciones
+    window.handleNotificationToggle = async function(element) {
+      if (!element.checked) {
+        // Desactivar
+        if (window.pushManager) {
+          await pushManager.unsubscribe();
+        }
+        return;
+      }
+
+      // Activar - Mostrar cargando
+      element.disabled = true;
+      showNotification('⏳ Activando notificaciones...');
+
+      // Esperar a que push-notifications.js cargue
+      const startTime = Date.now();
+      while (!window.pushManager && Date.now() - startTime < 5000) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+
+      if (!window.pushManager) {
+        showNotification('❌ Error: Push Notifications no disponible');
+        element.checked = false;
+        element.disabled = false;
+        return;
+      }
+
+      // Intentar suscribirse
+      try {
+        const success = await pushManager.subscribe();
+        if (!success) {
+          element.checked = false;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al activar notificaciones');
+        element.checked = false;
+      }
+
+      element.disabled = false;
+    };
   </script>
 
   <!-- PUSH NOTIFICATIONS -->
   <script src="push-notifications.js"></script>
+
+  <!-- NOTIFICATION TESTING TOOLS -->
+  <script src="test-notifications.js"></script>
+
+  <!-- PERFORMANCE OPTIMIZATION -->
+  <script src="optimize.js"></script>
+
+  <!-- WHATSAPP FLOAT BUTTON -->
+  <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp">📱</a>
 
 </body>
 </html>

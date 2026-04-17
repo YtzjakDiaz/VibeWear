@@ -1082,7 +1082,6 @@ footer {
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
   transition: all 0.3s;
   font-size: 28px;
-  animation: pulse 2s infinite;
 }
 
 .whatsapp-float:hover {
@@ -1090,8 +1089,8 @@ footer {
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
 }
 
-/* ===== TOGGLE SWITCH ===== */
-input[type="checkbox"] {
+/* ===== TOGGLE SWITCH (Push Notifications) ===== */
+input[type="checkbox"]#pushNotificationsToggle {
   -webkit-appearance: none;
   appearance: none;
   width: 50px;
@@ -1105,7 +1104,7 @@ input[type="checkbox"] {
   transition: background-color 0.3s ease;
 }
 
-input[type="checkbox"]::before {
+input[type="checkbox"]#pushNotificationsToggle::before {
   content: '';
   position: absolute;
   width: 18px;
@@ -1117,16 +1116,74 @@ input[type="checkbox"]::before {
   transition: left 0.3s ease;
 }
 
-input[type="checkbox"]:checked {
+input[type="checkbox"]#pushNotificationsToggle:checked {
   background-color: var(--pink);
 }
 
-input[type="checkbox"]:checked::before {
+input[type="checkbox"]#pushNotificationsToggle:checked::before {
   left: 29px;
 }
 
-input[type="checkbox"]:hover {
+input[type="checkbox"]#pushNotificationsToggle:hover {
   opacity: 0.85;
+}
+
+/* ===== CHECKBOX STANDARD (Terms & Conditions) ===== */
+input[type="checkbox"].checkbox-terms,
+input[type="checkbox"]#registerTerms,
+input[type="checkbox"]#terms {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--pink);
+  border-radius: 3px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  outline: none;
+}
+
+input[type="checkbox"].checkbox-terms::after,
+input[type="checkbox"]#registerTerms::after,
+input[type="checkbox"]#terms::after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+input[type="checkbox"].checkbox-terms:checked,
+input[type="checkbox"]#registerTerms:checked,
+input[type="checkbox"]#terms:checked {
+  background-color: var(--pink);
+  border-color: var(--pink);
+}
+
+input[type="checkbox"].checkbox-terms:checked::after,
+input[type="checkbox"]#registerTerms:checked::after,
+input[type="checkbox"]#terms:checked::after {
+  display: block;
+}
+
+input[type="checkbox"].checkbox-terms:hover,
+input[type="checkbox"]#registerTerms:hover,
+input[type="checkbox"]#terms:hover {
+  border-color: var(--pink-light);
+  box-shadow: 0 0 8px rgba(224,162,201,0.3);
+}
+
+input[type="checkbox"].checkbox-terms:focus,
+input[type="checkbox"]#registerTerms:focus,
+input[type="checkbox"]#terms:focus {
+  box-shadow: 0 0 12px rgba(224,162,201,0.5);
 }
 
 /* ===== SOCIAL SHARE =====*/

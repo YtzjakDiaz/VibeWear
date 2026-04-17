@@ -47,7 +47,7 @@ class PushNotificationManager {
   // Suscribirse a notificaciones push
   async subscribe() {
     if (!this.isSupported) {
-      showNotification('Notificaciones no soportadas', 'info');
+      console.warn('Push notifications no soportado');
       return false;
     }
 
@@ -55,44 +55,62 @@ class PushNotificationManager {
       // Solicitar permiso primero
       const hasPermission = await this.requestPermission();
       if (!hasPermission) {
-        showNotification('Permiso denegado para notificaciones', 'error');
+        console.warn('Permiso denegado');
         return false;
       }
 
       // Registrar service worker
       const registration = await this.registerServiceWorker();
-      if (!registration) return false;
+      if (!registration) {
+        console.error('No se pudo registrar Service Worker');
+        return false;
+      }
 
       // Obtener suscripción existente
       this.subscription = await registration.pushManager.getSubscription();
       if (this.subscription) {
         console.log('✓ Ya estás suscrito');
         this.isSubscribed = true;
+        if (typeof showNotification === 'function') {
+          showNotification('✓ Notificaciones ya activadas', 'success');
+        }
         return true;
       }
 
       // Crear nueva suscripción
-      this.subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(
-          'BPp3dWvvg3LXbE80W5TZCbLDJ7qK_XcJ0qUPOH5Pt7RjxBzDnmvRhV3z-EjPf5q_7pDlFXlVGj2wNB8oL_nJLAs'
-        )
-      });
+      try {
+        this.subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: this.urlBase64ToUint8Array(
+            'BPp3dWvvg3LXbE80W5TZCbLDJ7qK_XcJ0qUPOH5Pt7RjxBzDnmvRhV3z-EjPf5q_7pDlFXlVGj2wNB8oL_nJLAs'
+          )
+        });
 
-      console.log('✓ Suscripción creada:', this.subscription);
-      
-      // Guardar en localStorage
-      localStorage.setItem('pushSubscription', JSON.stringify({
-        endpoint: this.subscription.endpoint,
-        date: new Date().toISOString()
-      }));
+        console.log('✓ Suscripción creada:', this.subscription);
+        
+        // Guardar en localStorage
+        localStorage.setItem('pushSubscription', JSON.stringify({
+          endpoint: this.subscription.endpoint,
+          date: new Date().toISOString()
+        }));
 
-      this.isSubscribed = true;
-      showNotification('✓ Notificaciones activadas', 'success');
-      return true;
+        this.isSubscribed = true;
+        if (typeof showNotification === 'function') {
+          showNotification('✓ Notificaciones activadas', 'success');
+        }
+        return true;
+      } catch (subError) {
+        console.error('Error creando suscripción:', subError);
+        if (typeof showNotification === 'function') {
+          showNotification('❌ Permiso de notificaciones denegado', 'error');
+        }
+        return false;
+      }
     } catch (error) {
-      console.error('❌ Error suscribiendo:', error);
-      showNotification('Error al activar notificaciones', 'error');
+      console.error('❌ Error general en subscribe:', error);
+      if (typeof showNotification === 'function') {
+        showNotification('Error al activar notificaciones', 'error');
+      }
       return false;
     }
   }
@@ -180,22 +198,22 @@ const pushManager = new PushNotificationManager();
 // Inicializar al cargar la página
 document.addEventListener('DOMContentLoaded', async () => {
   if ('serviceWorker' in navigator) {
-    // Comprobar si ya está suscrito
-    const isSubscribed = await pushManager.checkSubscription();
-    console.log('Estado de suscripción:', isSubscribed ? 'Activo' : 'Inactivo');
+    try {
+      // Comprobar si ya está suscrito
+      const isSubscribed = await pushManager.checkSubscription();
+      console.log('Estado de suscripción:', isSubscribed ? 'Activo' : 'Inactivo');
 
-    // Actualizar UI si existe
-    const pushToggle = document.getElementById('pushNotificationsToggle');
-    if (pushToggle) {
-      pushToggle.checked = isSubscribed;
-      pushToggle.addEventListener('change', async (e) => {
-        if (e.target.checked) {
-          await pushManager.subscribe();
-        } else {
-          await pushManager.unsubscribe();
-        }
-      });
+      // Actualizar UI si existe
+      const pushToggle = document.getElementById('pushNotificationsToggle');
+      if (pushToggle) {
+        pushToggle.checked = isSubscribed;
+        // El evento onchange ya está en HTML
+      }
+    } catch (error) {
+      console.error('Error inicializando push notifications:', error);
     }
+  } else {
+    console.warn('Service Workers no soportado en este navegador');
   }
 });
 
