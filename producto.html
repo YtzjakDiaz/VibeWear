@@ -1045,85 +1045,103 @@
       }
       const name = document.getElementById('reviewName').value || 'Usuario Anónimo';
       
-      // Guardar en localStorage como respaldo
+      // Guardar en localStorage
       addReview(currentProductId, currentRating, comment, name);
       
-      try {
-        // Intentar guardar en Firebase si está disponible
-        if (window.saveReviewToFirebase) {
-          const success = await window.saveReviewToFirebase(currentProductId, currentRating, comment, name);
-          if (success) {
-            showNotification('✓ Reseña publicada correctamente', 'success');
-          }
-        } else {
-          showNotification('✓ Reseña guardada localmente', 'success');
+      // Intentar guardar en Firebase si está disponible
+      if (window.saveReviewToFirebase) {
+        try {
+          await window.saveReviewToFirebase(currentProductId, currentRating, comment, name);
+        } catch (error) {
+          console.warn('Firebase no disponible, guardado localmente:', error);
         }
-        
-        // Limpiar formulario
-        setTimeout(() => {
-          if (window.renderReviews) {
-            window.renderReviews();
-          }
-          document.getElementById('reviewComment').value = '';
-          document.getElementById('reviewName').value = '';
-          currentRating = 0;
-          document.querySelectorAll('.rating-star').forEach(s => s.style.opacity = '0.5');
-        }, 300);
-      } catch (error) {
-        console.error('Error al publicar reseña:', error);
-        showNotification('✓ Reseña guardada en dispositivo', 'success');
       }
+      
+      // Limpiar formulario
+      document.getElementById('reviewComment').value = '';
+      document.getElementById('reviewName').value = '';
+      currentRating = 0;
+      document.querySelectorAll('.rating-star').forEach(s => s.style.opacity = '0.5');
+      
+      // Renderizar reseñas actualizadas
+      setTimeout(() => {
+        if (window.renderReviews) {
+          window.renderReviews();
+        }
+      }, 300);
     }
 
     async function renderReviews() {
       const container = document.getElementById('reviewsList');
       
-      if (!window.getProductReviews) {
-        console.warn('⚠️ Firebase no está listo aún');
-        return;
-      }
-      
-      console.log('📝 Intentando cargar reseñas');
-      console.log('currentProductId =', currentProductId);
-      console.log('tipo:', typeof currentProductId);
+      console.log('📝 Cargando reseñas para producto:', currentProductId);
       
       try {
-        const prodReviews = await window.getProductReviews(currentProductId);
-        console.log('✓ Reseñas obtenidas:', prodReviews);
-        console.log('Total de reseñas:', prodReviews.length);
-        document.getElementById('reviewCount').textContent = prodReviews.length;
-        
-        if (prodReviews.length === 0) {
-          console.log('ℹ️ No hay reseñas para este producto');
-          container.innerHTML = '<p style="color: #999;">No hay reseñas aún. ¡Sé el primero!</p>';
-          return;
-        }
-        
-        container.innerHTML = prodReviews.map(review => {
-          const fechaFormato = review.fecha && review.fecha.toDate 
-            ? review.fecha.toDate().toLocaleDateString('es-CO') 
-            : (review.fecha ? new Date(review.fecha).toLocaleDateString('es-CO') : 'Fecha');
+        // Intentar cargar desde Firebase primero
+        if (window.getProductReviews) {
+          const prodReviews = await window.getProductReviews(currentProductId);
           
+          if (prodReviews && prodReviews.length > 0) {
+            console.log('✓ Reseñas de Firebase:', prodReviews.length);
+            document.getElementById('reviewCount').textContent = prodReviews.length;
+            
+            container.innerHTML = prodReviews.map(review => {
+              const fechaFormato = review.fecha && review.fecha.toDate 
+                ? review.fecha.toDate().toLocaleDateString('es-CO') 
+                : (review.fecha ? new Date(review.fecha).toLocaleDateString('es-CO') : 'Hoy');
+              
+              return `
+                <div class="review-item" style="background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.15);border-radius:12px;padding:24px;margin:16px 0;transition:all 0.3s;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:12px;">
+                    <div>
+                      <div class="review-rating" style="color:#ffc107;margin-bottom:8px;font-size:16px;letter-spacing:2px;">${renderStars(review.calificacion)}</div>
+                      <p class="review-author" style="color:var(--white);font-weight:600;font-size:13px;margin:0;letter-spacing:0.5px;">${review.usuario}</p>
+                    </div>
+                    <span style="color:var(--gray);font-size:11px;white-space:nowrap;letter-spacing:0.5px;">${fechaFormato}</span>
+                  </div>
+                  <p class="review-text" style="color:var(--gray);margin:12px 0 0 0;font-size:14px;line-height:1.6;font-family:var(--font-body);">"${review.comentario}"</p>
+                  <div style="display:flex;gap:8px;margin-top:12px;">
+                    <span class="review-verified" style="background:rgba(224,162,201,0.2);color:var(--pink);font-size:10px;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;">✓ Verificado</span>
+                  </div>
+                </div>
+              `;
+            }).join('');
+            return;
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️ Firebase no responde:', error);
+      }
+      
+      // Fallback: Cargar desde localStorage
+      console.log('📦 Cargando reseñas del localStorage');
+      const localReviews = getReviews(currentProductId) || [];
+      
+      if (localReviews.length > 0) {
+        console.log('✓ Reseñas locales:', localReviews.length);
+        document.getElementById('reviewCount').textContent = localReviews.length;
+        
+        container.innerHTML = localReviews.map(review => {
           return `
             <div class="review-item" style="background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.15);border-radius:12px;padding:24px;margin:16px 0;transition:all 0.3s;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:12px;">
                 <div>
-                  <div class="review-rating" style="color:#ffc107;margin-bottom:8px;font-size:16px;letter-spacing:2px;">${renderStars(review.calificacion)}</div>
-                  <p class="review-author" style="color:var(--white);font-weight:600;font-size:13px;margin:0;letter-spacing:0.5px;">${review.usuario}</p>
+                  <div class="review-rating" style="color:#ffc107;margin-bottom:8px;font-size:16px;letter-spacing:2px;">${renderStars(review.rating)}</div>
+                  <p class="review-author" style="color:var(--white);font-weight:600;font-size:13px;margin:0;letter-spacing:0.5px;">${review.userName}</p>
                 </div>
-                <span style="color:var(--gray);font-size:11px;white-space:nowrap;letter-spacing:0.5px;">${fechaFormato}</span>
+                <span style="color:var(--gray);font-size:11px;white-space:nowrap;letter-spacing:0.5px;">${review.date}</span>
               </div>
-              <p class="review-text" style="color:var(--gray);margin:12px 0 0 0;font-size:14px;line-height:1.6;font-family:var(--font-body);">"${review.comentario}"</p>
+              <p class="review-text" style="color:var(--gray);margin:12px 0 0 0;font-size:14px;line-height:1.6;font-family:var(--font-body);">"${review.comment}"</p>
               <div style="display:flex;gap:8px;margin-top:12px;">
-                <span class="review-verified" style="background:rgba(224,162,201,0.2);color:var(--pink);font-size:10px;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;">✓ Verificado</span>
+                <span class="review-verified" style="background:rgba(224,162,201,0.2);color:var(--pink);font-size:10px;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;">✓ En tu dispositivo</span>
               </div>
             </div>
           `;
         }).join('');
-        console.log('✓ Reseñas renderizadas');
-      } catch (error) {
-        console.error('❌ Error al cargar reseñas:', error);
-        container.innerHTML = '<p style="color: #999;">Error al cargar reseñas</p>';
+      } else {
+        console.log('ℹ️ No hay reseñas');
+        document.getElementById('reviewCount').textContent = '0';
+        container.innerHTML = '<p style="color: #999;">No hay reseñas aún. ¡Sé el primero!</p>';
       }
     }
 

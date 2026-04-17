@@ -1082,11 +1082,18 @@ footer {
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
   transition: all 0.3s;
   font-size: 28px;
+  outline: none;
+  border: none;
+  text-decoration: none;
 }
 
 .whatsapp-float:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float:focus {
+  outline: none;
 }
 
 /* ===== TOGGLE SWITCH (Push Notifications) ===== */

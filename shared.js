@@ -44,7 +44,6 @@ function addReview(prodId, rating, comment, userName) {
     verified: true
   });
   localStorage.setItem('vibewear-reviews', JSON.stringify(reviews));
-  showNotification('Reseña publicada ✓');
   return true;
 }
 
