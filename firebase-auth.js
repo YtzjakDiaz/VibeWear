@@ -73,9 +73,11 @@ export async function loginWithGoogle() {
     console.log('✓ Usuario autenticado con Google:', result.user.uid);
     return result.user;
   } catch (error) {
-    if (error.code !== 'auth/popup-closed-by-user') {
-      console.error('✗ Error en Google login:', error.message);
+    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      console.log('ℹ Google popup fue cancelado o bloqueado');
+      return null;
     }
+    console.error('✗ Error en Google login:', error.message);
     throw error;
   }
 }
@@ -93,9 +95,11 @@ export async function loginWithGitHub() {
     console.log('✓ Usuario autenticado con GitHub:', result.user.uid);
     return result.user;
   } catch (error) {
-    if (error.code !== 'auth/popup-closed-by-user') {
-      console.error('✗ Error en GitHub login:', error.message);
+    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      console.log('ℹ GitHub popup fue cancelado o bloqueado');
+      return null;
     }
+    console.error('✗ Error en GitHub login:', error.message);
     throw error;
   }
 }
@@ -281,6 +285,8 @@ export function getErrorMessage(error) {
     'auth/user-disabled': 'Usuario deshabilitado',
     'auth/too-many-requests': 'Demasiados intentos fallidos. Intenta más tarde',
     'auth/popup-closed-by-user': 'El login fue cancelado',
+    'auth/cancelled-popup-request': 'El popup fue bloqueado. Permite popups e intenta de nuevo',
+    'auth/operation-not-allowed': 'Email/Password no está habilitado. Por favor intenta con Google o GitHub',
     'auth/network-request-failed': 'Error de conexión. Verifica tu internet'
   };
   

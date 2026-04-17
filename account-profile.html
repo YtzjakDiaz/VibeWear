@@ -65,7 +65,11 @@
           <!-- PROFILE CARD -->
           <div style="background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:40px;height:fit-content;">
             <div style="text-align:center;">
-              <img id="userAvatar" src="" alt="Avatar" style="width:120px;height:120px;border-radius:50%;margin-bottom:20px;border:2px solid var(--pink);object-fit:cover;background:rgba(224,162,201,0.1);" />
+              <div style="position:relative;display:inline-block;margin-bottom:20px;">
+                <img id="userAvatar" src="" alt="Avatar" style="width:120px;height:120px;border-radius:50%;border:2px solid var(--pink);object-fit:cover;background:rgba(224,162,201,0.1);cursor:pointer;" onclick="document.getElementById('avatarUpload').click();" />
+                <label for="avatarUpload" style="position:absolute;bottom:0;right:0;background:var(--pink);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;" title="Cambiar avatar">📸</label>
+                <input type="file" id="avatarUpload" accept="image/*" style="display:none;" onchange="uploadAvatar(event)" />
+              </div>
               <h2 id="userName" style="font-family:var(--font-display);font-size:24px;color:var(--white);margin:20px 0 5px;">Usuario</h2>
               <p id="userEmail" style="color:var(--gray);font-size:13px;margin-bottom:30px;">email@example.com</p>
               
@@ -90,8 +94,8 @@
 
               <div style="position:relative;">
                 <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Email</label>
-                <input type="email" id="editEmail" placeholder="tu@email.com" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" />
-                <p style="color:var(--gray);font-size:11px;margin-top:8px;">⚠️ Cambiar email requerirá verificación</p>
+                <input type="email" id="editEmail" placeholder="tu@email.com" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" disabled />
+                <p style="color:var(--gray);font-size:11px;margin-top:8px;">ℹ️ El email no se puede cambiar por seguridad</p>
               </div>
 
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
@@ -217,6 +221,8 @@
         el.style.borderBottomColor = 'transparent';
       });
 
+      const targetBtn = event?.target || document.querySelector(`button[onclick="switchTab('${tab}')"]`);
+
       if (tab === 'profile') {
         document.getElementById('profileTab').style.display = 'block';
       } else if (tab === 'orders') {
@@ -225,8 +231,10 @@
         document.getElementById('securityTab').style.display = 'block';
       }
 
-      event.target.style.color = 'var(--white)';
-      event.target.style.borderBottomColor = 'var(--pink)';
+      if (targetBtn) {
+        targetBtn.style.color = 'var(--white)';
+        targetBtn.style.borderBottomColor = 'var(--pink)';
+      }
     };
 
     // LOAD PROFILE
@@ -304,14 +312,63 @@
       const hints = document.getElementById('passwordHints');
 
       if (password.length > 0) {
-        const { validatePassword: validate } = await import('./firebase-auth.js');
-        const validation = validate(password);
+        const minLength = password.length < 6;
+        const hasUpper = /[A-Z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*]/.test(password);
+        
+        const errors = [];
+        if (minLength) errors.push('Mínimo 6 caracteres');
+        if (!hasUpper) errors.push('Al menos una mayúscula');
+        if (!hasNumber) errors.push('Al menos un número');
+        if (!hasSpecial) errors.push('Al menos un carácter especial (!@#$%^&*)');
+        
         hints.style.display = 'block';
-        hints.innerHTML = validation.errors.map(e => `❌ ${e}`).join('<br>');
-        if (validation.isValid) {
+        if (errors.length > 0) {
+          hints.innerHTML = errors.map(e => `❌ ${e}`).join('<br>');
+          hints.style.color = '#ff6b9d';
+        } else {
           hints.innerHTML = '✅ Contraseña válida';
           hints.style.color = '#4ade80';
         }
+      } else {
+        hints.style.display = 'none';
+      }
+    };
+
+    // UPLOAD AVATAR
+    window.uploadAvatar = async function(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showNotification('❌ Por favor selecciona una imagen');
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        showNotification('❌ La imagen debe ser menor a 2MB');
+        return;
+      }
+
+      try {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const dataURL = e.target.result;
+            await updateUserProfile({
+              displayName: currentUser.displayName,
+              photoURL: dataURL
+            });
+            showNotification('✅ Avatar actualizado');
+            loadUserProfile();
+          } catch (error) {
+            showNotification('❌ Error: ' + getErrorMessage(error));
+          }
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        showNotification('❌ Error subiendo avatar: ' + getErrorMessage(error));
       }
     };
 
@@ -319,13 +376,21 @@
     document.getElementById('profileForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      const newName = document.getElementById('editName').value.trim();
+      
+      if (newName.length < 3) {
+        showNotification('❌ El nombre debe tener al menos 3 caracteres');
+        return;
+      }
+
       try {
         await updateUserProfile({
-          displayName: document.getElementById('editName').value,
+          displayName: newName,
           photoURL: currentUser.photoURL
         });
 
         showNotification('✅ Perfil actualizado correctamente');
+        currentUser = getCurrentUser();
         loadUserProfile();
       } catch (error) {
         showNotification('❌ Error: ' + getErrorMessage(error));
@@ -361,9 +426,11 @@
       if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
         try {
           await logout();
-          window.location.href = 'index.html';
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 300);
         } catch (error) {
-          alert('Error cerrando sesión: ' + error.message);
+          showNotification('❌ Error cerrando sesión: ' + getErrorMessage(error));
         }
       }
     };

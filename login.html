@@ -12,12 +12,12 @@
 </head>
 <body style="background:#0a0a0a">
 
-  <!-- NAVBAR SIMPLE -->
-  <nav class="navbar scrolled">
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
     <div class="nav-brand">
-      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
-        <div class="nav-logo"></div>
-            <img src="images/logo.png" alt="VibeWear Logo" onerror="this.style.display='none';this.parentNode.innerHTML='VW';" />
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer;">
+        <div class="nav-logo">
+          <img src="images/logo.png" alt="VibeWear Logo" onerror="this.style.display='none';this.parentNode.innerHTML='VW';" />
         </div>
         <span class="nav-logo-text">VIBE<span>WEAR</span></span>
       </a>
@@ -26,11 +26,9 @@
     <a href="index.html" style="color:var(--gray);text-decoration:none;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--gray)'">← Volver</a>
   </nav>
 
-  <br><br><br>
-
   <!-- LOGIN CONTAINER -->
   <section style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
-    <div style="width:100%;max-width:450px;">
+    <div style="width:100%;max-width:450px;position:relative;">
 
       <!-- TAB BUTTONS -->
       <div style="display:flex;gap:0;margin-bottom:40px;background:rgba(255,255,255,0.02);border:1px solid rgba(224,162,201,0.2);border-radius:8px;overflow:hidden;">
@@ -39,7 +37,7 @@
       </div>
 
       <!-- LOGIN FORM -->
-      <form id="loginForm" style="display:flex;flex-direction:column;gap:20px;">
+      <form id="loginForm" style="display:flex;flex-direction:column;gap:20px;opacity:1;transition:opacity 0.35s ease;">
         <h1 style="font-family:var(--font-display);font-size:32px;color:var(--white);margin-bottom:10px;letter-spacing:2px;">INICIA SESIÓN</h1>
         <p style="color:var(--gray);margin-bottom:20px;font-size:14px;">Accede a tu cuenta para ver pedidos y perfil</p>
 
@@ -55,7 +53,7 @@
 
         <div id="loginError" style="display:none;background:rgba(255,107,157,0.1);border:1px solid #ff6b9d;color:#ff6b9d;padding:12px;border-radius:6px;font-size:12px;text-align:center;"></div>
 
-        <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;min-height:44px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+        <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;min-height:44px;" onmouseover="this.style.opacity='0.85';this.style.transform='scale(1.02)'" onmouseout="this.style.opacity='1';this.style.transform='scale(1)'">
           Acceder
         </button>
 
@@ -65,7 +63,7 @@
       </form>
 
       <!-- REGISTER FORM -->
-      <form id="registerForm" style="display:none;flex-direction:column;gap:20px;">
+      <form id="registerForm" style="display:flex;flex-direction:column;gap:20px;opacity:0;transition:opacity 0.35s ease;pointer-events:none;position:absolute;width:100%;max-width:450px;">
         <h1 style="font-family:var(--font-display);font-size:32px;color:var(--white);margin-bottom:10px;letter-spacing:2px;">CREAR CUENTA</h1>
         <p style="color:var(--gray);margin-bottom:20px;font-size:14px;">Únete a VibeWear y disfruta de beneficios exclusivos</p>
 
@@ -143,15 +141,27 @@
       const registerTab = document.getElementById('registerTab');
 
       if (tab === 'login') {
-        loginForm.style.display = 'flex';
-        registerForm.style.display = 'none';
+        loginForm.style.opacity = '1';
+        loginForm.style.pointerEvents = 'auto';
+        loginForm.style.position = 'relative';
+        
+        registerForm.style.opacity = '0';
+        registerForm.style.pointerEvents = 'none';
+        registerForm.style.position = 'absolute';
+        
         loginTab.style.background = 'var(--pink)';
         loginTab.style.color = 'var(--black)';
         registerTab.style.background = 'transparent';
         registerTab.style.color = 'var(--pink)';
       } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'flex';
+        loginForm.style.opacity = '0';
+        loginForm.style.pointerEvents = 'none';
+        loginForm.style.position = 'absolute';
+        
+        registerForm.style.opacity = '1';
+        registerForm.style.pointerEvents = 'auto';
+        registerForm.style.position = 'relative';
+        
         loginTab.style.background = 'transparent';
         loginTab.style.color = 'var(--pink)';
         registerTab.style.background = 'var(--pink)';
@@ -278,10 +288,12 @@
     // GOOGLE LOGIN
     window.loginGoogleHandler = async function() {
       try {
-        await loginWithGoogle();
-        window.location.href = 'account-profile.html';
+        const user = await loginWithGoogle();
+        if (user) {
+          window.location.href = 'account-profile.html';
+        }
       } catch (error) {
-        if (error.code !== 'auth/popup-closed-by-user') {
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
           alert(getErrorMessage(error));
         }
       }
@@ -290,10 +302,12 @@
     // GITHUB LOGIN
     window.loginGitHubHandler = async function() {
       try {
-        await loginWithGitHub();
-        window.location.href = 'account-profile.html';
+        const user = await loginWithGitHub();
+        if (user) {
+          window.location.href = 'account-profile.html';
+        }
       } catch (error) {
-        if (error.code !== 'auth/popup-closed-by-user') {
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
           alert(getErrorMessage(error));
         }
       }
