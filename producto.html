@@ -691,11 +691,11 @@
       }
     };
 
-    let currentProductId = 'prod-2';
+    let currentProductId = 'prod-1';
     let qty = 1;
 
     function loadProduct(prodId) {
-      if (!productos[prodId]) prodId = 'prod-2';
+      if (!productos[prodId]) prodId = 'prod-1';
       currentProductId = prodId;
       const prod = productos[prodId];
 
@@ -838,12 +838,12 @@
 
     // Cargar producto desde URL hash
     window.addEventListener('hashchange', () => {
-      const hash = window.location.hash.slice(1) || 'prod-2';
+      const hash = window.location.hash.slice(1) || 'prod-1';
       loadProduct(hash);
     });
 
     // Inicializar
-    const initialHash = window.location.hash.slice(1) || 'prod-2';
+    const initialHash = window.location.hash.slice(1) || 'prod-1';
     loadProduct(initialHash);
 
     // Navbar scroll
