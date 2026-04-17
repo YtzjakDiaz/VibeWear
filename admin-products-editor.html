@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Productos - VibeWear Admin</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      padding: 20px;
+    }
+
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .admin-header {
+      margin-bottom: 40px;
+      border-bottom: 2px solid var(--pink);
+      padding-bottom: 20px;
+    }
+
+    .admin-header h1 {
+      font-size: 32px;
+      color: var(--pink);
+      margin-bottom: 10px;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+    }
+
+    .products-list {
+      display: grid;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .product-item {
+      background: rgba(224, 162, 201, 0.05);
+      border: 1px solid rgba(224, 162, 201, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .product-item:hover {
+      background: rgba(224, 162, 201, 0.1);
+      border-color: var(--pink);
+    }
+
+    .product-item.active {
+      background: rgba(224, 162, 201, 0.15);
+      border-color: var(--pink);
+    }
+
+    .product-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .product-image {
+      width: 80px;
+      height: 80px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-basic {
+      flex: 1;
+    }
+
+    .product-basic h3 {
+      color: var(--pink);
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .product-basic p {
+      font-size: 12px;
+      color: var(--gray);
+      margin: 3px 0;
+    }
+
+    .edit-form {
+      display: none;
+      background: #1a1a1a;
+      border: 1px solid rgba(224, 162, 201, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 15px;
+    }
+
+    .edit-form.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--gray);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: #000;
+      border: 1px solid rgba(224, 162, 201, 0.3);
+      border-radius: 6px;
+      color: #fff;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--pink);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .tags-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      background: #000;
+      border: 1px solid rgba(224, 162, 201, 0.3);
+      border-radius: 6px;
+      min-height: 40px;
+      align-items: flex-start;
+    }
+
+    .tag {
+      background: var(--pink);
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag button {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+    }
+
+    .tag-input-field {
+      background: none;
+      border: none;
+      color: #fff;
+      flex: 1;
+      min-width: 100px;
+      font-size: 14px;
+    }
+
+    .tag-input-field:focus {
+      outline: none;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    .btn-save {
+      background: var(--pink);
+      color: #000;
+      flex: 1;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(224, 162, 201, 0.3);
+    }
+
+    .btn-close {
+      background: rgba(224, 162, 201, 0.1);
+      color: var(--pink);
+      border: 1px solid var(--pink);
+    }
+
+    .btn-close:hover {
+      background: rgba(224, 162, 201, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--pink);
+      color: #000;
+      padding: 10px 15px;
+    }
+
+    .search-box {
+      margin-bottom: 30px;
+    }
+
+    .search-box input {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(224, 162, 201, 0.1);
+      border: 1px solid rgba(224, 162, 201, 0.3);
+      color: #fff;
+      padding: 12px 15px;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+
+    .success-message {
+      background: rgba(74, 222, 128, 0.15);
+      border: 1px solid #4ade80;
+      color: #4ade80;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>🎨 EDITOR DE PRODUCTOS</h1>
+      <p style="color: var(--gray); font-size: 14px; margin-top: 5px;">Completa la información de cada producto para recomendaciones inteligentes</p>
+    </div>
+
+    <div class="search-box">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Buscar producto por nombre..." 
+        onkeyup="filterProducts()"
+      />
+    </div>
+
+    <div class="success-message" id="successMessage">
+      ✓ Producto actualizado correctamente
+    </div>
+
+    <div class="products-list" id="productsList"></div>
+  </div>
+
+  <script src="products-data.js"></script>
+  <script>
+    // Renderizar lista de productos
+    function renderProductsList() {
+      const container = document.getElementById('productsList');
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      const filtered = Object.entries(productsData).filter(([id, product]) => 
+        product.name.toLowerCase().includes(searchTerm) ||
+        (product.artist && product.artist.toLowerCase().includes(searchTerm)) ||
+        (product.franchise && product.franchise.toLowerCase().includes(searchTerm))
+      );
+
+      container.innerHTML = filtered.map(([id, product]) => `
+        <div class="product-item" onclick="editProduct('${id}')">
+          <div class="product-header">
+            <div class="product-image">
+              <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/80?text=IMG'" />
+            </div>
+            <div class="product-basic">
+              <h3>${product.name}</h3>
+              <p><strong>Precio:</strong> $${product.price.toLocaleString('es-CO')}</p>
+              <p><strong>Tipo:</strong> ${product.type}</p>
+              <p><strong>Género:</strong> ${product.genre || 'No definido'}</p>
+            </div>
+          </div>
+
+          <div class="edit-form" id="form-${id}">
+            <h4 style="color: var(--pink); margin-bottom: 15px;">Editar Información</h4>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tipo de Producto *</label>
+                <select onchange="updateProductField('${id}', 'type', this.value)">
+                  <option value="cantante" ${product.type === 'cantante' ? 'selected' : ''}>🎤 Cantante</option>
+                  <option value="anime" ${product.type === 'anime' ? 'selected' : ''}>🎌 Anime</option>
+                  <option value="personaje" ${product.type === 'personaje' ? 'selected' : ''}>👤 Personaje</option>
+                  <option value="diseño" ${product.type === 'diseño' ? 'selected' : ''}>🎨 Diseño</option>
+                  <option value="otro" ${product.type === 'otro' ? 'selected' : ''}>📦 Otro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Género *</label>
+                <input 
+                  type="text" 
+                  value="${product.genre || ''}" 
+                  placeholder="ej: reggaeton, anime, rock"
+                  onchange="updateProductField('${id}', 'genre', this.value)"
+                />
+              </div>
+            </div>
+
+            ${product.type === 'cantante' ? `
+              <div class="form-group">
+                <label>Nombre del Artista</label>
+                <input 
+                  type="text" 
+                  value="${product.artist || ''}" 
+                  placeholder="ej: Bad Bunny"
+                  onchange="updateProductField('${id}', 'artist', this.value)"
+                />
+              </div>
+            ` : ''}
+
+            ${product.type === 'anime' || product.type === 'personaje' ? `
+              <div class="form-group">
+                <label>Franquicia / Series</label>
+                <input 
+                  type="text" 
+                  value="${product.franchise || ''}" 
+                  placeholder="ej: Dragon Ball, Naruto"
+                  onchange="updateProductField('${id}', 'franchise', this.value)"
+                />
+              </div>
+            ` : ''}
+
+            <div class="form-group">
+              <label>Tags (Etiquetas)</label>
+              <div class="tags-input" id="tags-${id}">
+                ${(product.tags || []).map(tag => `
+                  <div class="tag">
+                    ${tag}
+                    <button type="button" onclick="removeTag('${id}', '${tag}')">×</button>
+                  </div>
+                `).join('')}
+                <input 
+                  type="text" 
+                  class="tag-input-field" 
+                  placeholder="Agregar tag..."
+                  onkeypress="addTag(event, '${id}')"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Géneros Relacionados</label>
+              <input 
+                type="text" 
+                value="${(product.relatedGenres || []).join(', ')}" 
+                placeholder="ej: trap, urbano (separados por comas)"
+                onchange="updateProductField('${id}', 'relatedGenres', this.value.split(',').map(g => g.trim()))"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea 
+                rows="3"
+                onchange="updateProductField('${id}', 'description', this.value)"
+              >${product.description || ''}</textarea>
+            </div>
+
+            <div class="button-group">
+              <button class="btn btn-save" onclick="saveProduct('${id}')">💾 Guardar</button>
+              <button class="btn btn-close" onclick="closeForm('${id}')">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editProduct(productId) {
+      // Cerrar otros formularios
+      document.querySelectorAll('.edit-form').forEach(form => form.classList.remove('active'));
+      
+      // Abrir el formulario del producto
+      const form = document.getElementById(`form-${productId}`);
+      if (form) {
+        form.classList.add('active');
+      }
+    }
+
+    function closeForm(productId) {
+      document.getElementById(`form-${productId}`).classList.remove('active');
+    }
+
+    function addTag(event, productId) {
+      if (event.key !== 'Enter') return;
+      
+      const input = event.target;
+      const tag = input.value.trim();
+      if (!tag) return;
+
+      const product = productsData[productId];
+      if (!product.tags) product.tags = [];
+      
+      if (!product.tags.includes(tag)) {
+        product.tags.push(tag);
+        input.value = '';
+        renderProductsList();
+      }
+    }
+
+    function removeTag(productId, tag) {
+      const product = productsData[productId];
+      product.tags = product.tags.filter(t => t !== tag);
+      renderProductsList();
+    }
+
+    function updateProductField(productId, field, value) {
+      productsData[productId][field] = value;
+    }
+
+    function saveProduct(productId) {
+      // Aquí puedes agregar validación si es necesario
+      localStorage.setItem('vibewear-products-data', JSON.stringify(productsData));
+      
+      // Mostrar mensaje de éxito
+      const message = document.getElementById('successMessage');
+      message.classList.add('show');
+      setTimeout(() => message.classList.remove('show'), 3000);
+    }
+
+    function filterProducts() {
+      renderProductsList();
+    }
+
+    // Cargar datos guardados si existen
+    function loadSavedData() {
+      const saved = localStorage.getItem('vibewear-products-data');
+      if (saved) {
+        Object.assign(productsData, JSON.parse(saved));
+      }
+    }
+
+    // Inicializar
+    loadSavedData();
+    renderProductsList();
+  </script>
+</body>
+</html>

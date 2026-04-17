@@ -9,8 +9,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- 5 Mejoras VibeWear -->
+  <script src="search-advanced.js"></script>
+  <script src="breadcrumb.js"></script>
+  <script src="auth-system.js"></script>
 </head>
 <body class="page-enter">
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Cargando...</p>
+    </div>
+  </div>
 
   <!-- NAVBAR -->
   <nav class="navbar scrolled" id="navbar">
@@ -29,7 +41,10 @@
       <li><a href="contacto.html">Contacto</a></li>
     </ul>
     <div style="display:flex;gap:15px;align-items:center;">
-      <input type="text" id="searchInput" placeholder="Buscar..." onkeyup="searchProducts()" style="padding:8px 15px;background:rgba(224,162,201,0.1);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);font-size:12px;width:150px;transition:border-color 0.3s;"/>
+      <div style="position:relative;display:flex;align-items:center;">
+        <input type="text" id="searchInput" placeholder="Buscar..." onkeyup="searchProducts()" onfocus="showSearchSuggestions()" style="padding:8px 15px;background:rgba(224,162,201,0.1);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);font-size:12px;width:150px;transition:border-color 0.3s;"/>
+        <div id="searchSuggestions" class="search-suggestions" style="display:none;"></div>
+      </div>
       <div class="nav-cart" onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1"></circle>
@@ -79,13 +94,25 @@
 
   <!-- FILTERS -->
   <div class="filters">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" onclick="filterProducts(this,'all')">Todos</button>
-    <button class="filter-btn" onclick="filterProducts(this,'hoodies')">Hoodies</button>
-    <button class="filter-btn" onclick="filterProducts(this,'camisetas')">Camisetas</button>
+    <span class="filter-label">Tipo de Prenda:</span>
+    <button class="filter-btn active" onclick="filterByClothing('all')">Todas</button>
+    <button class="filter-btn" onclick="filterByClothing('camisetas')">👕 Camisetas</button>
+    <button class="filter-btn" onclick="filterByClothing('hoodies')">🧥 Hoodies</button>
     <span style="margin-left: auto; display: flex; gap: 10px;">
       <a href="compare.html" class="filter-btn" style="background: rgba(224,162,201,0.15); border-color: var(--pink); color: var(--pink);">⚖️ Comparar</a>
     </span>
+  </div>
+
+  <!-- CATEGORY FILTERS (por tipo temático) -->
+  <div class="filters" style="margin-top: 15px; border-top: 1px solid rgba(224,162,201,0.2); padding-top: 15px;">
+    <span class="filter-label">Categoría:</span>
+    <select id="categorySelect" onchange="filterByTheme(this.value)" class="category-select">
+      <option value="all">Todas las categorías</option>
+      <option value="cantante">Cantantes</option>
+      <option value="anime">Anime</option>
+      <option value="personaje">Personajes</option>
+      <option value="diseño">Diseños</option>
+    </select>
   </div>
 
   <!-- GRID -->
@@ -508,150 +535,18 @@
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
       });
-    }, { threshold: 0.1 });
+    });
     document.querySelectorAll('.product-card').forEach((el, i) => {
       el.style.opacity = '0'; el.style.transform = 'translateY(30px)';
       el.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
       observer.observe(el);
     });
 
-    // Shopping Cart - Sistema mejorado
-    let cart = JSON.parse(localStorage.getItem('vibewear-cart')) || {};
-    
-    function updateCartCount() {
-      const total = Object.values(cart).reduce((sum, item) => sum + (item.qty || 1), 0);
-      document.getElementById('cartCount').textContent = total;
+    // El carrito ya está manejado por cart.js
+    // Solo actualizar el contador cuando la página carga
+    if (typeof updateCartUI === 'function') {
+      updateCartUI();
     }
-    
-    function toggleCart() {
-      const panel = document.getElementById('cartPanel');
-      if (!panel) {
-        createCartPanel();
-        return;
-      }
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    }
-    
-    function createCartPanel() {
-      const html = `<div id="cartPanel" style="position:fixed;top:70px;right:20px;width:380px;background:white;border:2px solid var(--pink);border-radius:8px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:9999;max-height:600px;overflow-y:auto;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:2px solid var(--pink);padding-bottom:10px;">
-          <h3 style="margin:0;color:var(--pink);font-size:16px;font-weight:bold;">🛒 Carrito de Compras</h3>
-          <button onclick="document.getElementById('cartPanel').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--pink);transition:transform 0.3s;">×</button>
-        </div>
-        <div id="cartItems" style="margin-bottom:15px;max-height:350px;overflow-y:auto;"></div>
-        <div id="cartEmpty" style="text-align:center;color:#999;padding:30px 20px;font-size:13px;">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" style="margin-bottom:10px;">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-          <p>Tu carrito está vacío</p>
-          <p style="font-size:11px;color:#999;">Selecciona productos del catálogo para comenzar</p>
-        </div>
-        <div id="cartTotal" style="border-top:2px solid var(--pink);border-bottom:2px solid var(--pink);padding:12px 0;font-weight:bold;margin:15px 0;display:none;text-align:right;">
-          <span style="color:#666;font-size:12px;">Total: </span>
-          <span id="totalPrice" style="font-size:18px;color:var(--pink);">$0</span>
-        </div>
-        <button id="checkoutBtn" onclick="checkout()" style="display:none;width:100%;padding:12px;background:var(--pink);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold;margin-top:10px;transition:background 0.3s;font-family:var(--font-sub);letter-spacing:1px;">PROCEDER AL PAGO</button>
-      </div>`;
-      document.body.insertAdjacentHTML('beforeend', html);
-      renderCart();
-    }
-    
-    function renderCart() {
-      const itemsDiv = document.getElementById('cartItems');
-      const emptyDiv = document.getElementById('cartEmpty');
-      const totalDiv = document.getElementById('cartTotal');
-      const checkoutBtn = document.getElementById('checkoutBtn');
-      
-      if (Object.keys(cart).length === 0) {
-        itemsDiv.innerHTML = '';
-        emptyDiv.style.display = 'block';
-        totalDiv.style.display = 'none';
-        checkoutBtn.style.display = 'none';
-        return;
-      }
-      
-      emptyDiv.style.display = 'none';
-      totalDiv.style.display = 'block';
-      checkoutBtn.style.display = 'block';
-      
-      let total = 0;
-      itemsDiv.innerHTML = Object.entries(cart).map(([id, item]) => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
-        return `<div style="display:flex;flex-direction:column;padding:12px;border-bottom:1px solid #eee;background:#f9f9f9;border-radius:4px;margin-bottom:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
-            <div style="flex:1;">
-              <p style="margin:0;font-weight:bold;font-size:13px;color:var(--pink);">${item.name}</p>
-            </div>
-            <button onclick="removeFromCart('${id}')" style="background:#ff6b9d;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-weight:bold;transition:background 0.3s;">✕</button>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:6px;background:white;border:1px solid #ddd;border-radius:4px;padding:2px;">
-              <button onclick="changeCartQty('${id}', -1)" style="background:none;border:none;padding:4px 6px;cursor:pointer;font-size:12px;color:var(--pink);font-weight:bold;">−</button>
-              <span style="min-width:20px;text-align:center;font-size:12px;font-weight:bold;">${item.qty}</span>
-              <button onclick="changeCartQty('${id}', 1)" style="background:none;border:none;padding:4px 6px;cursor:pointer;font-size:12px;color:var(--pink);font-weight:bold;">+</button>
-            </div>
-            <span style="font-weight:bold;color:var(--pink);font-size:12px;">$${subtotal.toLocaleString('es-CO')}</span>
-          </div>
-        </div>`;
-      }).join('');
-      
-      document.getElementById('totalPrice').textContent = '$' + total.toLocaleString('es-CO');
-    }
-    
-    function changeCartQty(prodId, delta) {
-      if (cart[prodId]) {
-        const newQty = cart[prodId].qty + delta;
-        if (newQty <= 0) {
-          removeFromCart(prodId);
-        } else {
-          cart[prodId].qty = newQty;
-          localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-          updateCartCount();
-          renderCart();
-        }
-      }
-    }
-    
-    function addToCart(prodId, name, price) {
-      if (!cart[prodId]) {
-        cart[prodId] = { name, price, qty: 1 };
-      } else {
-        cart[prodId].qty++;
-      }
-      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-      updateCartCount();
-      
-      const panel = document.getElementById('cartPanel');
-      if (!panel) createCartPanel();
-      renderCart();
-      panel.style.display = 'block';
-      
-      showNotification(`${name} agregado al carrito!`);
-    }
-    
-    function removeFromCart(prodId) {
-      delete cart[prodId];
-      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCart();
-    }
-    
-    function checkout() {
-      alert('Funcionalidad de pago en desarrollo. Carrito: ' + Object.keys(cart).length + ' artículos');
-    }
-    
-    function showNotification(msg) {
-      const notif = document.createElement('div');
-      notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--pink);color:white;padding:15px 20px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9998;animation:slideIn 0.3s ease;';
-      notif.textContent = msg;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
-    }
-    
-    updateCartCount();
   </script>
 
   <!-- CARRITO SCRIPT -->
@@ -666,19 +561,38 @@
   <!-- PUSH NOTIFICATIONS -->
   <script src="push-notifications.js"></script>
 
+  <!-- PRODUCTOS DATA -->
+  <script src="products-data.js"></script>
+
+  <!-- RECOMENDACIONES PERSONALIZADAS -->
+  <script src="recommendations.js"></script>
+
   <script>
+    let currentClothingFilter = 'all';
+    let currentThemeFilter = 'all';
+
     function searchProducts() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const searchTerm = document.getElementById('searchInput').value;
+      
+      if (!searchTerm.trim()) {
+        applyFilters();
+        return;
+      }
+      
+      const term = searchTerm.toLowerCase();
       const cards = document.querySelectorAll('.product-card');
       
       cards.forEach(card => {
         const name = card.querySelector('.product-name')?.textContent.toLowerCase() || '';
-        const category = card.querySelector('.product-category')?.textContent.toLowerCase() || '';
+        const categoryText = card.querySelector('.product-category')?.textContent.toLowerCase() || '';
+        const clothing = getProductClothing(card);
+        const theme = getProductTheme(card);
         
-        // Si searchTerm está vacío, mostrar todo; si no, filtrar
-        const matches = searchTerm === '' || name.includes(searchTerm) || category.includes(searchTerm);
+        const matches = name.includes(term) || categoryText.includes(term);
+        const clothingMatches = currentClothingFilter === 'all' || clothing === currentClothingFilter;
+        const themeMatches = currentThemeFilter === 'all' || theme === currentThemeFilter;
         
-        if (matches) {
+        if (matches && clothingMatches && themeMatches) {
           card.style.display = 'block';
           card.style.animation = 'fadeInUp 0.6s ease forwards';
         } else {
@@ -687,23 +601,205 @@
       });
     }
 
-    function filterProducts(btn, category) {
+    // Filtrar por tipo de prenda (Camisetas, Hoodies, etc)
+    function filterByClothing(clothing) {
+      // Actualizar botones activos
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      event.target.classList.add('active');
       
+      currentClothingFilter = clothing;
+      currentThemeFilter = 'all'; // Reset tema
+      
+      // Limpiar búsqueda
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = '';
+      
+      console.log('👕 Filtrando por prenda:', clothing);
+      
+      // Actualizar botones de tema disponibles
+      updateThemeButtons();
+      
+      // Aplicar filtro
+      applyFilters();
+    }
+
+    // Filtrar por categoría temática (Cantante, Anime, etc)
+    function filterByTheme(theme) {
+      currentThemeFilter = theme;
+      
+      // Limpiar búsqueda
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = '';
+      
+      console.log('🎨 Filtrando por tema:', theme);
+      
+      // Aplicar filtro
+      applyFilters();
+    }
+
+    // Aplicar ambos filtros
+    function applyFilters() {
       const cards = document.querySelectorAll('.product-card');
+      let shown = 0;
+      
       cards.forEach(card => {
-        const cat = card.getAttribute('data-cat');
-        if (category === 'all' || cat === category) {
+        const clothing = getProductClothing(card);
+        const theme = getProductTheme(card);
+        
+        const clothingMatches = currentClothingFilter === 'all' || clothing === currentClothingFilter;
+        const themeMatches = currentThemeFilter === 'all' || theme === currentThemeFilter;
+        
+        if (clothingMatches && themeMatches) {
           card.style.display = 'block';
           card.style.animation = 'fadeInUp 0.6s ease forwards';
+          shown++;
         } else {
           card.style.display = 'none';
         }
       });
+      
+      console.log(`📊 Mostrando ${shown} productos`);
     }
 
-    updateWishlistCount();
+    // Obtener tipo de prenda
+    function getProductClothing(card) {
+      const link = card.querySelector('a[href*="producto.html#"]');
+      if (link && typeof productsData !== 'undefined') {
+        const productId = link.getAttribute('href').split('#')[1];
+        const product = productsData[productId];
+        if (product) return product.category;
+      }
+      return null;
+    }
+
+    // Obtener categoría temática
+    function getProductTheme(card) {
+      const link = card.querySelector('a[href*="producto.html#"]');
+      if (link && typeof productsData !== 'undefined') {
+        const productId = link.getAttribute('href').split('#')[1];
+        const product = productsData[productId];
+        if (product) return product.type;
+      }
+      return null;
+    }
+
+    // Actualizar qué opciones de tema están disponibles en el dropdown
+    function updateThemeButtons() {
+      const themeCounts = { cantante: 0, anime: 0, personaje: 0, diseño: 0 };
+      
+      // Contar productos de cada tema en la prenda seleccionada
+      document.querySelectorAll('.product-card').forEach(card => {
+        const clothing = getProductClothing(card);
+        const theme = getProductTheme(card);
+        
+        if (currentClothingFilter === 'all' || clothing === currentClothingFilter) {
+          if (themeCounts[theme] !== undefined) {
+            themeCounts[theme]++;
+          }
+        }
+      });
+      
+      console.log('📊 Temas disponibles:', themeCounts);
+      
+      // Actualizar estado de opciones en el select
+      const selectElement = document.getElementById('categorySelect');
+      if (selectElement) {
+        selectElement.querySelectorAll('option[value!="all"]').forEach(option => {
+          const theme = option.value;
+          const count = themeCounts[theme] || 0;
+          if (count === 0) {
+            option.disabled = true;
+            option.textContent = option.textContent.split(' (')[0] + ' (no disponible)';
+          } else {
+            option.disabled = false;
+            // Remover el "(no disponible)" si existe
+            option.textContent = option.textContent.split(' (')[0];
+          }
+        });
+        
+        // Reset a "Todas las categorías"
+        selectElement.value = 'all';
+        currentThemeFilter = 'all';
+      }
+    }
+
+    // Actualizar wishlist si la función existe
+    if (typeof updateWishlistCount === 'function') {
+      updateWishlistCount();
+    }
+    
+    // ============= INICIALIZAR DATOS DE PRODUCTOS =============
+    function initializeProducts() {
+      console.log('📦 Inicializando productos...');
+      console.log('productsData disponible:', typeof productsData !== 'undefined');
+      
+      if (typeof productsData === 'undefined') {
+        console.warn('⚠️ productsData no está disponible, reintentando...');
+        setTimeout(initializeProducts, 100);
+        return;
+      }
+      
+      let clothingCounts = { camisetas: 0, hoodies: 0, otro: 0 };
+      let themeCounts = { cantante: 0, anime: 0, personaje: 0, diseño: 0, otro: 0 };
+      
+      document.querySelectorAll('.product-card').forEach(card => {
+        const link = card.querySelector('a[href*="producto.html#"]');
+        if (link) {
+          const productId = link.getAttribute('href').split('#')[1];
+          const product = productsData[productId];
+          
+          if (product) {
+            console.log(`✓ ${productId}: ${product.name}`);
+            card.setAttribute('data-clothing', product.category);
+            card.setAttribute('data-theme', product.type);
+            
+            if (clothingCounts[product.category] !== undefined) {
+              clothingCounts[product.category]++;
+            } else {
+              clothingCounts.otro++;
+            }
+            
+            if (themeCounts[product.type] !== undefined) {
+              themeCounts[product.type]++;
+            } else {
+              themeCounts.otro++;
+            }
+          }
+        }
+      });
+      
+      console.log('📊 Prendas encontradas:', clothingCounts);
+      console.log('📊 Temas encontrados:', themeCounts);
+      
+      // Actualizar disponibilidad de botones de prenda
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const clothing = btn.textContent.toLowerCase();
+        if (clothing.includes('camisetas') && clothingCounts.camisetas === 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+        } else if (clothing.includes('hoodies') && clothingCounts.hoodies === 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+        }
+      });
+      
+      // Actualizar botones de tema
+      updateThemeButtons();
+    }
+    
+    // Ejecutar cuando los scripts de productos carguen
+    function onProductDataReady() {
+      if (typeof productsData !== 'undefined') {
+        initializeProducts();
+      } else {
+        console.log('⏳ Esperando productsData...');
+        setTimeout(onProductDataReady, 200);
+      }
+    }
+    
+    // Llamar inmediatamente y después de un delay para asegurar que se cargue
+    setTimeout(onProductDataReady, 500);
+    
     window.addEventListener('scroll', () => {
       document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
     });
@@ -711,9 +807,89 @@
     function toggleNav() {
       document.getElementById('navLinks').classList.toggle('open');
     }
+
+    // ============= BÚSQUEDA MEJORADA CON SUGERENCIAS =============
+    function showSearchSuggestions() {
+      const searchInput = document.getElementById('searchInput');
+      const suggestionsDiv = document.getElementById('searchSuggestions');
+      const term = searchInput.value.toLowerCase().trim();
+      
+      if (!term) {
+        suggestionsDiv.style.display = 'none';
+        return;
+      }
+      
+      const suggestions = [];
+      const seen = new Set();
+      
+      // Buscar coincidencias en productos
+      if (typeof productsData !== 'undefined') {
+        Object.values(productsData).forEach(product => {
+          const name = product.name.toLowerCase();
+          const artist = (product.artist || '').toLowerCase();
+          const franchise = (product.franchise || '').toLowerCase();
+          
+          if (name.includes(term) && !seen.has(product.name)) {
+            suggestions.push(product.name);
+            seen.add(product.name);
+          }
+          if (artist.includes(term) && !seen.has(artist) && artist) {
+            suggestions.push(artist);
+            seen.add(artist);
+          }
+          if (franchise.includes(term) && !seen.has(franchise) && franchise) {
+            suggestions.push(franchise);
+            seen.add(franchise);
+          }
+        });
+      }
+      
+      // Mostrar sugerencias
+      if (suggestions.length > 0) {
+        suggestionsDiv.innerHTML = suggestions.slice(0, 8).map(s => 
+          `<div class="search-suggestion-item" onclick="document.getElementById('searchInput').value='${s.replace(/'/g, "\\'")}';searchProducts();">${s}</div>`
+        ).join('');
+        suggestionsDiv.style.display = 'block';
+      } else {
+        suggestionsDiv.style.display = 'none';
+      }
+    }
+    
+    // Ocultar sugerencias al hacer click fuera
+    document.addEventListener('click', (e) => {
+      if (e.target.id !== 'searchInput') {
+        document.getElementById('searchSuggestions').style.display = 'none';
+      }
+    });
+
+    // ============= LOADING SCREEN =============
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 600);
+        }
+      }, 800);
+    });
+
+    // Fallback: ocultar loading después de 5 segundos de todas formas
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 600);
+      }
+    }, 5000);
   </script>
 
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
+  <!-- Init App: Activate all features -->
+  <script src="init-app.js"></script>
 </body>
 </html>

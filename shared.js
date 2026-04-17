@@ -148,6 +148,141 @@ function createOrder(cartItems, total, couponDiscount = 0) {
   return order;
 }
 
+// ========== SISTEMA DE STOCK DINÁMICO ==========
+let stockInventory = JSON.parse(localStorage.getItem('vibewear-stock')) || {};
+
+/**
+ * Obtener stock actual de un producto
+ */
+function getProductStock(productId, productsData) {
+  // Si hay stock personalizado, usarlo; si no, usar el de products-data
+  if (stockInventory[productId] !== undefined) {
+    return stockInventory[productId];
+  }
+  
+  if (productsData && productsData[productId]) {
+    return productsData[productId].stock || 0;
+  }
+  
+  return 0;
+}
+
+/**
+ * Verificar si hay stock disponible
+ */
+function hasStock(productId, quantity = 1, productsData = null) {
+  const stock = getProductStock(productId, productsData);
+  return stock >= quantity;
+}
+
+/**
+ * Obtener estado del stock (En Stock / Bajo Stock / Agotado)
+ */
+function getStockStatus(productId, productsData) {
+  const stock = getProductStock(productId, productsData);
+  
+  if (stock === 0) return 'AGOTADO';
+  if (stock <= 3) return 'BAJO_STOCK';
+  return 'EN_STOCK';
+}
+
+/**
+ * Obtener badge/etiqueta del stock
+ */
+function getStockBadge(productId, productsData) {
+  const status = getStockStatus(productId, productsData);
+  const stock = getProductStock(productId, productsData);
+  
+  if (status === 'AGOTADO') {
+    return '<span style="background: rgba(255, 107, 157, 0.2); color: #ff6b9d; padding: 4px 10px; border-radius: 50px; font-size: 10px; letter-spacing: 1px; font-weight: 600;">❌ AGOTADO</span>';
+  }
+  
+  if (status === 'BAJO_STOCK') {
+    return `<span style="background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 4px 10px; border-radius: 50px; font-size: 10px; letter-spacing: 1px; font-weight: 600;">⚠️ ${stock} DISPONIBLE${stock > 1 ? 'S' : ''}</span>`;
+  }
+  
+  return '<span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 4px 10px; border-radius: 50px; font-size: 10px; letter-spacing: 1px; font-weight: 600;">✔ EN STOCK</span>';
+}
+
+/**
+ * Actualizar stock después de una compra
+ */
+function updateStockAfterPurchase(productId, quantity) {
+  const currentStock = getProductStock(productId);
+  const newStock = Math.max(0, currentStock - quantity);
+  stockInventory[productId] = newStock;
+  localStorage.setItem('vibewear-stock', JSON.stringify(stockInventory));
+  return newStock;
+}
+
+/**
+ * Restaurar stock (para cancelaciones)
+ */
+function restoreStock(productId, quantity) {
+  const currentStock = getProductStock(productId);
+  const newStock = currentStock + quantity;
+  stockInventory[productId] = newStock;
+  localStorage.setItem('vibewear-stock', JSON.stringify(stockInventory));
+  return newStock;
+}
+
+/**
+ * Validar cantidad a comprar basada en stock
+ */
+function validatePurchaseQuantity(productId, requestedQty, productsData) {
+  const availableStock = getProductStock(productId, productsData);
+  
+  if (availableStock === 0) {
+    return { valid: false, message: '❌ Producto agotado', maxQty: 0 };
+  }
+  
+  if (requestedQty > availableStock) {
+    return {
+      valid: false,
+      message: `⚠️ Solo hay ${availableStock} unidade${availableStock > 1 ? 's' : ''} disponible${availableStock > 1 ? 's' : ''}`,
+      maxQty: availableStock
+    };
+  }
+  
+  return { valid: true, message: '✔ Cantidad válida', maxQty: availableStock };
+}
+
+/**
+ * Habilitar/Deshabilitar botón de compra según stock
+ */
+function updateBuyButtonState(buttonId, productId, productsData) {
+  const btn = document.getElementById(buttonId);
+  if (!btn) return;
+  
+  const status = getStockStatus(productId, productsData);
+  
+  if (status === 'AGOTADO') {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+    btn.textContent = '❌ AGOTADO';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Agregar al Carrito
+    `;
+  }
+}
+
+/**
+ * Notificación cuando el stock es bajo
+ */
+function showStockWarning(productId, productsData) {
+  const stock = getProductStock(productId, productsData);
+  
+  if (stock > 0 && stock <= 3) {
+    showNotification(`⚠️ Solo ${stock} disponible${stock > 1 ? 's' : ''}. ¡Apúrate!`);
+  }
+}
+
 function getOrders() {
   return orders;
 }
@@ -209,8 +344,6 @@ if (!document.querySelector('style[data-notifications]')) {
     }
   `;
   document.head.appendChild(style);
-}
-  setTimeout(() => notif.remove(), duration);
 }
 
 // ========== UTILIDADES ==========

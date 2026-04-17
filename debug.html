@@ -1,0 +1,76 @@
+<!-- DEBUG - Abre esto en consola del navegador después de cargar catalogo.html -->
+<script>
+// Verificar estado del sistema
+console.log('🔧 VERIFICACIÓN DE SISTEMA');
+console.log('========================================');
+
+// 1. Verificar que productsData está disponible
+if (typeof productsData !== 'undefined') {
+  console.log('✓ productsData disponible');
+  const productIds = Object.keys(productsData);
+  console.log(`  - Total de productos: ${productIds.length}`);
+  
+  // Contar por tipo
+  const typeCounts = {};
+  productIds.forEach(id => {
+    const type = productsData[id].type;
+    typeCounts[type] = (typeCounts[type] || 0) + 1;
+  });
+  
+  console.log('  - Productos por tipo:');
+  Object.entries(typeCounts).forEach(([type, count]) => {
+    console.log(`    ${type}: ${count}`);
+  });
+} else {
+  console.warn('✗ productsData NO disponible');
+}
+
+// 2. Verificar que las funciones están disponibles
+console.log('');
+console.log('✓ Funciones disponibles:');
+console.log(`  - getProductType: ${typeof getProductType === 'function' ? '✓' : '✗'}`);
+console.log(`  - filterByCategory: ${typeof filterByCategory === 'function' ? '✓' : '✗'}`);
+console.log(`  - searchProducts: ${typeof searchProducts === 'function' ? '✓' : '✗'}`);
+console.log(`  - renderPersonalizedRecommendations: ${typeof renderPersonalizedRecommendations === 'function' ? '✓' : '✗'}`);
+
+// 3. Verificar que los botones de filtro existen
+console.log('');
+console.log('✓ Elementos del DOM:');
+const filterBtns = document.querySelectorAll('.category-filter-btn');
+console.log(`  - Botones de categoría: ${filterBtns.length}`);
+filterBtns.forEach(btn => {
+  const type = btn.getAttribute('data-type');
+  console.log(`    [${type}] ${btn.textContent.trim()}`);
+});
+
+// 4. Verificar productos en el DOM
+console.log('');
+console.log('✓ Productos en página:');
+const productCards = document.querySelectorAll('.product-card');
+console.log(`  - Total de tarjetas: ${productCards.length}`);
+
+// Verificar tipos detectados
+const typesDetected = {};
+productCards.forEach(card => {
+  const link = card.querySelector('a[href*="producto.html#"]');
+  if (link) {
+    const productId = link.getAttribute('href').split('#')[1];
+    if (typeof productsData !== 'undefined' && productsData[productId]) {
+      const type = productsData[productId].type;
+      typesDetected[type] = (typesDetected[type] || 0) + 1;
+    }
+  }
+});
+
+console.log('  - Tipos detectados en tarjetas:');
+Object.entries(typesDetected).forEach(([type, count]) => {
+  console.log(`    ${type}: ${count}`);
+});
+
+console.log('');
+console.log('========================================');
+console.log('Para probar filtros, ejecuta:');
+console.log('  filterByCategory("cantante", document.querySelector("[data-type=cantante]"))');
+console.log('  filterByCategory("anime", document.querySelector("[data-type=anime]"))');
+console.log('========================================');
+</script>

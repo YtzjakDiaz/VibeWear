@@ -9,8 +9,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- 5 Mejoras VibeWear -->
+  <script src="search-advanced.js"></script>
+  <script src="breadcrumb.js"></script>
+  <script src="auth-system.js"></script>
 </head>
 <body class="page-enter">
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Cargando...</p>
+    </div>
+  </div>
 
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
@@ -47,6 +59,7 @@
       <span></span><span></span><span></span>
     </div>
   </nav>
+
   <br/><br><br>
   <!-- HERO -->
   <section class="hero" id="hero">
@@ -400,6 +413,32 @@
       el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
       observer.observe(el);
     });
+
+    // ============= LOADING SCREEN =============
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 600);
+        }
+      }, 800);
+    });
+
+    // Fallback: ocultar loading después de 5 segundos de todas formas
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 600);
+      }
+    }, 5000);
   </script>
+  <!-- Init App: Activate all features -->
+  <script src="init-app.js"></script>
 </body>
 </html>

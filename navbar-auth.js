@@ -107,8 +107,8 @@ function updateNavbarAuthenticated(btn, user) {
           <p style="margin: 8px 0 0; color: var(--white); font-weight: 600; font-size: 14px;">${displayName}</p>
           <p style="margin: 4px 0 0; color: var(--gray); font-size: 11px;">${user.email}</p>
         </div>
-        <a href="account-profile.html" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
-          📋 Mi Perfil
+        <a href="#" onclick="event.preventDefault(); openUserProfile('${user.uid}')" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
+          👤 Mi Perfil
         </a>
         <a href="account-profile.html?tab=orders" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
           📦 Mis Órdenes
@@ -198,6 +198,33 @@ function updateNavbarNotAuthenticated(btn) {
     this.style.opacity = '1';
   };
 }
+
+// ============= FUNCIÓN PARA ABRIR PERFIL =============
+window.openUserProfile = function(userId) {
+  // Cargar user-profile.js si no está cargado
+  if (!window.createProfilePanel) {
+    const script = document.createElement('script');
+    script.src = 'user-profile.js';
+    script.onload = () => {
+      if (window.createProfilePanel) {
+        // Obtener usuario actual
+        const user = getCurrentUser();
+        if (user) {
+          const panel = window.createProfilePanel(user);
+          document.body.appendChild(panel);
+        }
+      }
+    };
+    document.head.appendChild(script);
+  } else {
+    // user-profile.js ya está cargado
+    const user = getCurrentUser();
+    if (user) {
+      const panel = window.createProfilePanel(user);
+      document.body.appendChild(panel);
+    }
+  }
+};
 
 // Esperar a que el DOM esté listo
 if (document.readyState === 'loading') {

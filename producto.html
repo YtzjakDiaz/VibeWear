@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- 5 Mejoras VibeWear -->
+  <script src="search-advanced.js"></script>
+  <script src="breadcrumb.js"></script>
+  <script src="auth-system.js"></script>
 </head>
 <body class="page-enter">
 
@@ -46,32 +50,21 @@
     <div class="nav-hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
   </nav>
 
-  <!-- BREADCRUMB -->
-  <div style="padding:110px 60px 0;background:var(--black)">
-    <p style="font-family:var(--font-sub);font-size:11px;letter-spacing:2px;color:var(--gray);text-transform:uppercase">
-      <a href="index.html" style="color:var(--gray);transition:color 0.3s" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--gray)'">Inicio</a>
-      <span style="margin:0 10px;color:var(--pink)">›</span>
-      <a href="catalogo.html" style="color:var(--gray);transition:color 0.3s" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--gray)'">Catálogo</a>
-      <span style="margin:0 10px;color:var(--pink)">›</span>
-      <span style="color:var(--white)" id="breadcrumbName">Producto</span>
-    </p>
-  </div>
-
   <!-- PRODUCT LAYOUT -->
   <section class="product-page" style="padding-top:40px">
     <div class="product-layout">
 
       <!-- GALLERY -->
-      <div class="product-gallery" style="animation:fadeInLeft 0.8s ease both">
+      <div class="product-gallery" style="animation:fadeInLeft 0.8s ease both;margin-top:60px;">
         <div class="product-main-img">
           <span class="product-badge" id="badgeMain" style="position:absolute;top:20px;left:20px;z-index:2"></span>
-          <img src="" alt="" id="mainImg" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=800&q=85'" />
+          <img src="images/Productos/Producto 1/Eladio-Back.jpg" alt="Eladio Carrión Oversized" id="mainImg" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=800&amp;q=85'">
         </div>
         <div class="product-thumbs" id="thumbsContainer"></div>
       </div>
 
       <!-- DETAILS -->
-      <div class="product-details" style="animation:fadeInRight 0.8s ease 0.2s both">
+      <div class="product-details" style="animation:fadeInRight 0.8s ease 0.2s both;margin-top:50px;">
         <p class="product-brand">✦ VibeWear Collection 2025</p>
         <h1 class="product-title" id="productTitle">PRODUCTO</h1>
 
@@ -702,73 +695,93 @@
       // Actualizar título de página
       document.title = prod.nombre + ' — VibeWear | Streetwear';
 
-      // Breadcrumb
-      document.getElementById('breadcrumbName').textContent = prod.nombre;
+      // Breadcrumb (si existe)
+      const breadcrumbName = document.getElementById('breadcrumbName');
+      if (breadcrumbName) breadcrumbName.textContent = prod.nombre;
 
       // Galería
-      document.getElementById('mainImg').src = prod.imagenUrl;
-      document.getElementById('mainImg').alt = prod.nombre;
+      const mainImg = document.getElementById('mainImg');
+      if (mainImg) {
+        mainImg.src = prod.imagenUrl;
+        mainImg.alt = prod.nombre;
+      }
 
       // Badge
       const badge = document.getElementById('badgeMain');
-      if (prod.badge) {
-        badge.textContent = prod.badge;
-        badge.style.display = 'block';
-      } else {
+      if (badge) {
+        if (prod.badge) {
+          badge.textContent = prod.badge;
+          badge.style.display = 'block';
+        } else {
         badge.style.display = 'none';
+      }
       }
 
       // Thumbs
       const thumbsContainer = document.getElementById('thumbsContainer');
-      thumbsContainer.innerHTML = prod.imagenes.map((img, i) => `
-        <div class="product-thumb ${i === 0 ? 'active' : ''}" onclick="changeImg(this,'${img}')">
-          <img src="${img}" alt="thumb${i}" onerror="this.src='${img}'" />
-        </div>
-      `).join('');
+      if (thumbsContainer) {
+        thumbsContainer.innerHTML = prod.imagenes.map((img, i) => `
+          <div class="product-thumb ${i === 0 ? 'active' : ''}" onclick="changeImg(this,'${img}')">
+            <img src="${img}" alt="thumb${i}" onerror="this.src='${img}'" />
+          </div>
+        `).join('');
+      }
 
       // Título
-      document.getElementById('productTitle').textContent = prod.titulo;
+      const productTitle = document.getElementById('productTitle');
+      if (productTitle) productTitle.textContent = prod.titulo;
 
       // Rating
-      document.getElementById('stars').textContent = '★'.repeat(prod.stars);
-      document.getElementById('ratingCount').textContent = prod.stars + '.0 (' + prod.reviews + ' reseñas)';
+      const stars = document.getElementById('stars');
+      const ratingCount = document.getElementById('ratingCount');
+      if (stars) stars.textContent = '★'.repeat(prod.stars);
+      if (ratingCount) ratingCount.textContent = prod.stars + '.0 (' + prod.reviews + ' reseñas)';
 
       // Precios
       const priceOld = document.getElementById('priceOld');
       const priceMain = document.getElementById('priceMain');
       const discountBadge = document.getElementById('discountBadge');
 
-      if (prod.precioAnterior > 0) {
-        priceOld.textContent = '$' + prod.precioAnterior.toLocaleString();
-        priceOld.style.display = 'inline';
-        discountBadge.textContent = '−' + prod.descuento + '%';
-        discountBadge.style.display = 'inline-block';
-      } else {
-        priceOld.style.display = 'none';
-        discountBadge.style.display = 'none';
+      if (priceOld && priceMain && discountBadge) {
+        if (prod.precioAnterior > 0) {
+          priceOld.textContent = '$' + prod.precioAnterior.toLocaleString();
+          priceOld.style.display = 'inline';
+          discountBadge.textContent = '−' + prod.descuento + '%';
+          discountBadge.style.display = 'inline-block';
+        } else {
+          priceOld.style.display = 'none';
+          discountBadge.style.display = 'none';
+        }
+        priceMain.textContent = '$' + prod.precio.toLocaleString();
       }
-      priceMain.textContent = '$' + prod.precio.toLocaleString();
 
       // Descripción
-      document.getElementById('productDesc').textContent = prod.descripcion;
+      const productDesc = document.getElementById('productDesc');
+      if (productDesc) productDesc.textContent = prod.descripcion;
 
       // Colores
       const colorDots = document.getElementById('colorDots');
-      colorDots.innerHTML = prod.colores.map((c, i) => `
-        <div class="color-dot ${i === 0 ? 'active' : ''}" style="background:${c.color}${c.color === '#f5f5f5' || c.color === '#ffffff' ? ';border:1.5px solid rgba(255,255,255,0.2)' : ''}" title="${c.nombre}" onclick="selectColor(this,'${c.nombre}')"></div>
-      `).join('');
-      document.getElementById('colorName').textContent = prod.colores[0].nombre;
+      const colorName = document.getElementById('colorName');
+      if (colorDots && prod.colores && prod.colores.length > 0) {
+        colorDots.innerHTML = prod.colores.map((c, i) => `
+          <div class="color-dot ${i === 0 ? 'active' : ''}" style="background:${c.color}${c.color === '#f5f5f5' || c.color === '#ffffff' ? ';border:1.5px solid rgba(255,255,255,0.2)' : ''}" title="${c.nombre}" onclick="selectColor(this,'${c.nombre}')"></div>
+        `).join('');
+        if (colorName) colorName.textContent = prod.colores[0].nombre;
+      }
 
       // Meta
-      document.getElementById('metaSKU').textContent = prod.sku;
-      document.getElementById('metaMaterial').textContent = prod.material;
+      const metaSKU = document.getElementById('metaSKU');
+      const metaMaterial = document.getElementById('metaMaterial');
+      if (metaSKU) metaSKU.textContent = prod.sku;
+      if (metaMaterial) metaMaterial.textContent = prod.material;
 
       // Reset cantidad
       qty = 1;
-      document.getElementById('qty').value = 1;
+      const qtyInput = document.getElementById('qty');
+      if (qtyInput) qtyInput.value = 1;
 
-      // Cargar productos relacionados
-      loadRelatedProducts();
+      // Cargar productos relacionados con delay para asegurar que los datos estén disponibles
+      loadRelatedProductsWhenReady();
       
       // Cargar reseñas desde Firebase (con delay para asegurar que Firebase está listo)
       setTimeout(() => {
@@ -842,32 +855,68 @@
       loadProduct(hash);
     });
 
-    // Inicializar
-    const initialHash = window.location.hash.slice(1) || 'prod-1';
-    loadProduct(initialHash);
+    // Inicializar cuando el DOM esté listo
+    function initializeProduct() {
+      const initialHash = window.location.hash.slice(1) || 'prod-1';
+      loadProduct(initialHash);
+    }
+
+    // Ejecutar cuando DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeProduct);
+    } else {
+      // Si el DOM ya está listo (script ejecutado después)
+      setTimeout(initializeProduct, 100);
+    }
 
     // Navbar scroll
-    window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20));
-    function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
-
-    // Related products
+    // Related products - Usar sistema inteligente de recomendaciones
+    function loadRelatedProductsWhenReady() {
+      // Esperar a que productsData esté disponible
+      if (typeof productsData !== 'undefined' && productsData[currentProductId]) {
+        console.log('✓ Datos de productos listos, cargando recomendaciones...');
+        loadRelatedProducts();
+      } else {
+        console.log('⏳ Esperando datos de productos...');
+        setTimeout(loadRelatedProductsWhenReady, 200);
+      }
+    }
+    
     function loadRelatedProducts() {
-      const related = Object.entries(productos).filter(([id]) => id !== currentProductId).slice(0, 3);
-      const html = related.map(([id, p]) => `
-        <div class="product-card">
-          <div class="product-card-img">
-            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-            <img src="${p.imagenUrl}" alt="${p.nombre}" onerror="this.src='${p.imagenUrl}'"/>
-            <div class="product-overlay"><a href="producto.html#${id}" class="btn-card">Ver Producto</a></div>
+      const container = document.getElementById('relatedProducts');
+      if (!container) return;
+      
+      console.log('📦 Cargando productos relacionados...');
+      console.log('currentProductId:', currentProductId);
+      console.log('productsData disponible:', typeof productsData !== 'undefined');
+      
+      // Usar el nuevo sistema de recomendaciones si está disponible
+      if (typeof renderPersonalizedRecommendations === 'function' && typeof productsData !== 'undefined' && productsData[currentProductId]) {
+        console.log('✓ Usando sistema de recomendaciones personalizadas');
+        setTimeout(() => renderPersonalizedRecommendations(currentProductId, 'relatedProducts'), 100);
+      } else {
+        console.log('⚠️ Sistema de recomendaciones no disponible, usando fallback');
+        // Fallback al sistema antiguo pero mejorado
+        const related = Object.entries(productos).filter(([id]) => id !== currentProductId).slice(0, 4);
+        const html = related.map(([id, p]) => `
+          <div class="product-card" style="animation: fadeInUp 0.6s ease;">
+            <div class="product-card-img">
+              ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+              <img src="${p.imagenUrl}" alt="${p.nombre}" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80'"/>
+              <div class="product-overlay"><a href="producto.html#${id}" class="btn-card">Ver Producto</a></div>
+            </div>
+            <div class="product-info">
+              <p class="product-category" style="color: var(--pink); font-weight: 600;">${p.categoria}</p>
+              <h3 class="product-name">${p.nombre}</h3>
+              <div class="product-footer">
+                <span class="product-price">$${p.precio.toLocaleString('es-CO')}</span>
+                <div class="product-wishlist" onclick="if(typeof toggleWishlistCard==='function')toggleWishlistCard('${id}','${p.nombre}'); else addToWishlist('${id}','${p.nombre}');" style="cursor: pointer;">♡</div>
+              </div>
+            </div>
           </div>
-          <div class="product-info">
-            <p class="product-category">${p.categoria}</p>
-            <h3 class="product-name">${p.nombre}</h3>
-            <div class="product-footer"><span class="product-price">$${p.precio.toLocaleString()}</span><div class="product-wishlist">♡</div></div>
-          </div>
-        </div>
-      `).join('');
-      document.getElementById('relatedProducts').innerHTML = html;
+        `).join('');
+        container.innerHTML = html;
+      }
     }
 
     const observer = new IntersectionObserver(entries => {
@@ -1012,6 +1061,12 @@
 
   <!-- CARRITO SCRIPT -->
   <script src="cart.js"></script>
+
+  <!-- PRODUCTOS DATA -->
+  <script src="products-data.js"></script>
+
+  <!-- RECOMENDACIONES PERSONALIZADAS -->
+  <script src="recommendations.js"></script>
 
   <!-- NAVBAR AUTH -->
   <script type="module" src="navbar-auth.js"></script>
@@ -1169,6 +1224,91 @@
     // Initialize
     const product = productos[currentProductId];
     document.getElementById('wishlistBtn').style.opacity = isInWishlist(currentProductId) ? '1' : '0.5';
+
+    // ============= STOCK DINÁMICO =============
+    function renderStockBadge() {
+      if (typeof productsData !== 'undefined' && productsData[currentProductId]) {
+        const stock = productsData[currentProductId].stock || 0;
+        const priceSection = document.querySelector('.product-price-main')?.parentElement;
+        
+        if (priceSection && !document.getElementById('stockBadge')) {
+          const stockBadge = document.createElement('div');
+          stockBadge.id = 'stockBadge';
+          stockBadge.className = `stock-badge ${stock > 5 ? 'in-stock' : stock > 0 ? 'low-stock' : 'out-of-stock'}`;
+          
+          if (stock > 5) {
+            stockBadge.textContent = `${stock} en stock`;
+          } else if (stock > 0) {
+            stockBadge.textContent = `Solo ${stock} disponibles`;
+          } else {
+            stockBadge.textContent = 'Agotado';
+          }
+          
+          priceSection.appendChild(stockBadge);
+        }
+      }
+    }
+
+    // ============= ZOOM EN IMÁGENES =============
+    function setupImageZoom() {
+      const mainImg = document.getElementById('mainImg');
+      if (mainImg) {
+        mainImg.style.cursor = 'zoom-in';
+        mainImg.addEventListener('click', () => showImageZoom(mainImg.src));
+      }
+    }
+
+    function showImageZoom(imageSrc) {
+      let zoomModal = document.getElementById('zoomModal');
+      if (!zoomModal) {
+        zoomModal = document.createElement('div');
+        zoomModal.id = 'zoomModal';
+        zoomModal.className = 'zoom-modal';
+        zoomModal.innerHTML = `
+          <span class="zoom-modal-close" onclick="document.getElementById('zoomModal').classList.remove('active')">✕</span>
+          <img src="${imageSrc}" alt="Zoom" />
+        `;
+        document.body.appendChild(zoomModal);
+      } else {
+        zoomModal.querySelector('img').src = imageSrc;
+      }
+      
+      zoomModal.classList.add('active');
+      
+      // Cerrar al hacer click fuera
+      zoomModal.addEventListener('click', (e) => {
+        if (e.target === zoomModal) {
+          zoomModal.classList.remove('active');
+        }
+      });
+    }
+
+    // ============= BREADCRUMBS DINÁMICOS =============
+    function updateBreadcrumbs() {
+      const breadcrumbName = document.getElementById('breadcrumbName');
+      if (!breadcrumbName) return;
+      
+      if (typeof productsData !== 'undefined' && productsData[currentProductId]) {
+        const product = productsData[currentProductId];
+        const categoryEs = product.category === 'camisetas' ? 'Camisetas' : 'Hoodies';
+        const typeEs = product.type === 'cantante' ? 'Cantantes' : product.type === 'anime' ? 'Anime' : product.type === 'personaje' ? 'Personajes' : 'Diseños';
+        
+        breadcrumbName.innerHTML = `
+          <a href="catalogo.html" style="color:var(--gray);text-decoration:none">Catálogo</a>
+          <span style="margin:0 10px;color:var(--pink)">›</span>
+          <a href="catalogo.html" style="color:var(--gray);text-decoration:none" onclick="filterByClothing('${product.category}')">${categoryEs}</a>
+          <span style="margin:0 10px;color:var(--pink)">›</span>
+          <span style="color:var(--white)">${product.name}</span>
+        `;
+      }
+    }
+
+    // Ejecutar funciones mejoradas
+    setTimeout(() => {
+      renderStockBadge();
+      setupImageZoom();
+      updateBreadcrumbs();
+    }, 500);
   </script>
 
   <!-- Firebase Scripts - Se carga después de todas las variables globales -->
@@ -1191,5 +1331,7 @@
 
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
+  <!-- Init App: Activate all features -->
+  <script src="init-app.js"></script>
 </body>
 </html>
