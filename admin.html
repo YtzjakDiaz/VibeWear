@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - VibeWear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin-styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="admin-page">
+
+  <!-- ADMIN NAVBAR -->
+  <nav class="admin-navbar">
+    <div class="admin-nav-brand">
+      <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="admin-nav-right">
+      <span id="adminUserEmail" class="admin-user-email">usuario@gmail.com</span>
+      <button class="btn-logout" onclick="logoutAdmin()">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <!-- ADMIN LAYOUT -->
+  <div class="admin-container">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="admin-menu">
+        <a href="#" class="admin-menu-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+          <span class="icon">📊</span> Dashboard
+        </a>
+        <a href="#" class="admin-menu-item" data-tab="productos" onclick="switchTab('productos')">
+          <span class="icon">📦</span> Productos
+        </a>
+        <a href="#" class="admin-menu-item" data-tab="ordenes" onclick="switchTab('ordenes')">
+          <span class="icon">🛒</span> Órdenes
+        </a>
+        <a href="#" class="admin-menu-item" data-tab="analytics" onclick="switchTab('analytics')">
+          <span class="icon">📈</span> Analytics
+        </a>
+        <a href="#" class="admin-menu-item" data-tab="configuracion" onclick="switchTab('configuracion')">
+          <span class="icon">⚙️</span> Configuración
+        </a>
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+        <a href="index.html" class="admin-menu-item" target="_blank">
+          <span class="icon">👁️</span> Ver tienda
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-content">
+
+      <!-- TAB: DASHBOARD -->
+      <section id="dashboard" class="admin-tab active">
+        <div class="admin-header">
+          <h1>Dashboard</h1>
+          <p>Bienvenido al panel de administración de VibeWear</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-info">
+              <h3>Productos</h3>
+              <p class="stat-number" id="totalProducts">28</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-info">
+              <h3>Órdenes</h3>
+              <p class="stat-number" id="totalOrders">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <h3>Ingresos</h3>
+              <p class="stat-number" id="totalRevenue">$0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <h3>Admins</h3>
+              <p class="stat-number" id="totalAdmins">1</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent-section">
+          <h2>Órdenes Recientes</h2>
+          <div id="recentOrders" style="min-height: 200px;">
+            <p style="color: var(--gray);">Cargando órdenes...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: PRODUCTOS -->
+      <section id="productos" class="admin-tab">
+        <div class="admin-header">
+          <h1>Gestión de Productos</h1>
+          <button class="btn-primary" onclick="showProductForm()">+ Nuevo Producto</button>
+        </div>
+
+        <div class="search-bar">
+          <input type="text" id="productSearch" placeholder="Buscar producto..." onkeyup="filterProducts()">
+        </div>
+
+        <div id="productsTable" class="admin-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="productsList">
+              <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--gray);">Cargando productos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: ÓRDENES -->
+      <section id="ordenes" class="admin-tab">
+        <div class="admin-header">
+          <h1>Órdenes de Clientes</h1>
+        </div>
+
+        <div id="ordenesContainer" style="min-height: 300px;">
+          <div style="text-align:center;padding:40px;color:var(--gray);">
+            <p>Cargando órdenes...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: ANALYTICS -->
+      <section id="analytics" class="admin-tab">
+        <div class="admin-header">
+          <h1>Analytics</h1>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Producto Más Vendido</h3>
+            <p id="topProduct" style="font-size:18px;color:var(--pink);margin-top:10px;">-</p>
+          </div>
+          <div class="stat-card">
+            <h3>Ingresos Este Mes</h3>
+            <p id="monthlyRevenue" style="font-size:18px;color:var(--pink);margin-top:10px;">$0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Ticket Promedio</h3>
+            <p id="avgTicket" style="font-size:18px;color:var(--pink);margin-top:10px;">$0</p>
+          </div>
+        </div>
+
+        <div style="margin-top:40px;background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:20px;">
+          <h3>Top 5 Productos</h3>
+          <div id="topProducts" style="margin-top:15px;">
+            <p style="color:var(--gray);">Cargando datos...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: CONFIGURACIÓN -->
+      <section id="configuracion" class="admin-tab">
+        <div class="admin-header">
+          <h1>Configuración</h1>
+        </div>
+
+        <div class="config-section">
+          <h2>Gestionar Admins</h2>
+          <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:20px;margin-bottom:30px;">
+            <p style="margin-bottom:15px;color:var(--gray);">Agregar nuevo administrador</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <input type="email" id="newAdminEmail" placeholder="email@ejemplo.com" style="flex:1;min-width:250px;padding:10px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);">
+              <button class="btn-primary" onclick="addAdmin()">Agregar Admin</button>
+            </div>
+          </div>
+
+          <div>
+            <h3>Admins Actuales</h3>
+            <div id="adminsList" style="display:grid;gap:10px;">
+              <p style="color:var(--gray);">Cargando admins...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: PRODUCTO -->
+  <div id="productModal" class="admin-modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Nuevo Producto</h2>
+        <button class="modal-close" onclick="closeProductModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="formProductName" required>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="formProductDesc" required></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label>Precio</label>
+              <input type="number" id="formProductPrice" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>Stock</label>
+              <input type="number" id="formProductStock" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Imagen Principal URL</label>
+            <input type="text" id="formProductImage" required>
+          </div>
+          <div class="form-group">
+            <button type="button" class="btn-primary" style="width:100%;" onclick="saveProduct()">Guardar Producto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="admin-auth.js"></script>
+  <script src="admin-products.js"></script>
+  <script src="admin-orders.js"></script>
+  <script src="admin-analytics.js"></script>
+
+</body>
+</html>
