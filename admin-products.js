@@ -4,12 +4,12 @@ async function loadProducts() {
   try {
     const productsList = document.getElementById('productsList');
     
-    // Obtener productos de la base de datos en memoria (productos)
-    // En una versión completa, esto vendría de Firestore
-    
-    if (typeof productos !== 'undefined' && productos) {
-      const prods = Object.entries(productos).map(([id, p]) => ({
+    if (typeof productsData !== 'undefined' && productsData) {
+      const prods = Object.entries(productsData).map(([id, p]) => ({
         id,
+        nombre: p.name,
+        precio: p.price,
+        stock: p.stock || 0,
         ...p
       }));
       
@@ -20,7 +20,7 @@ async function loadProducts() {
             <td>${prod.id}</td>
             <td>${prod.nombre}</td>
             <td>$${prod.precio.toLocaleString('es-CO')}</td>
-            <td>${prod.stock || '-'}</td>
+            <td>${prod.stock || 0}</td>
             <td>
               <button class="btn-primary" onclick="editProduct('${prod.id}')" style="margin-right:8px;padding:6px 12px;">Editar</button>
               <button class="btn-danger" onclick="deleteProduct('${prod.id}')">Eliminar</button>
@@ -31,12 +31,23 @@ async function loadProducts() {
       
       productsList.innerHTML = html;
       document.getElementById('totalProducts').textContent = prods.length;
+      console.log('✓ Productos cargados:', prods.length);
+    } else {
+      productsList.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">No hay productos disponibles</td></tr>';
+      console.warn('⚠️ productsData no está disponible');
     }
     
   } catch (error) {
-    console.error('Error cargando productos:', error);
+    console.error('❌ Error cargando productos:', error);
+    const productsList = document.getElementById('productsList');
+    if (productsList) {
+      productsList.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">Error cargando productos</td></tr>';
+    }
   }
 }
+
+// Hacer disponible globalmente
+window.loadProducts = loadProducts;
 
 window.showProductForm = function() {
   const modal = document.getElementById('productModal');

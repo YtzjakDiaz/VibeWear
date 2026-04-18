@@ -6,15 +6,14 @@ async function loadOrders() {
     const recentOrdersDiv = document.getElementById('recentOrders');
     
     // Obtener órdenes de Firestore
-    const ordersRef = window.db ? collection(window.db, 'vibewear_orders') : null;
-    
-    if (!ordersRef) {
-      ordenesContainer.innerHTML = '<p style="color:var(--gray);text-align:center;padding:40px;">Sin datos disponibles</p>';
-      recentOrdersDiv.innerHTML = '<p style="color:var(--gray);">No hay órdenes aún</p>';
+    if (!window.db || !window.collection || !window.getDocs) {
+      console.warn('Firestore aún no está listo');
+      ordenesContainer.innerHTML = '<p style="color:var(--gray);text-align:center;padding:40px;">Cargando...</p>';
       return;
     }
     
-    const querySnapshot = await getDocs(ordersRef);
+    const ordersRef = window.collection(window.db, 'vibewear_orders');
+    const querySnapshot = await window.getDocs(ordersRef);
     
     if (querySnapshot.empty) {
       ordenesContainer.innerHTML = `
@@ -85,10 +84,18 @@ async function loadOrders() {
       recentOrdersDiv.innerHTML = recentHtml;
     }
     
+    console.log('✓ Órdenes cargadas correctamente');
+    
   } catch (error) {
-    console.error('Error cargando órdenes:', error);
-    document.getElementById('ordenesContainer').innerHTML = '<p style="color:var(--gray);text-align:center;padding:40px;">Error al cargar órdenes</p>';
+    console.error('❌ Error cargando órdenes:', error);
+    const container = document.getElementById('ordenesContainer');
+    if (container) {
+      container.innerHTML = '<p style="color:var(--gray);text-align:center;padding:40px;">Error al cargar órdenes</p>';
+    }
   }
 }
+
+// Hacer disponible globalmente
+window.loadOrders = loadOrders;
 
 console.log('✓ Admin Orders Module Loaded');

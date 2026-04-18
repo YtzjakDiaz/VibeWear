@@ -17,6 +17,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Exponer globalmente para otros módulos
+window.db = db;
+window.auth = auth;
+window.collection = collection;
+window.getDocs = getDocs;
+window.query = query;
+window.where = where;
+
 // Email del propietario
 const OWNER_EMAIL = 'ytzjakdawid1210@gmail.com';
 
@@ -49,13 +57,36 @@ onAuthStateChanged(auth, async (user) => {
       
       // Cargar datos del dashboard
       console.log('📊 Cargando datos...');
-      loadDashboardData();
-      loadProducts();
-      loadOrders();
-      loadAdmins();
-      loadAnalytics();
       
-      console.log('✓ Dashboard cargado');
+      // Esperar a que los módulos se carguen
+      setTimeout(async () => {
+        try {
+          console.log('⏳ Iniciando carga de datos...');
+          await loadDashboardData();
+          console.log('✓ Dashboard data cargado');
+        } catch (e) { console.error('Error en dashboard:', e); }
+        
+        try {
+          await loadProducts();
+        } catch (e) { console.error('Error en productos:', e); }
+        
+        try {
+          await loadOrders();
+        } catch (e) { console.error('Error en órdenes:', e); }
+        
+        try {
+          await loadAdmins();
+        } catch (e) { console.error('Error en admins:', e); }
+        
+        try {
+          if (typeof window.loadAnalytics === 'function') {
+            await window.loadAnalytics();
+          }
+        } catch (e) { console.error('Error en analytics:', e); }
+        
+        console.log('✓ Todos los datos cargados correctamente');
+      }, 500);
+      
       return;
     }
     
@@ -75,13 +106,21 @@ onAuthStateChanged(auth, async (user) => {
         const emailSpan = document.getElementById('adminUserEmail');
         if (emailSpan) emailSpan.textContent = user.email;
         
-        loadDashboardData();
-        loadProducts();
-        loadOrders();
-        loadAdmins();
-        loadAnalytics();
-        
-        console.log('✓ Admin autenticado');
+        // Cargar datos después de que los módulos estén listos
+        setTimeout(async () => {
+          try {
+            await loadDashboardData();
+            await loadProducts();
+            await loadOrders();
+            await loadAdmins();
+            if (typeof window.loadAnalytics === 'function') {
+              await window.loadAnalytics();
+            }
+            console.log('✓ Admin dashboard cargado');
+          } catch (error) {
+            console.error('Error cargando admin dashboard:', error);
+          }
+        }, 500);
       } else {
         console.log('❌ No es admin');
         await signOut(auth);
@@ -220,8 +259,8 @@ function showLoginForm() {
   }
 }
 
-// Manejar login de admin
-async function handleAdminLogin(e) {
+// Manejar login de admin - Hacer accesible globalmente
+window.handleAdminLogin = async function(e) {
   e.preventDefault();
   
   const email = document.getElementById('loginEmail').value;
@@ -263,7 +302,7 @@ async function handleAdminLogin(e) {
       messageDiv.textContent = '❌ Error: ' + error.message;
     }
   }
-}
+};
 
 // Logout
 window.logoutAdmin = async function() {
@@ -309,36 +348,61 @@ function showError(message) {
 // Funciones placeholder (se implementarán en archivos separados)
 async function loadDashboardData() {
   try {
-    // Contar órdenes
-    const ordersRef = collection(db, 'vibewear_orders');
-    const ordersSnapshot = await getDocs(ordersRef);
-    const totalOrders = ordersSnapshot.size;
-    document.getElementById('totalOrders').textContent = totalOrders;
+    console.log('📊 Iniciando carga de dashboard...');
     
-    console.log('✓ Dashboard cargado');
+    // Contar órdenes
+    try {
+      console.log('📦 Buscando órdenes...');
+      const ordersRef = collection(db, 'vibewear_orders');
+      const ordersSnapshot = await getDocs(ordersRef);
+      const totalOrders = ordersSnapshot.size;
+      document.getElementById('totalOrders').textContent = totalOrders;
+      console.log('✓ Órdenes cargadas:', totalOrders);
+    } catch (error) {
+      console.warn('⚠️ Error cargando órdenes:', error);
+      document.getElementById('totalOrders').textContent = '0';
+    }
+    
+    console.log('✓ Dashboard cargado correctamente');
   } catch (error) {
-    console.error('Error cargando dashboard:', error);
+    console.error('❌ Error cargando dashboard:', error);
   }
 }
 
 async function loadProducts() {
-  console.log('Cargando productos...');
-  // Se implementará en admin-products.js
+  try {
+    console.log('📦 Cargando productos desde admin-products.js...');
+    // Se implementará en admin-products.js
+    if (typeof window.loadProducts === 'function') {
+      await window.loadProducts();
+    }
+  } catch (error) {
+    console.error('Error en loadProducts:', error);
+  }
 }
 
 async function loadOrders() {
-  console.log('Cargando órdenes...');
-  // Se implementará en admin-orders.js
+  try {
+    console.log('🛒 Cargando órdenes desde admin-orders.js...');
+    // Se implementará en admin-orders.js
+    if (typeof window.loadOrders === 'function') {
+      await window.loadOrders();
+    }
+  } catch (error) {
+    console.error('Error en loadOrders:', error);
+  }
 }
 
 async function loadAdmins() {
   try {
+    console.log('👥 Cargando admins...');
     const adminsRef = collection(db, 'vibewear_admins');
     const adminsSnapshot = await getDocs(adminsRef);
     const adminsList = document.getElementById('adminsList');
     
     if (adminsSnapshot.empty) {
       adminsList.innerHTML = '<p style="color:var(--gray);">No hay admins</p>';
+      console.log('⚠️ No hay admins registrados');
       return;
     }
     
@@ -358,15 +422,23 @@ async function loadAdmins() {
     
     adminsList.innerHTML = html;
     document.getElementById('totalAdmins').textContent = adminsSnapshot.size;
+    console.log('✓ Admins cargados:', adminsSnapshot.size);
     
   } catch (error) {
-    console.error('Error cargando admins:', error);
+    console.error('❌ Error cargando admins:', error);
   }
 }
 
+// Hacer global
+window.loadAdmins = loadAdmins;
+
 async function loadAnalytics() {
-  console.log('Cargando analytics...');
-  // Se implementará en admin-analytics.js
+  try {
+    console.log('📈 Cargando analytics desde admin-analytics.js...');
+    // Se implementará en admin-analytics.js
+  } catch (error) {
+    console.error('Error en loadAnalytics:', error);
+  }
 }
 
 // Agregar admin

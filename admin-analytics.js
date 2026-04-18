@@ -3,14 +3,14 @@
 async function loadAnalytics() {
   try {
     // Obtener órdenes de Firestore
-    const ordersRef = window.db ? collection(window.db, 'vibewear_orders') : null;
-    
-    if (!ordersRef) {
+    if (!window.db || !window.collection || !window.getDocs) {
+      console.warn('Firestore aún no está listo para analytics');
       loadAnalyticsUI({});
       return;
     }
     
-    const querySnapshot = await getDocs(ordersRef);
+    const ordersRef = window.collection(window.db, 'vibewear_orders');
+    const querySnapshot = await window.getDocs(ordersRef);
     
     let analytics = {
       topProducts: {},
@@ -125,5 +125,8 @@ function loadAnalyticsUI(analytics) {
     totalOrdersDiv.textContent = (analytics.totalOrders || 0);
   }
 }
+
+// Hacer disponible globalmente
+window.loadAnalytics = loadAnalytics;
 
 console.log('✓ Admin Analytics Module Loaded');
