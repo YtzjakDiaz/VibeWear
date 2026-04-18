@@ -21,7 +21,17 @@
     .status-pending { background: rgba(255,193,7,0.2); color: #ffc107; }
     .status-confirmed { background: rgba(76,175,80,0.2); color: #4caf50; }
     .status-shipped { background: rgba(33,150,243,0.2); color: #2196f3; }
+    .avatar-upload { position: relative; }
+    .avatar-upload input[type="file"] { display: none; }
+    .avatar-upload-btn { position: absolute; bottom: 0; right: 0; background: var(--pink); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: all 0.3s; }
+    .avatar-upload-btn:hover { background: var(--pink-light); transform: scale(1.1); }
+    .upload-progress { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+    .upload-progress-bar { height: 100%; background: var(--pink); width: 0%; transition: width 0.3s; }
   </style>
+  <!-- Scripts necesarios -->
+  <script src="cart.js"></script>
+  <script src="firebase-auth.js"></script>
+  <script type="module" src="navbar-auth.js"></script>
 </head>
 <body class="page-enter">
 
@@ -37,7 +47,7 @@
     </div>
     <div style="flex:1;"></div>
     <div style="display:flex;gap:15px;align-items:center;">
-      <div class="nav-cart" onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
+      <div class="nav-cart" data-cart onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
@@ -100,7 +110,14 @@
         <!-- PROFILE CARD -->
         <div class="profile-card">
           <div style="text-align:center;">
-            <img id="profileAvatar" src="" alt="Avatar" style="width:140px;height:140px;border-radius:50%;border:3px solid var(--pink);object-fit:cover;margin-bottom:20px;" />
+            <div class="avatar-upload">
+              <img id="profileAvatar" src="" alt="Avatar" style="width:140px;height:140px;border-radius:50%;border:3px solid var(--pink);object-fit:cover;margin-bottom:20px;" />
+              <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()" title="Cambiar foto de perfil">📷</button>
+              <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)" />
+            </div>
+            <div id="uploadProgress" class="upload-progress" style="display:none;">
+              <div id="uploadProgressBar" class="upload-progress-bar"></div>
+            </div>
             <h2 id="profileName" style="font-family:var(--font-display);font-size:26px;color:var(--white);margin:0 0 8px;">Cargando...</h2>
             <p id="profileEmail" style="color:var(--gray);font-size:12px;margin-bottom:25px;letter-spacing:0.5px;">email@example.com</p>
             <p style="color:var(--gray);font-size:10px;letter-spacing:1px;text-transform:uppercase;">Miembro desde <span id="memberSince">-</span></p>
@@ -207,6 +224,114 @@
   <script src="shared.js"></script>
   <script src="breadcrumb.js"></script>
   <script src="auth-system.js"></script>
+  
+  <!-- Función para manejar carga de imágenes -->
+  <script>
+    // Comprimir y validar imagen
+    function handleAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validar tamaño original
+      if (file.size > 10 * 1024 * 1024) { // 10MB
+        showNotification('❌ La imagen debe ser menor a 10MB');
+        event.target.value = '';
+        return;
+      }
+
+      // Validar tipo
+      if (!file.type.startsWith('image/')) {
+        showNotification('❌ Solo se permiten imágenes');
+        event.target.value = '';
+        return;
+      }
+
+      showNotification('📸 Procesando imagen...');
+      
+      // Leer la imagen
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          // Crear canvas y comprimir
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Establecer tamaño máximo
+          const maxWidth = 500;
+          const maxHeight = 500;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convertir a blob comprimido (JPEG 0.7 calidad)
+          canvas.toBlob(function(blob) {
+            // Validar tamaño comprimido
+            if (blob.size > 10 * 1024 * 1024) {
+              showNotification('❌ Error: Imagen comprimida sigue siendo muy grande');
+              return;
+            }
+            
+            // Mostrar progreso
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('uploadProgressBar');
+            progressDiv.style.display = 'block';
+            
+            // Simular progreso (0-100% en 1 segundo)
+            let progress = 0;
+            const interval = setInterval(() => {
+              progress += Math.random() * 30;
+              if (progress > 100) progress = 100;
+              progressBar.style.width = progress + '%';
+              
+              if (progress >= 100) {
+                clearInterval(interval);
+                
+                // Convertir blob a data URL
+                const reader2 = new FileReader();
+                reader2.onload = function(e2) {
+                  const photoURL = e2.target.result;
+                  
+                  // Guardar en localStorage
+                  const user = authSystem.getCurrentUser();
+                  if (user) {
+                    user.photoURL = photoURL;
+                    localStorage.setItem(`vibewear-profile-${user.uid}`, JSON.stringify(user));
+                    document.getElementById('profileAvatar').src = photoURL;
+                    
+                    setTimeout(() => {
+                      progressDiv.style.display = 'none';
+                      progressBar.style.width = '0%';
+                      showNotification('✅ Foto de perfil actualizada');
+                    }, 500);
+                  }
+                };
+                reader2.readAsDataURL(blob);
+              }
+            }, 100);
+          }, 'image/jpeg', 0.7);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+  
   <script>
     // Verificar autenticación
     if (!authSystem.hasSession()) {

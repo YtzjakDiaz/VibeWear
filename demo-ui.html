@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo - UI Components | VibeWear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ui-animations.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="ui-components.js"></script>
+  <style>
+    .demo-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .demo-section {
+      margin-bottom: 60px;
+      padding: 30px;
+      background: rgba(224, 162, 201, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(224, 162, 201, 0.2);
+    }
+    
+    .demo-section h2 {
+      color: var(--pink);
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    
+    .demo-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .demo-buttons button {
+      padding: 12px 20px;
+      background: var(--pink);
+      color: var(--black);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .demo-buttons button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(224, 162, 201, 0.3);
+    }
+    
+    .code-block {
+      background: var(--black);
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+      overflow-x: auto;
+    }
+    
+    .code-block code {
+      color: var(--pink);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .card {
+      background: var(--black-soft);
+      border: 1px solid rgba(224, 162, 201, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+    }
+    
+    .accordion {
+      background: var(--black-soft);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    
+    .loader-demo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .loader-item {
+      text-align: center;
+    }
+    
+    .loader-item label {
+      display: block;
+      color: var(--gray);
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body style="background: var(--black); color: var(--white);">
+
+<div class="demo-container">
+  <h1 style="color: var(--pink); text-align: center; margin-bottom: 50px;">🎨 UI Components Demo</h1>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div class="demo-section">
+    <h2>📬 Toast Notifications</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Notificaciones que aparecen en la esquina superior derecha</p>
+    
+    <div class="demo-buttons">
+      <button onclick="showToast('✓ Éxito completado', 'success')">Éxito</button>
+      <button onclick="showToast('❌ Hubo un error', 'error')">Error</button>
+      <button onclick="showToast('⚠ Advertencia importante', 'warning')">Advertencia</button>
+      <button onclick="showToast('ⓘ Información útil', 'info')">Información</button>
+    </div>
+    
+    <div class="code-block">
+      <code>window.showToast(message, type, duration);<br/>// type: 'success' | 'error' | 'warning' | 'info'</code>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="demo-section">
+    <h2>🪟 Modals con Transiciones</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Ventanas emergentes con animaciones suaves</p>
+    
+    <div class="demo-buttons">
+      <button onclick="demoSimpleModal()">Modal Simple</button>
+      <button onclick="demoConfirmModal()">Modal Confirmación</button>
+    </div>
+    
+    <div class="code-block">
+      <code>window.showModal(title, content, buttons);</code>
+    </div>
+  </div>
+
+  <!-- LOADERS -->
+  <div class="demo-section">
+    <h2>⏳ Loaders Animados</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Indicadores de carga con diferentes estilos</p>
+    
+    <div class="loader-demo">
+      <div class="loader-item">
+        <label>Spinner</label>
+        <div class="spinner"></div>
+      </div>
+      <div class="loader-item">
+        <label>Pulsing Dots</label>
+        <div class="pulse-dots">
+          <div class="pulse-dot"></div>
+          <div class="pulse-dot"></div>
+          <div class="pulse-dot"></div>
+        </div>
+      </div>
+      <div class="loader-item">
+        <label>Skeleton</label>
+        <div class="skeleton" style="width: 150px; height: 20px;"></div>
+      </div>
+    </div>
+    
+    <div class="demo-buttons">
+      <button onclick="demoLoader()">Mostrar Loader Global</button>
+    </div>
+    
+    <div class="code-block">
+      <code>window.showLoader(message);<br/>window.hideLoader();</code>
+    </div>
+  </div>
+
+  <!-- HOVER EFFECTS -->
+  <div class="demo-section">
+    <h2>🎯 Hover Effects</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Efectos de hover interactivos</p>
+    
+    <div class="demo-grid">
+      <div class="card hover-scale" style="text-align: center;">
+        <span>Scale</span>
+        <p style="font-size: 12px; color: var(--gray);">Agrandar</p>
+      </div>
+      <div class="card hover-lift" style="text-align: center;">
+        <span>Lift</span>
+        <p style="font-size: 12px; color: var(--gray);">Elevar</p>
+      </div>
+      <div class="card hover-glow" style="text-align: center;">
+        <span>Glow</span>
+        <p style="font-size: 12px; color: var(--gray);">Brillo</p>
+      </div>
+      <div class="card hover-rotate" style="text-align: center;">
+        <span>Rotate</span>
+        <p style="font-size: 12px; color: var(--gray);">Rotación</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKELETON LOADING -->
+  <div class="demo-section">
+    <h2>💫 Skeleton Loading</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Efecto de carga tipo "shimmer"</p>
+    
+    <div class="demo-buttons">
+      <button onclick="demoSkeletonLoading()">Mostrar Skeleton</button>
+    </div>
+    
+    <div id="skeletonDemo"></div>
+  </div>
+
+  <!-- ACORDEONES -->
+  <div class="demo-section">
+    <h2>🎐 Acordeones</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Secciones expandibles con animaciones</p>
+    
+    <div class="accordion">
+      <button class="accordion-header">
+        <span>¿Cómo funciona el envío?</span>
+        <span class="accordion-arrow">▼</span>
+      </button>
+      <div class="accordion-body">
+        <p>El envío se realiza en 3-5 días hábiles a través de nuestros socios logísticos. El costo varía según el monto de la compra.</p>
+      </div>
+    </div>
+    
+    <div class="accordion">
+      <button class="accordion-header">
+        <span>¿Cuál es la política de devoluciones?</span>
+        <span class="accordion-arrow">▼</span>
+      </button>
+      <div class="accordion-body">
+        <p>Puedes devolver productos dentro de 30 días de la compra. El producto debe estar en condiciones originales.</p>
+      </div>
+    </div>
+    
+    <div class="accordion">
+      <button class="accordion-header">
+        <span>¿Aceptan cambios de talla?</span>
+        <span class="accordion-arrow">▼</span>
+      </button>
+      <div class="accordion-body">
+        <p>Sí, puedes cambiar la talla sin costo adicional dentro de los primeros 30 días de compra.</p>
+      </div>
+    </div>
+    
+    <div class="code-block">
+      <code>window.initAccordions();</code>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="demo-section">
+    <h2>📊 Progress Bar</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Barra de progreso animada</p>
+    
+    <div class="progress-bar">
+      <div class="progress-bar-fill"></div>
+    </div>
+  </div>
+
+  <!-- TRANSICIONES DE PÁGINA -->
+  <div class="demo-section">
+    <h2>↔️ Page Transitions</h2>
+    <p style="color: var(--gray); margin-bottom: 20px;">Transiciones suaves entre páginas</p>
+    
+    <div class="code-block">
+      <code>// Los elementos con esta clase se animan automáticamente<br/>&lt;div class="page-transition"&gt;Contenido&lt;/div&gt;</code>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function demoSimpleModal() {
+    window.showModal(
+      '¡Bienvenido!',
+      '<p style="color: var(--gray); margin: 0;">Este es un modal de demostración con transiciones suaves.</p>',
+      [
+        { text: 'Cerrar', class: 'btn-primary' }
+      ]
+    );
+  }
+  
+  function demoConfirmModal() {
+    window.showModal(
+      'Confirmar Acción',
+      '<p style="color: var(--gray); margin: 0;">¿Estás seguro de que quieres continuar?</p>',
+      [
+        { text: 'Cancelar', class: 'btn-primary' },
+        { text: 'Confirmar', class: 'btn-primary', onClick: () => window.showToast('¡Confirmado!', 'success') }
+      ]
+    );
+  }
+  
+  function demoLoader() {
+    const loader = window.showLoader('Procesando...');
+    setTimeout(() => {
+      window.hideLoader();
+      window.showToast('¡Listo!', 'success');
+    }, 2000);
+  }
+  
+  function demoSkeletonLoading() {
+    const demo = document.getElementById('skeletonDemo');
+    window.showSkeletonGrid('skeletonDemo', 3);
+    
+    setTimeout(() => {
+      demo.innerHTML = '<p style="color: var(--pink); text-align: center;">✓ Contenido cargado</p>';
+    }, 2000);
+  }
+  
+  // Inicializar acordeones
+  window.initAccordions();
+</script>
+
+</body>
+</html>

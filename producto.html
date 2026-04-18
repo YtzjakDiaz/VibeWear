@@ -6,6 +6,7 @@
   <title>Producto - VibeWear | Streetwear</title>
   <link rel="icon" href="images/VIBEWEAR-1.ico" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ui-animations.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -13,6 +14,7 @@
   <script src="search-advanced.js"></script>
   <script src="breadcrumb.js"></script>
   <script src="auth-system.js"></script>
+  <script src="ui-components.js"></script>
 </head>
 <body class="page-enter">
 
@@ -33,7 +35,7 @@
       <li><a href="contacto.html">Contacto</a></li>
     </ul>
     <div style="display:flex;gap:15px;align-items:center;">
-      <div class="nav-cart" onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
+      <div class="nav-cart" data-cart onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
@@ -219,7 +221,7 @@
         descripcion: 'Camiseta oversized premium con estampado de Eladio Carrión. Tela 100% algodón de alta calidad con acabado suave.',
         sku: 'VW-TSH-2025-001',
         material: '100% Algodón',
-        colores: [{color: '#ffffff', nombre: 'Blanco'}, {color: '#1a1a1a', nombre: 'Negro'}],
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
         stars: 5,
         reviews: 156
       },
@@ -253,7 +255,7 @@
         descripcion: 'Camiseta oversized con estampado de Álvarito Díaz. Diseño único y exclusivo para VibeWear.',
         sku: 'VW-TSH-2025-003',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#e0a2c9', nombre: 'Rosa'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 134
       },
@@ -287,7 +289,7 @@
         descripcion: 'Camiseta oversized con diseño Sayonara. Perfecto para un look relajado y moderno.',
         sku: 'VW-TSH-2025-005',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#2c3e50', nombre: 'Azul Marino'}],
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
         stars: 5,
         reviews: 145
       },
@@ -321,7 +323,7 @@
         descripcion: 'Camiseta oversized con estampado de Blessd. Diseño urbano exclusivo.',
         sku: 'VW-TSH-2025-007',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#4a4a4a', nombre: 'Gris Oscuro'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 123
       },
@@ -338,7 +340,7 @@
         descripcion: 'Camiseta oversized con tributo a Gustavo Cerati. Diseño nostálgico.',
         sku: 'VW-TSH-2025-008',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#8b0000', nombre: 'Rojo Profundo'}],
+        colores: [{color: '#ffffff', nombre: 'Blanco'}],
         stars: 5,
         reviews: 156
       },
@@ -355,7 +357,7 @@
         descripcion: 'Camiseta oversized con estampado de Kanye West. Diseño icónico.',
         sku: 'VW-TSH-2025-009',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#d4af37', nombre: 'Dorado'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 178
       },
@@ -406,7 +408,7 @@
         descripcion: 'Camiseta oversized con diseño Yan Block. Exclusivo VibeWear.',
         sku: 'VW-TSH-2025-012',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#696969', nombre: 'Gris'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 145
       },
@@ -423,7 +425,7 @@
         descripcion: 'Camiseta oversized con estampado de Trueno. Diseño urbano.',
         sku: 'VW-TSH-2025-013',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#2f4f4f', nombre: 'Verde Oscuro'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 167
       },
@@ -474,7 +476,7 @@
         descripcion: 'Camiseta oversized con estampado de The Weeknd. Diseño artista.',
         sku: 'VW-TSH-2025-016',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#8b0000', nombre: 'Vino'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 201
       },
@@ -525,7 +527,7 @@
         descripcion: 'Camiseta oversized con estampado de Black Clover. Diseño anime.',
         sku: 'VW-TSH-2025-019',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#4b0082', nombre: 'Púrpura'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 189
       },
@@ -542,7 +544,7 @@
         descripcion: 'Camiseta con estampado de Dexter Morgan. Diseño serie de TV.',
         sku: 'VW-TSH-2025-020',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#ff6b6b', nombre: 'Rojo'}],
+        colores: [{color: '#1a1a1a', nombre: 'Negro'}],
         stars: 5,
         reviews: 167
       },
@@ -661,7 +663,7 @@
         descripcion: 'Camiseta con diseño de edición especial cartoon. Nostalgia animada.',
         sku: 'VW-TSH-2025-027',
         material: '100% Algodón',
-        colores: [{color: '#1a1a1a', nombre: 'Negro'}, {color: '#ffffff', nombre: 'Blanco'}, {color: '#2c3e50', nombre: 'Azul Marino'}, {color: '#e74c3c', nombre: 'Rojo'}, {color: '#f39c12', nombre: 'Naranja'}, {color: '#16a085', nombre: 'Verde Esmeralda'}],
+        colores: [{color: '#8EEDE5', nombre: 'Azul'}, {color: '#51BD46', nombre: 'Verde'}, {color: '#A882C4', nombre: 'Morado'}, {color: 'rgb(164, 167, 20)', nombre: 'Amarrillo'}, {color: '#d88e17', nombre: 'Naranja'}, {color: '#ADAA78', nombre: 'Coco'}],
         stars: 5,
         reviews: 167
       },

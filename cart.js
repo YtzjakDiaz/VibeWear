@@ -26,7 +26,18 @@ function addToCart(prodId, prodName, prodPrice, prodImage, quantity = 1, size = 
 
   saveCart();
   updateCartUI();
-  showNotification(`${prodName} agregado al carrito ✓`);
+  
+  // Animaciones modernas
+  if (typeof window.showToast === 'function') {
+    window.showToast(`✓ ${prodName} agregado al carrito`, 'success', 5000);
+  } else {
+    showNotification(`${prodName} agregado al carrito ✓`);
+  }
+  
+  if (typeof window.bumpCart === 'function') {
+    window.bumpCart();
+  }
+  
   return true;
 }
 
@@ -62,7 +73,12 @@ function clearCart() {
   cart = [];
   saveCart();
   updateCartUI();
-  showNotification('Carrito vaciado');
+  
+  if (typeof window.showToast === 'function') {
+    window.showToast('Carrito vaciado', 'info', 2000);
+  } else {
+    showNotification('Carrito vaciado');
+  }
 }
 
 // ========== CALCULAR TOTALES ==========
@@ -123,6 +139,12 @@ function updateCartModal() {
   const cartItems = document.getElementById('cartItems');
   const cartEmpty = document.getElementById('cartEmpty');
   const cartSummary = document.getElementById('cartSummary');
+  
+  // Actualizar contador dentro del modal
+  const cartItemCount = document.getElementById('cartItemCount');
+  if (cartItemCount) {
+    cartItemCount.textContent = getCartItemCount();
+  }
 
   if (cart.length === 0) {
     cartItems.innerHTML = '';
@@ -253,15 +275,15 @@ function createCartModal() {
 
   document.body.appendChild(modal);
 
-  // Cerrar carrito al hacer click fuera
-  document.addEventListener('click', (e) => {
+  // Cerrar carrito al hacer click fuera (COMENTADO - CIERRE MANUAL)
+  /*document.addEventListener('click', (e) => {
     if (!modal.contains(e.target) && e.target.id !== 'cartCount' && !e.target.closest('.nav-cart')) {
       const isOpen = modal.style.display === 'flex';
       if (isOpen && e.target.id !== 'hamburger' && !e.target.closest('.nav-hamburger')) {
         modal.style.display = 'none';
       }
     }
-  });
+  });*/
 
   updateCartModal();
 }
