@@ -225,111 +225,76 @@
   <script src="breadcrumb.js"></script>
   <script src="auth-system.js"></script>
   
-  <!-- Función para manejar carga de imágenes -->
-  <script>
-    // Comprimir y validar imagen
-    function handleAvatarUpload(event) {
+  <!-- Función para manejar carga de imágenes con Firebase Storage -->
+  <script type="module">
+    import { uploadProfileImage, deleteProfileImage, getPhotoURLFromFirestore } from './profile-image-handler.js';
+    
+    // Hacer disponible globalmente para scripts no-módulos
+    window.getPhotoURLFromFirestore = getPhotoURLFromFirestore;
+    
+    // Subir imagen de perfil
+    async function handleAvatarUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      // Validar tamaño original
-      if (file.size > 10 * 1024 * 1024) { // 10MB
-        showNotification('❌ La imagen debe ser menor a 10MB');
-        event.target.value = '';
-        return;
+      try {
+        showNotification('📸 Subiendo imagen...');
+        
+        // Mostrar progreso
+        const progressDiv = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('uploadProgressBar');
+        progressDiv.style.display = 'block';
+        progressBar.style.width = '0%';
+        
+        // Simular progreso
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress += Math.random() * 40;
+          if (progress > 95) progress = 95;
+          progressBar.style.width = progress + '%';
+        }, 200);
+        
+        // Obtener usuario actual
+        const user = authSystem.getCurrentUser();
+        if (!user) {
+          throw new Error('Usuario no autenticado');
+        }
+        
+        // Eliminar imagen anterior si existe
+        if (user.photoURL && user.photoURL.includes('firebasestorage')) {
+          await deleteProfileImage(user.uid, user.photoURL);
+        }
+        
+        // Subir nueva imagen
+        const photoURL = await uploadProfileImage(file, user.uid);
+        
+        // Guardar URL en el usuario
+        user.photoURL = photoURL;
+        localStorage.setItem(`vibewear-profile-${user.uid}`, JSON.stringify(user));
+        
+        // Actualizar imagen en la página
+        document.getElementById('profileAvatar').src = photoURL;
+        
+        // Completar progreso
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        
+        setTimeout(() => {
+          progressDiv.style.display = 'none';
+          progressBar.style.width = '0%';
+          showNotification('✅ Foto de perfil actualizada');
+        }, 500);
+        
+      } catch (error) {
+        console.error('Error uploading avatar:', error);
+        showNotification('❌ ' + error.message);
+        document.getElementById('uploadProgress').style.display = 'none';
       }
-
-      // Validar tipo
-      if (!file.type.startsWith('image/')) {
-        showNotification('❌ Solo se permiten imágenes');
-        event.target.value = '';
-        return;
-      }
-
-      showNotification('📸 Procesando imagen...');
       
-      // Leer la imagen
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          // Crear canvas y comprimir
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          // Establecer tamaño máximo
-          const maxWidth = 500;
-          const maxHeight = 500;
-          let width = img.width;
-          let height = img.height;
-          
-          if (width > height) {
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-          } else {
-            if (height > maxHeight) {
-              width = Math.round((width * maxHeight) / height);
-              height = maxHeight;
-            }
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          // Convertir a blob comprimido (JPEG 0.7 calidad)
-          canvas.toBlob(function(blob) {
-            // Validar tamaño comprimido
-            if (blob.size > 10 * 1024 * 1024) {
-              showNotification('❌ Error: Imagen comprimida sigue siendo muy grande');
-              return;
-            }
-            
-            // Mostrar progreso
-            const progressDiv = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('uploadProgressBar');
-            progressDiv.style.display = 'block';
-            
-            // Simular progreso (0-100% en 1 segundo)
-            let progress = 0;
-            const interval = setInterval(() => {
-              progress += Math.random() * 30;
-              if (progress > 100) progress = 100;
-              progressBar.style.width = progress + '%';
-              
-              if (progress >= 100) {
-                clearInterval(interval);
-                
-                // Convertir blob a data URL
-                const reader2 = new FileReader();
-                reader2.onload = function(e2) {
-                  const photoURL = e2.target.result;
-                  
-                  // Guardar en localStorage
-                  const user = authSystem.getCurrentUser();
-                  if (user) {
-                    user.photoURL = photoURL;
-                    localStorage.setItem(`vibewear-profile-${user.uid}`, JSON.stringify(user));
-                    document.getElementById('profileAvatar').src = photoURL;
-                    
-                    setTimeout(() => {
-                      progressDiv.style.display = 'none';
-                      progressBar.style.width = '0%';
-                      showNotification('✅ Foto de perfil actualizada');
-                    }, 500);
-                  }
-                };
-                reader2.readAsDataURL(blob);
-              }
-            }, 100);
-          }, 'image/jpeg', 0.7);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      event.target.value = '';
     }
+    
+    window.handleAvatarUpload = handleAvatarUpload;
   </script>
   
   <script>
@@ -344,7 +309,21 @@
     if (user) {
       document.getElementById('profileName').textContent = user.displayName;
       document.getElementById('profileEmail').textContent = user.email;
-      document.getElementById('profileAvatar').src = user.photoURL;
+      
+      // Cargar foto real desde Firestore si existe (manejo con async IIFE)
+      (async () => {
+        let photoURL = user.photoURL;
+        try {
+          const realPhotoURL = await getPhotoURLFromFirestore(user.uid);
+          if (realPhotoURL) {
+            photoURL = realPhotoURL;
+          }
+        } catch (error) {
+          console.warn('Could not load photo from Firestore:', error);
+        }
+        document.getElementById('profileAvatar').src = photoURL;
+      })();
+      
       document.getElementById('inputName').value = user.displayName;
       document.getElementById('memberSince').textContent = new Date(user.createdAt).toLocaleDateString('es-CO');
 

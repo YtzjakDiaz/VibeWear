@@ -181,7 +181,26 @@ export async function updateUserProfile(profileData) {
     const user = auth.currentUser;
     if (!user) throw new Error('No hay usuario autenticado');
     
-    await updateProfile(user, profileData);
+    // Si viene con photoURL largo, guardar en Firestore y usar URL corta en Auth
+    let authData = { ...profileData };
+    
+    if (authData.photoURL && authData.photoURL.includes('firebasestorage')) {
+      // Es una URL larga de Firebase Storage
+      // Guardar URL completa en Firestore
+      const { db } = await import('./firebase-config.js');
+      const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js');
+      
+      const userDocRef = doc(db, 'users', user.uid);
+      await setDoc(userDocRef, {
+        photoURL: authData.photoURL,
+        photoUpdatedAt: new Date().toISOString()
+      }, { merge: true });
+      
+      // Usar URL corta en Auth (dicebear o placeholder)
+      authData.photoURL = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+    }
+    
+    await updateProfile(user, authData);
     console.log('✓ Perfil actualizado');
   } catch (error) {
     console.error('✗ Error actualizando perfil:', error.message);

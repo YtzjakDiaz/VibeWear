@@ -225,6 +225,7 @@
     import { getCurrentUser, onAuthChange, logout, changePassword, updateUserProfile, getErrorMessage } from './firebase-auth.js';
     import { getOrdersByEmail } from './firebase-orders.js';
     import { auth } from './firebase-config.js';
+    import { uploadProfileImage, deleteProfileImage, getPhotoURLFromFirestore } from './profile-image-handler.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
 
     let currentUser = null;
@@ -268,10 +269,23 @@
     };
 
     // LOAD PROFILE
-    function loadUserProfile() {
+    async function loadUserProfile() {
       document.getElementById('userName').textContent = currentUser.displayName || 'Usuario';
       document.getElementById('userEmail').textContent = currentUser.email;
-      document.getElementById('userAvatar').src = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+      
+      // Cargar foto real desde Firestore si existe
+      let photoURL = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+      
+      try {
+        const realPhotoURL = await getPhotoURLFromFirestore(currentUser.uid);
+        if (realPhotoURL) {
+          photoURL = realPhotoURL;
+        }
+      } catch (error) {
+        console.warn('Could not load photo from Firestore:', error);
+      }
+      
+      document.getElementById('userAvatar').src = photoURL;
 
       document.getElementById('editName').value = currentUser.displayName || '';
       document.getElementById('editEmail').value = currentUser.email;
@@ -367,6 +381,9 @@
     };
 
     // UPLOAD AVATAR
+    // Importar funciones de Firebase Storage
+    import { uploadProfileImage, deleteProfileImage } from './profile-image-handler.js';
+    
     window.uploadAvatar = async function(event) {
       const file = event.target.files?.[0];
       if (!file) return;
@@ -376,52 +393,63 @@
         return;
       }
 
-      if (file.size > 2 * 1024 * 1024) {
-        showNotification('❌ La imagen debe ser menor a 2MB');
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('❌ La imagen debe ser menor a 5MB');
+        return;
+      }
+
+      try {
+        showNotification('📸 Subiendo avatar...');
+        
+        // Eliminar avatar anterior si existe
+        if (currentUser.photoURL && currentUser.photoURL.includes('firebasestorage')) {
+          await deleteProfileImage(currentUser.uid, currentUser.photoURL);
+        }
+        
+        // Subir nuevo avatar
+        const photoURL = await uploadProfileImage(file, currentUser.uid);
+        
+        await updateUserProfile({
+          displayName: currentUser.displayName,
+          photoURL: photoURL
+        });
+        showNotification('✅ Avatar actualizado');
+        currentUser = getCurrentUser();
+        loadUserProfile();
+      } catch (error) {
+        showNotification('❌ Error: ' + getErrorMessage(error));
+      }
+    };
+
+    // PREVIEW PROFILE PHOTO
+    window.previewProfilePhoto = async function(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showNotification('❌ Solo se permiten imágenes');
+        event.target.value = '';
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('❌ La imagen debe ser menor a 5MB');
+        event.target.value = '';
         return;
       }
 
       try {
         const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const dataURL = e.target.result;
-            await updateUserProfile({
-              displayName: currentUser.displayName,
-              photoURL: dataURL
-            });
-            showNotification('✅ Avatar actualizado');
-            currentUser = getCurrentUser();
-            loadUserProfile();
-          } catch (error) {
-            showNotification('❌ Error: ' + getErrorMessage(error));
-          }
+        reader.onload = (e) => {
+          const preview = document.getElementById('photoPreview');
+          const previewImg = document.getElementById('previewImage');
+          previewImg.src = e.target.result;
+          preview.style.display = 'block';
         };
         reader.readAsDataURL(file);
       } catch (error) {
-        showNotification('❌ Error subiendo avatar: ' + getErrorMessage(error));
+        showNotification('❌ Error procesando imagen: ' + error.message);
       }
-    };
-
-    // PREVIEW PROFILE PHOTO
-    window.previewProfilePhoto = function(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      if (file.size > 2 * 1024 * 1024) {
-        showNotification('❌ La imagen debe ser menor a 2MB');
-        event.target.value = '';
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const preview = document.getElementById('photoPreview');
-        const previewImg = document.getElementById('previewImage');
-        previewImg.src = e.target.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
     };
 
     // PROFILE FORM
@@ -439,22 +467,23 @@
       try {
         let photoURL = currentUser.photoURL;
 
-        // Si se subió una foto, procesarla
+        // Si se subió una foto, procesarla con Firebase Storage
         if (photoInput.files && photoInput.files[0]) {
           const file = photoInput.files[0];
-          if (file.size > 2 * 1024 * 1024) {
-            showNotification('❌ La imagen debe ser menor a 2MB');
+          if (file.size > 5 * 1024 * 1024) {
+            showNotification('❌ La imagen debe ser menor a 5MB');
             return;
           }
 
-          await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              photoURL = e.target.result;
-              resolve();
-            };
-            reader.readAsDataURL(file);
-          });
+          showNotification('📸 Guardando imagen...');
+          
+          // Eliminar foto anterior si existe
+          if (currentUser.photoURL && currentUser.photoURL.includes('firebasestorage')) {
+            await deleteProfileImage(currentUser.uid, currentUser.photoURL);
+          }
+          
+          // Subir nueva foto a Firebase Storage
+          photoURL = await uploadProfileImage(file, currentUser.uid);
         }
 
         await updateUserProfile({
