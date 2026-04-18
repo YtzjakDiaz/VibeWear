@@ -930,135 +930,43 @@
       observer.observe(el);
     });
 
-    // Shopping Cart
-    let cart = JSON.parse(localStorage.getItem('vibewear-cart')) || {};
+    // Shopping Cart - Usar carrito global de cart.js
+    // El carrito modal se crea automáticamente por cart.js
+    // Solo necesitamos actualizar el contador cuando hay cambios
     
-    function updateCartCount() {
-      const total = Object.values(cart).reduce((sum, item) => sum + (item.qty || 1), 0);
-      document.getElementById('cartCount').textContent = total;
-    }
-    
-    function toggleCart() {
-      const panel = document.getElementById('cartPanel');
-      if (!panel) {
-        createCartPanel();
-        return;
-      }
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    }
-    
-    function createCartPanel() {
-      const html = `<div id="cartPanel" style="position:fixed;top:70px;right:20px;width:380px;background:white;border:2px solid var(--pink);border-radius:12px;padding:20px;box-shadow:0 12px 32px rgba(0,0,0,0.2);z-index:9999;max-height:600px;overflow-y:auto;font-family:var(--font-main);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;border-bottom:3px solid var(--pink);padding-bottom:12px;">
-          <h3 style="margin:0;color:var(--pink);font-size:18px;font-weight:bold;font-family:var(--font-main);letter-spacing:1px;">🛒 Carrito de Compras</h3>
-          <button onclick="document.getElementById('cartPanel').style.display='none'" style="background:none;border:none;font-size:28px;cursor:pointer;color:var(--pink);transition:transform 0.3s;font-weight:bold;">×</button>
-        </div>
-        <div id="cartItems" style="margin-bottom:15px;max-height:350px;overflow-y:auto;"></div>
-        <div id="cartEmpty" style="text-align:center;color:#999;padding:30px 20px;font-size:14px;font-family:var(--font-main);">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" style="margin-bottom:10px;">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
-          <p style="font-weight:500;">Tu carrito está vacío</p>
-          <a href="catalogo.html" style="color:var(--pink);text-decoration:underline;font-size:13px;font-weight:600;">Ver catálogo →</a>
-        </div>
-        <div id="cartTotal" style="border-top:3px solid var(--pink);border-bottom:3px solid var(--pink);padding:14px 0;font-weight:bold;margin:15px 0;display:none;text-align:right;font-family:var(--font-main);">
-          <span style="color:#666;font-size:13px;font-weight:600;letter-spacing:0.5px;">TOTAL: </span>
-          <span id="totalPrice" style="font-size:20px;color:var(--pink);font-weight:bold;">$0</span>
-        </div>
-        <div id="couponSection" style="display:none;margin:15px 0;padding:12px;background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:6px;">
-          <div style="display:flex;gap:8px;margin-bottom:8px;">
-            <input type="text" id="couponCode" placeholder="Código de cupón" style="flex:1;padding:8px 12px;background:var(--black-soft);border:1px solid rgba(224,162,201,0.3);border-radius:4px;color:var(--white);font-family:var(--font-body);font-size:11px;text-transform:uppercase;"/>
-            <button onclick="applyCouponCode()" style="background:var(--pink);color:var(--black);padding:8px 12px;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;letter-spacing:0.5px;">Aplicar</button>
-          </div>
-          <p id="couponMessage" style="font-size:11px;color:var(--gray);margin:0;"></p>
-        </div>
-        <button id="checkoutBtn" onclick="checkout()" style="display:none;width:100%;padding:14px;background:var(--pink);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold;margin-top:10px;transition:background 0.3s;font-family:var(--font-sub);letter-spacing:1.5px;font-size:13px;text-transform:uppercase;">PROCEDER AL PAGO</button>
-        <a href="catalogo.html" id="continueShopping" style="display:none;width:100%;padding:12px;background:rgba(224,162,201,0.1);color:var(--pink);border:2px solid var(--pink);border-radius:8px;cursor:pointer;font-weight:bold;margin-top:8px;text-align:center;text-decoration:none;font-family:var(--font-sub);letter-spacing:1.5px;display:block;font-size:13px;text-transform:uppercase;">SEGUIR COMPRANDO</a>
-      </div>`;
-      document.body.insertAdjacentHTML('beforeend', html);
-      renderCart();
-    }
-    
-    function renderCart() {
-      const itemsDiv = document.getElementById('cartItems');
-      const emptyDiv = document.getElementById('cartEmpty');
-      const totalDiv = document.getElementById('cartTotal');
-      const checkoutBtn = document.getElementById('checkoutBtn');
-      
-      if (Object.keys(cart).length === 0) {
-        itemsDiv.innerHTML = '';
-        emptyDiv.style.display = 'block';
-        totalDiv.style.display = 'none';
-        checkoutBtn.style.display = 'none';
-        return;
-      }
-      
-      emptyDiv.style.display = 'none';
-      totalDiv.style.display = 'block';
-      checkoutBtn.style.display = 'block';
-      
-      let total = 0;
-      itemsDiv.innerHTML = Object.entries(cart).map(([id, item]) => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
-        return `<div style="display:flex;flex-direction:column;padding:14px;border-bottom:1px solid #eee;background:#f9f9f9;border-radius:6px;margin-bottom:10px;font-family:var(--font-main);">
-          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
-            <div style="flex:1;">
-              <p style="margin:0;font-weight:bold;font-size:14px;color:var(--pink);letter-spacing:0.5px;">${item.name}</p>
-              <p style="margin:6px 0 0;font-size:12px;color:#666;font-weight:500;">Talla: <strong>${item.selectedSize}</strong> | Color: <strong>${item.selectedColor}</strong></p>
-            </div>
-            <button onclick="removeFromCart('${id}')" style="background:#ff6b9d;color:white;border:none;border-radius:5px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:bold;transition:background 0.3s;hover:background:#ff5285;">✕</button>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:6px;background:white;border:2px solid var(--pink);border-radius:5px;padding:3px;">
-              <button onclick="changeCartQty('${id}', -1)" style="background:none;border:none;padding:4px 8px;cursor:pointer;font-size:13px;color:var(--pink);font-weight:bold;transition:color 0.3s;">−</button>
-              <span style="min-width:22px;text-align:center;font-size:12px;font-weight:bold;color:#333;">${item.qty}</span>
-              <button onclick="changeCartQty('${id}', 1)" style="background:none;border:none;padding:4px 8px;cursor:pointer;font-size:13px;color:var(--pink);font-weight:bold;transition:color 0.3s;">+</button>
-            </div>
-            <span style="font-weight:bold;color:var(--pink);font-size:13px;letter-spacing:0.5px;">$${subtotal.toLocaleString('es-CO')}</span>
-          </div>
-        </div>`;
-      }).join('');
-      
-      document.getElementById('totalPrice').textContent = '$' + total.toLocaleString('es-CO');
-    }
-    
-    function changeCartQty(prodId, delta) {
-      if (cart[prodId]) {
-        const newQty = cart[prodId].qty + delta;
-        if (newQty <= 0) {
-          removeFromCart(prodId);
-        } else {
-          cart[prodId].qty = newQty;
-          localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-          updateCartCount();
-          renderCart();
-        }
+    function updateCartUI() {
+      // Esta función es llamada automáticamente por cart.js
+      // Simplemente actualiza el contador en navbar
+      const cartCount = document.getElementById('cartCount');
+      if (cartCount) {
+        cartCount.textContent = getCartItemCount();
       }
     }
     
-    function removeFromCart(prodId) {
-      delete cart[prodId];
-      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCart();
-    }
-    
-    function checkout() {
-      alert('Funcionalidad de pago en desarrollo. Carrito: ' + Object.keys(cart).length + ' artículos');
-    }
+    // Override de toggleCart para usar el carrito global
+    window.toggleCart = function() {
+      const cartModal = document.getElementById('cartModal');
+      if (!cartModal) {
+        createCartModal();
+      }
+      const isOpen = cartModal.style.display === 'flex';
+      cartModal.style.display = isOpen ? 'none' : 'flex';
+    };
     
     function showNotification(msg) {
       const notif = document.createElement('div');
-      notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--pink);color:white;padding:15px 20px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9998;animation:slideIn 0.3s ease;';
+      notif.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--pink);color:white;padding:15px 20px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9998;animation:slideIn 0.3s ease;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;';
       notif.textContent = msg;
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 3000);
     }
     
-    updateCartCount();
+    // Inicializar carrito cuando DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateCartUI);
+    } else {
+      updateCartUI();
+    }
   </script>
 
   <!-- CARRITO SCRIPT -->
@@ -1213,16 +1121,20 @@
     }
 
     function applyCouponCode() {
-      const code = document.getElementById('couponCode').value;
+      const code = document.getElementById('couponCode')?.value;
       if (!code) {
         showNotification('Ingresa un código de cupón');
         return;
       }
-      const total = Object.values(cart).reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const total = getCartTotal ? getCartTotal() : 0;
       const result = applyCoupon(code, total);
-      document.getElementById('couponMessage').textContent = result.message;
-      if (result.success) {
-        document.getElementById('couponCode').value = '';
+      const couponMsg = document.getElementById('couponMessage');
+      if (couponMsg) {
+        couponMsg.textContent = result.message;
+        if (result.success) {
+          const couponInput = document.getElementById('couponCode');
+          if (couponInput) couponInput.value = '';
+        }
       }
     }
 

@@ -302,6 +302,32 @@ style.textContent = `
     }
   }
 
+  /* Scrollbar color rosa */
+  #cartItems::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #cartItems::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  #cartItems::-webkit-scrollbar-thumb {
+    background: var(--pink);
+    border-radius: 10px;
+    transition: background 0.3s;
+  }
+
+  #cartItems::-webkit-scrollbar-thumb:hover {
+    background: var(--pink-light);
+  }
+
+  /* Firefox */
+  #cartItems {
+    scrollbar-color: var(--pink) rgba(255, 255, 255, 0.05);
+    scrollbar-width: thin;
+  }
+
   @media (max-width: 640px) {
     #cartModal {
       max-width: 100% !important;
