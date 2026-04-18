@@ -1,7 +1,7 @@
 // ============= FIREBASE AUTHENTICATION MODULE =============
 // Sistema completo de autenticación con Firebase Auth
 
-import { auth } from './firebase-config.js';
+import { auth, db } from './firebase-config.js';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -15,6 +15,7 @@ import {
   updateEmail,
   updatePassword
 } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js';
 
 /**
  * Crear nuevo usuario con email y contraseña
@@ -187,9 +188,6 @@ export async function updateUserProfile(profileData) {
     if (authData.photoURL && authData.photoURL.includes('firebasestorage')) {
       // Es una URL larga de Firebase Storage
       // Guardar URL completa en Firestore
-      const { db } = await import('./firebase-config.js');
-      const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js');
-      
       const userDocRef = doc(db, 'users', user.uid);
       await setDoc(userDocRef, {
         photoURL: authData.photoURL,

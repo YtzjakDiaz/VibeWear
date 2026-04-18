@@ -148,7 +148,6 @@ function getProfileImageURL(user) {
 window.uploadProfileImage = uploadProfileImage;
 window.deleteProfileImage = deleteProfileImage;
 window.getProfileImageURL = getProfileImageURL;
-window.getPhotoURLFromFirestore = getPhotoURLFromFirestore;
 
 // Exportar para módulos ES6
-export { uploadProfileImage, deleteProfileImage, getProfileImageURL, getPhotoURLFromFirestore };
+export { uploadProfileImage, deleteProfileImage, getProfileImageURL };

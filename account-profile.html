@@ -224,9 +224,10 @@
   <script type="module">
     import { getCurrentUser, onAuthChange, logout, changePassword, updateUserProfile, getErrorMessage } from './firebase-auth.js';
     import { getOrdersByEmail } from './firebase-orders.js';
-    import { auth } from './firebase-config.js';
-    import { uploadProfileImage, deleteProfileImage, getPhotoURLFromFirestore } from './profile-image-handler.js';
+    import { auth, db } from './firebase-config.js';
+    import { uploadProfileImage, deleteProfileImage } from './profile-image-handler.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js';
 
     let currentUser = null;
 
@@ -277,9 +278,10 @@
       let photoURL = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
       
       try {
-        const realPhotoURL = await getPhotoURLFromFirestore(currentUser.uid);
-        if (realPhotoURL) {
-          photoURL = realPhotoURL;
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists() && userDoc.data().photoURL) {
+          photoURL = userDoc.data().photoURL;
         }
       } catch (error) {
         console.warn('Could not load photo from Firestore:', error);
