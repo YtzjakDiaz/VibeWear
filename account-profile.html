@@ -66,12 +66,12 @@
           <div style="background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:40px;height:fit-content;">
             <div style="text-align:center;">
               <div style="position:relative;display:inline-block;margin-bottom:20px;">
-                <img id="userAvatar" src="" alt="Avatar" style="width:120px;height:120px;border-radius:50%;border:2px solid var(--pink);object-fit:cover;background:rgba(224,162,201,0.1);cursor:pointer;" onclick="document.getElementById('avatarUpload').click();" />
-                <label for="avatarUpload" style="position:absolute;bottom:0;right:0;background:var(--pink);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;" title="Cambiar avatar">📸</label>
+                <img id="userAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=usuario" alt="Avatar" style="width:120px;height:120px;border-radius:50%;border:2px solid var(--pink);object-fit:cover;background:rgba(224,162,201,0.1);cursor:pointer;" onclick="document.getElementById('avatarUpload').click();" />
+                <label for="avatarUpload" style="position:absolute;bottom:0;right:0;background:var(--pink);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.2);" title="Cambiar avatar" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">📸</label>
                 <input type="file" id="avatarUpload" accept="image/*" style="display:none;" onchange="uploadAvatar(event)" />
               </div>
-              <h2 id="userName" style="font-family:var(--font-display);font-size:24px;color:var(--white);margin:20px 0 5px;">Usuario</h2>
-              <p id="userEmail" style="color:var(--gray);font-size:13px;margin-bottom:30px;">email@example.com</p>
+              <h2 id="userName" style="font-family:var(--font-display);font-size:24px;color:var(--white);margin:20px 0 5px;font-weight:700;letter-spacing:0.5px;">Usuario</h2>
+              <p id="userEmail" style="color:var(--pink);font-size:13px;margin-bottom:30px;font-weight:500;letter-spacing:0.3px;">email@example.com</p>
               
               <div style="text-align:left;background:rgba(255,255,255,0.02);border-radius:8px;padding:20px;margin-top:20px;">
                 <p style="color:var(--gray);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">⭐ Puntos de Lealtad</p>
@@ -94,10 +94,17 @@
 
               <div style="position:relative;">
                 <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Foto de Perfil</label>
-                <input type="file" id="profilePhotoInput" accept="image/*" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;cursor:pointer;" onchange="previewProfilePhoto(event)" />
-                <div id="photoPreview" style="margin-top:12px;padding:12px;background:rgba(224,162,201,0.05);border:1px dashed rgba(224,162,201,0.3);border-radius:6px;text-align:center;display:none;">
+                <label for="profilePhotoInput" style="display:flex;align-items:center;justify-content:center;width:100%;padding:40px 20px;background:rgba(255,255,255,0.02);border:2px dashed rgba(224,162,201,0.3);border-radius:var(--radius);cursor:pointer;transition:all 0.3s;font-family:var(--font-body);color:var(--gray);font-size:14px;" onmouseover="this.style.borderColor='rgba(224,162,201,0.6)';this.style.background='rgba(224,162,201,0.05)'" onmouseout="this.style.borderColor='rgba(224,162,201,0.3)';this.style.background='rgba(255,255,255,0.02)'">
+                  <span id="fileLabel" style="text-align:center;">
+                    <div style="font-size:20px;margin-bottom:8px;">📸</div>
+                    <div style="color:var(--white);font-weight:600;margin-bottom:4px;">Selecciona una imagen</div>
+                    <div style="font-size:12px;">Máximo 5MB - JPG, PNG o WebP</div>
+                  </span>
+                </label>
+                <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)" />
+                <div id="photoPreview" style="margin-top:12px;padding:12px;background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.3);border-radius:6px;text-align:center;display:none;">
                   <img id="previewImage" src="" alt="Preview" style="max-width:100%;max-height:200px;border-radius:6px;" />
-                  <p style="color:var(--gray);font-size:11px;margin-top:8px;">Máximo 2MB - JPG, PNG o WebP</p>
+                  <p style="color:var(--gray);font-size:11px;margin-top:8px;" id="previewName"></p>
                 </div>
               </div>
 
@@ -124,8 +131,8 @@
                 </div>
               </div>
 
-              <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:10px;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-                Guardar Cambios
+              <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:10px;box-shadow:0 4px 12px rgba(224,162,201,0.3);" onmouseover="this.style.opacity='0.85';this.style.boxShadow='0 6px 16px rgba(224,162,201,0.5)'" onmouseout="this.style.opacity='1';this.style.boxShadow='0 4px 12px rgba(224,162,201,0.3)'">
+                💾 Guardar Cambios
               </button>
 
             </form>
@@ -271,73 +278,105 @@
 
     // LOAD PROFILE
     async function loadUserProfile() {
-      document.getElementById('userName').textContent = currentUser.displayName || 'Usuario';
-      document.getElementById('userEmail').textContent = currentUser.email;
-      
-      // Cargar foto real desde Firestore si existe
-      let photoURL = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
-      
       try {
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists() && userDoc.data().photoURL) {
-          photoURL = userDoc.data().photoURL;
+        // Cargar nombre y email
+        const displayName = currentUser.displayName?.trim() || currentUser.email.split('@')[0];
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('userEmail').textContent = currentUser.email;
+        
+        // Cargar foto real desde Firestore si existe
+        let photoURL = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+        
+        try {
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists() && userDoc.data().photoURL) {
+            photoURL = userDoc.data().photoURL;
+          }
+        } catch (error) {
+          console.warn('Could not load photo from Firestore:', error);
+        }
+        
+        // Actualizar avatar con mejor manejo de errores
+        const avatarImg = document.getElementById('userAvatar');
+        if (avatarImg) {
+          avatarImg.src = photoURL;
+          avatarImg.onerror = () => {
+            avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+          };
+        }
+
+        // Llenar formulario
+        document.getElementById('editName').value = displayName;
+        document.getElementById('editEmail').value = currentUser.email;
+        document.getElementById('editCountry').value = 'Colombia';
+
+        const loyaltyPoints = parseInt(localStorage.getItem('vibewear-loyalty-points')) || 0;
+        document.getElementById('loyaltyPoints').textContent = loyaltyPoints.toLocaleString('es-CO');
+
+        // Cargar datos de seguridad si los elementos existen
+        if (document.getElementById('emailVerified')) {
+          document.getElementById('emailVerified').textContent = currentUser.emailVerified ? '✅ Verificado' : '❌ No verificado';
+        }
+        if (document.getElementById('lastSignIn')) {
+          document.getElementById('lastSignIn').textContent = new Date(currentUser.metadata.lastSignInTime).toLocaleDateString('es-CO');
+        }
+        if (document.getElementById('createdAt')) {
+          document.getElementById('createdAt').textContent = new Date(currentUser.metadata.creationTime).toLocaleDateString('es-CO');
         }
       } catch (error) {
-        console.warn('Could not load photo from Firestore:', error);
+        console.error('Error loading user profile:', error);
+        showNotification('⚠️ Error cargando perfil');
       }
-      
-      document.getElementById('userAvatar').src = photoURL;
-
-      document.getElementById('editName').value = currentUser.displayName || '';
-      document.getElementById('editEmail').value = currentUser.email;
-      document.getElementById('editCountry').value = 'Colombia';
-
-      const loyaltyPoints = parseInt(localStorage.getItem('vibewear-loyalty-points')) || 0;
-      document.getElementById('loyaltyPoints').textContent = loyaltyPoints.toLocaleString('es-CO');
-
-      // Seguridad
-      document.getElementById('emailVerified').textContent = currentUser.emailVerified ? '✅ Verificado' : '❌ No verificado';
-      document.getElementById('lastSignIn').textContent = new Date(currentUser.metadata.lastSignInTime).toLocaleDateString('es-CO');
-      document.getElementById('createdAt').textContent = new Date(currentUser.metadata.creationTime).toLocaleDateString('es-CO');
     }
 
     // LOAD ORDERS
     async function loadUserOrders() {
       try {
-        const orders = await getOrdersByEmail(currentUser.email);
         const ordersList = document.getElementById('ordersList');
         const noOrders = document.getElementById('noOrders');
+        
+        if (!ordersList || !noOrders) return;
+        
+        try {
+          const orders = await getOrdersByEmail(currentUser.email);
+          
+          if (!orders || orders.length === 0) {
+            ordersList.style.display = 'none';
+            noOrders.style.display = 'block';
+            return;
+          }
 
-        if (orders.length === 0) {
-          ordersList.style.display = 'none';
-          noOrders.style.display = 'block';
-          return;
-        }
+          ordersList.style.display = 'grid';
+          noOrders.style.display = 'none';
 
-        noOrders.style.display = 'none';
-        ordersList.innerHTML = orders.map(order => `
-          <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
-            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:15px;">
-              <div>
-                <p style="color:var(--gray);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:0;">Orden #${order.id}</p>
-                <p style="color:var(--white);font-size:18px;font-weight:600;margin:5px 0;">$${order.total?.toLocaleString('es-CO')}</p>
+          ordersList.innerHTML = orders.map(order => `
+            <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:15px;">
+                <div>
+                  <p style="color:var(--gray);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:0;">Orden #${order.id}</p>
+                  <p style="color:var(--white);font-size:18px;font-weight:600;margin:5px 0;">$${order.total?.toLocaleString('es-CO')}</p>
+                </div>
+                <span style="background:${getStatusColor(order.status)};color:var(--black);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
+                  ${order.status}
+                </span>
               </div>
-              <span style="background:${getStatusColor(order.status)};color:var(--black);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
-                ${order.status}
-              </span>
+              <p style="color:var(--gray);font-size:12px;margin:10px 0;">
+                <strong>Rastreo:</strong> ${order.tracking || 'N/A'}
+              </p>
+              <p style="color:var(--gray);font-size:12px;margin:10px 0;">
+                <strong>Fecha:</strong> ${order.date || new Date(order.createdAt?.toDate?.()).toLocaleDateString('es-CO')}
+              </p>
+              <p style="color:var(--gray);font-size:12px;margin:10px 0;">
+                <strong>Items:</strong> ${order.items?.length || 0} producto${order.items?.length !== 1 ? 's' : ''}
+              </p>
             </div>
-            <p style="color:var(--gray);font-size:12px;margin:10px 0;">
-              <strong>Rastreo:</strong> ${order.tracking || 'N/A'}
-            </p>
-            <p style="color:var(--gray);font-size:12px;margin:10px 0;">
-              <strong>Fecha:</strong> ${order.date || new Date(order.createdAt?.toDate?.()).toLocaleDateString('es-CO')}
-            </p>
-            <p style="color:var(--gray);font-size:12px;margin:10px 0;">
-              <strong>Items:</strong> ${order.items?.length || 0} producto${order.items?.length !== 1 ? 's' : ''}
-            </p>
-          </div>
-        `).join('');
+          `).join('');
+        } catch (innerError) {
+          console.error('Error procesando órdenes:', innerError);
+          noOrders.style.display = 'block';
+          ordersList.style.display = 'none';
+        }
       } catch (error) {
         console.error('Error cargando órdenes:', error);
       }
@@ -383,12 +422,13 @@
     };
 
     // UPLOAD AVATAR
-    // Importar funciones de Firebase Storage
-    import { uploadProfileImage, deleteProfileImage } from './profile-image-handler.js';
-    
     window.uploadAvatar = async function(event) {
+      console.log('📸 uploadAvatar llamado');
       const file = event.target.files?.[0];
-      if (!file) return;
+      if (!file) {
+        console.log('❌ No file selected');
+        return;
+      }
 
       if (!file.type.startsWith('image/')) {
         showNotification('❌ Por favor selecciona una imagen');
@@ -401,32 +441,41 @@
       }
 
       try {
+        console.log('📸 Iniciando upload de avatar...');
         showNotification('📸 Subiendo avatar...');
         
-        // Eliminar avatar anterior si existe
-        if (currentUser.photoURL && currentUser.photoURL.includes('firebasestorage')) {
-          await deleteProfileImage(currentUser.uid, currentUser.photoURL);
+        // Subir nuevo avatar a Firestore (base64)
+        console.log('⬆️ Subiendo a Firestore...');
+        const photoURL = await uploadProfileImage(file, currentUser.uid);
+        console.log('✓ Avatar guardado en Firestore');
+        
+        showNotification('✅ Avatar actualizado');
+        
+        // Actualizar avatar directamente sin esperar
+        const avatarImg = document.getElementById('userAvatar');
+        if (avatarImg) {
+          avatarImg.src = photoURL;
         }
         
-        // Subir nuevo avatar
-        const photoURL = await uploadProfileImage(file, currentUser.uid);
+        // Recargar perfil completo
+        await loadUserProfile();
         
-        await updateUserProfile({
-          displayName: currentUser.displayName,
-          photoURL: photoURL
-        });
-        showNotification('✅ Avatar actualizado');
-        currentUser = getCurrentUser();
-        loadUserProfile();
+        // Limpiar input
+        event.target.value = '';
       } catch (error) {
+        console.error('❌ Error en uploadAvatar:', error);
         showNotification('❌ Error: ' + getErrorMessage(error));
       }
     };
 
     // PREVIEW PROFILE PHOTO
     window.previewProfilePhoto = async function(event) {
+      console.log('👁️ previewProfilePhoto llamado');
       const file = event.target.files?.[0];
-      if (!file) return;
+      if (!file) {
+        console.log('❌ No file selected');
+        return;
+      }
 
       if (!file.type.startsWith('image/')) {
         showNotification('❌ Solo se permiten imágenes');
@@ -445,8 +494,21 @@
         reader.onload = (e) => {
           const preview = document.getElementById('photoPreview');
           const previewImg = document.getElementById('previewImage');
+          const previewName = document.getElementById('previewName');
+          const fileLabel = document.getElementById('fileLabel');
+          
           previewImg.src = e.target.result;
+          previewName.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`;
           preview.style.display = 'block';
+          
+          // Actualizar label para mostrar archivo seleccionado
+          fileLabel.innerHTML = `
+            <span style="text-align:center;">
+              <div style="font-size:20px;margin-bottom:8px;">✓</div>
+              <div style="color:var(--pink);font-weight:600;margin-bottom:4px;">Archivo seleccionado</div>
+              <div style="font-size:12px;color:var(--gray);">${file.name}</div>
+            </span>
+          `;
         };
         reader.readAsDataURL(file);
       } catch (error) {
@@ -485,20 +547,36 @@
           }
           
           // Subir nueva foto a Firebase Storage
+          console.log('⬆️ Subiendo nueva foto a Firebase Storage...');
           photoURL = await uploadProfileImage(file, currentUser.uid);
+          console.log('✓ Foto URL recibida:', photoURL?.substring(0, 50));
         }
 
+        console.log('💾 Actualizando perfil con nombre...');
         await updateUserProfile({
-          displayName: newName,
-          photoURL: photoURL
+          displayName: newName
         });
 
         showNotification('✅ Perfil actualizado correctamente');
+        
+        // Esperar a que Firebase se sincronice
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Si se cambió la foto, actualizar el avatar directamente
+        if (photoInput.files && photoInput.files[0] && photoURL) {
+          const avatarImg = document.getElementById('userAvatar');
+          if (avatarImg) {
+            console.log('🖼️ Actualizando avatar con nueva foto');
+            avatarImg.src = photoURL;
+          }
+        }
+        
         currentUser = getCurrentUser();
-        loadUserProfile();
+        await loadUserProfile();
         photoInput.value = '';
         document.getElementById('photoPreview').style.display = 'none';
       } catch (error) {
+        console.error('❌ Error en profileForm:', error);
         showNotification('❌ Error: ' + getErrorMessage(error));
       }
     });

@@ -8,56 +8,52 @@ import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.0/
 // Subir imagen de perfil a Firebase Storage
 async function uploadProfileImage(file, userId) {
   try {
+    console.log('📸 [uploadProfileImage] Iniciando con archivo:', file?.name, 'Usuario:', userId);
+    
     if (!file) throw new Error('No file provided');
+    if (!userId) throw new Error('No userId provided');
     
     // Validar tipo y tamaño
     if (!file.type.startsWith('image/')) {
-      throw new Error('Solo se permiten imágenes');
+      throw new Error('Solo se permiten imágenes: ' + file.type);
     }
     
-    if (file.size > 5 * 1024 * 1024) { // 5MB
+    if (file.size > 5 * 1024 * 1024) {
       throw new Error('La imagen debe ser menor a 5MB');
     }
 
-    // Comprimir imagen
-    const compressedBlob = await compressImage(file);
+    // Comprimir imagen a base64
+    console.log('🔄 Comprimiendo imagen...');
+    const base64Data = await compressImageToBase64(file);
+    console.log('✓ Imagen comprimida a base64');
     
-    // Crear referencia en Storage
-    const fileName = `profile-${userId}-${Date.now()}.jpg`;
-    const storageRef = ref(storage, `avatars/${userId}/${fileName}`);
+    // Guardar directamente en Firestore como base64 (evita CORS completamente)
+    console.log('💾 Guardando imagen en Firestore...');
+    await savePhotoToFirestore(userId, base64Data);
+    console.log('✓ Imagen guardada en Firestore');
     
-    // Subir archivo
-    await uploadBytes(storageRef, compressedBlob);
-    
-    // Obtener URL descargable
-    const downloadURL = await getDownloadURL(storageRef);
-    
-    // Guardar referencia de Storage en Firestore (no tiene límite de caracteres)
-    await savePhotoURLToFirestore(userId, downloadURL, `avatars/${userId}/${fileName}`);
-    
-    return downloadURL;
+    return base64Data; // Devolver el base64 directamente
   } catch (error) {
-    console.error('Error uploading profile image:', error);
+    console.error('❌ [uploadProfileImage] Error:', error);
     throw error;
   }
 }
 
-// Guardar URL en Firestore para evitar límite de caracteres en Auth
-async function savePhotoURLToFirestore(userId, downloadURL, storagePath) {
+// Guardar foto en base64 en Firestore
+async function savePhotoToFirestore(userId, base64Data) {
   try {
     const userDocRef = doc(db, 'users', userId);
     await setDoc(userDocRef, {
-      photoURL: downloadURL,
-      photoPath: storagePath,
+      photoURL: base64Data,
       photoUpdatedAt: new Date().toISOString()
     }, { merge: true });
   } catch (error) {
-    console.warn('Warning saving to Firestore:', error);
-    // No fallar si Firestore no funciona, continuamos con la URL
+    console.error('❌ Error guardando foto en Firestore:', error);
+    throw error;
   }
 }
 
-// Obtener URL de foto desde Firestore o usar avatar por defecto
+// Obtener foto desde Firestore
 async function getPhotoURLFromFirestore(userId) {
   try {
     const userDocRef = doc(db, 'users', userId);
@@ -72,82 +68,89 @@ async function getPhotoURLFromFirestore(userId) {
   return null;
 }
 
-// Comprimir imagen
-async function compressImage(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    
-    reader.onload = function(event) {
-      const img = new Image();
-      img.src = event.target.result;
+// Comprimir imagen a base64
+async function compressImageToBase64(file) {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader();
       
-      img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Dimensiones máximas
-        const maxWidth = 400;
-        const maxHeight = 400;
-        let width = img.width;
-        let height = img.height;
-        
-        if (width > height) {
-          if (width > maxWidth) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
-            width = Math.round((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        
-        // Convertir a blob
-        canvas.toBlob(resolve, 'image/jpeg', 0.8);
+      reader.onerror = () => {
+        reject(new Error('Error leyendo archivo'));
       };
-    };
+      
+      reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onerror = () => {
+          reject(new Error('Error cargando imagen'));
+        };
+        
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          if (!ctx) {
+            reject(new Error('No se pudo obtener contexto 2D del canvas'));
+            return;
+          }
+          
+          // Redimensionar a máximo 400x400
+          let width = img.width;
+          let height = img.height;
+          const maxSize = 400;
+          
+          if (width > height) {
+            if (width > maxSize) {
+              height = Math.round((height * maxSize) / width);
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width = Math.round((width * maxSize) / height);
+              height = maxSize;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convertir a base64
+          const base64 = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(base64);
+        };
+      };
+      
+      reader.readAsDataURL(file);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Eliminar imagen anterior
 async function deleteProfileImage(userId, imagePath) {
   try {
-    if (!imagePath) return;
-    
-    // Si es una URL de download, extraer la ruta
-    if (imagePath.includes('firebasestorage')) {
-      const pathSegments = imagePath.split('/');
-      const filePath = `avatars/${userId}/${pathSegments[pathSegments.length - 1].split('?')[0]}`;
-      const fileRef = ref(storage, filePath);
-      await deleteObject(fileRef);
-    }
+    // Las imágenes base64 se guardan en Firestore, simplemente se reemplazan
+    console.log('🗑️ Eliminando imagen anterior de Firestore...');
   } catch (error) {
-    console.warn('Error deleting previous image:', error);
+    console.warn('Warning deleting image:', error);
   }
 }
 
 // Obtener imagen de perfil
 function getProfileImageURL(user) {
-  if (user.photoURL && user.photoURL.includes('firebasestorage')) {
-    // Es una URL de Firebase Storage - devolver tal cual
+  if (user.photoURL && user.photoURL.startsWith('data:image')) {
+    // Es una imagen en base64 - devolver tal cual
     return user.photoURL;
   } else if (user.photoURL) {
-    // Generar avatar por defecto
-    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+    // URL de Firebase o avatar por defecto
+    return user.photoURL;
   }
+  // Avatar generado por defecto
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
 }
 
-// Exportar funciones
-window.uploadProfileImage = uploadProfileImage;
-window.deleteProfileImage = deleteProfileImage;
-window.getProfileImageURL = getProfileImageURL;
-
-// Exportar para módulos ES6
-export { uploadProfileImage, deleteProfileImage, getProfileImageURL };
+// Exportar funciones ES6
+export { uploadProfileImage, deleteProfileImage, getProfileImageURL, getPhotoURLFromFirestore, compressImageToBase64 };

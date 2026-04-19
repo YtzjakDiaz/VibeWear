@@ -5,6 +5,9 @@
  */
 
 import { onAuthChange, logout, getCurrentUser } from './firebase-auth.js';
+import { db } from './firebase-config.js';
+import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js';
+import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js';
 
 // Inicializar navbar cuando el DOM esté listo
 function initNavbarAuth() {
@@ -33,20 +36,32 @@ function initNavbarAuth() {
   }
 }
 
-function updateNavbarAuthenticated(btn, user) {
+async function updateNavbarAuthenticated(btn, user) {
   // Crear dropdown con opciones
   const displayName = user.displayName || user.email.split('@')[0];
-  const avatar = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+  let avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+  
+  // Cargar foto desde Firestore (guardada como base64)
+  try {
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists() && userDoc.data().photoURL) {
+      avatar = userDoc.data().photoURL;
+      console.log('✓ Foto de perfil cargada desde Firestore');
+    }
+  } catch (error) {
+    console.warn('No se pudo cargar foto de Firestore:', error);
+  }
   
   // Reemplazar el botón con un dropdown
   btn.style.cssText = `
     background: transparent;
     border: 1px solid var(--pink);
     color: var(--pink);
-    padding: 0;
+    padding: 6px 12px 6px 6px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
     border-radius: 50px;
     position: relative;
@@ -55,7 +70,7 @@ function updateNavbarAuthenticated(btn, user) {
 
   btn.innerHTML = `
     <img src="${avatar}" alt="${displayName}" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--pink);object-fit:cover;" />
-    <span style="font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:10px 12px 10px 0;">
+    <span style="font-family:var(--font-display);font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--white);white-space:nowrap;">
       ${displayName}
     </span>
   `;
@@ -101,25 +116,38 @@ function updateNavbarAuthenticated(btn, user) {
         animation: slideDownAuth 0.3s ease;
       `;
 
-      dropdown.innerHTML = `
-        <div style="padding: 15px; border-bottom: 1px solid rgba(224, 162, 201, 0.1);">
-          <p style="margin: 0; color: var(--gray); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Mi cuenta</p>
-          <p style="margin: 8px 0 0; color: var(--white); font-weight: 600; font-size: 14px;">${displayName}</p>
-          <p style="margin: 4px 0 0; color: var(--gray); font-size: 11px;">${user.email}</p>
-        </div>
-        <a href="profile.html" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
-          👤 Mi Perfil
-        </a>
-        <a href="account-profile.html?tab=orders" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
-          📦 Mis Órdenes
-        </a>
-        <a href="account-profile.html?tab=security" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
-          🔐 Seguridad
-        </a>
-        <button onclick="window.logoutFromNavbar()" style="width: 100%; padding: 12px 16px; background: transparent; border: none; color: #ff6b9d; text-align: left; font-size: 12px; cursor: pointer; font-family: var(--font-body); transition: background 0.2s;" onmouseover="this.style.background='rgba(255, 107, 157, 0.1)'" onmouseout="this.style.background='transparent'">
-          🚪 Cerrar Sesión
-        </button>
-      `;
+      // Verificar si es admin
+      checkAdminStatus(user).then(isAdmin => {
+        let adminOption = '';
+        if (isAdmin) {
+          adminOption = `
+            <div onclick="event.stopPropagation(); window.location.href='admin.html'" style="display: block; padding: 12px 16px; color: var(--pink); background: rgba(224, 162, 201, 0.05); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.2); transition: background 0.2s; cursor: pointer; font-weight: 600;" onmouseover="this.style.background='rgba(224, 162, 201, 0.15)'" onmouseout="this.style.background='rgba(224, 162, 201, 0.05)'">
+              ⚙️ Panel Admin
+            </div>
+          `;
+        }
+
+        dropdown.innerHTML = `
+          <div style="padding: 15px; border-bottom: 1px solid rgba(224, 162, 201, 0.1);">
+            <p style="margin: 0; color: var(--gray); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Mi cuenta</p>
+            <p style="margin: 8px 0 0; color: var(--white); font-weight: 600; font-size: 14px;">${displayName}</p>
+            <p style="margin: 4px 0 0; color: var(--gray); font-size: 11px;">${user.email}</p>
+          </div>
+          <div onclick="event.stopPropagation(); window.location.href='account-profile.html'" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
+            👤 Mi Perfil
+          </div>
+          <div onclick="event.stopPropagation(); window.location.href='account-profile.html?tab=orders'" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
+            📦 Mis Órdenes
+          </div>
+          <div onclick="event.stopPropagation(); window.location.href='account-profile.html?tab=security'" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
+            🔐 Seguridad
+          </div>
+          ${adminOption}
+          <button onclick="event.stopPropagation(); window.logoutFromNavbar()" style="width: 100%; padding: 12px 16px; background: transparent; border: none; color: #ff6b9d; text-align: left; font-size: 12px; cursor: pointer; font-family: var(--font-body); transition: background 0.2s;" onmouseover="this.style.background='rgba(255, 107, 157, 0.1)'" onmouseout="this.style.background='transparent'">
+            🚪 Cerrar Sesión
+          </button>
+        `;
+      });
 
       btn.parentNode.style.position = 'relative';
       btn.parentNode.appendChild(dropdown);
@@ -197,6 +225,28 @@ function updateNavbarNotAuthenticated(btn) {
   btn.onmouseout = function() {
     this.style.opacity = '1';
   };
+}
+
+// Verificar si el usuario es admin
+async function checkAdminStatus(user) {
+  const OWNER_EMAIL = 'ytzjakdawid1210@gmail.com';
+  
+  try {
+    // Si es el propietario, es admin
+    if (user.email === OWNER_EMAIL) {
+      return true;
+    }
+    
+    // Buscar en Firestore
+    const adminsRef = collection(db, 'vibewear_admins');
+    const q = query(adminsRef, where('email', '==', user.email));
+    const querySnapshot = await getDocs(q);
+    
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.warn('Error verificando admin:', error);
+    return false;
+  }
 }
 
 // ============= FUNCIÓN PARA ABRIR PERFIL =============
