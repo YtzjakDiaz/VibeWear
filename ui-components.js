@@ -1,7 +1,7 @@
 // ============= UI COMPONENTS - FUNCIONES GLOBALES =============
 
 // ===== TOAST NOTIFICATIONS =====
-window.showToast = function(message, type = 'info', duration = 5000) {
+window.showToast = function(message, type = 'info', duration = 4000) {
   const container = document.querySelector('.toast-container') || createToastContainer();
   
   const toast = document.createElement('div');
@@ -23,6 +23,10 @@ window.showToast = function(message, type = 'info', duration = 5000) {
   // Agregar al TOP del contenedor (para stack hacia arriba)
   container.insertBefore(toast, container.firstChild);
   
+  // Trigger animación de entrada
+  toast.offsetHeight; // Force reflow
+  toast.classList.add('visible');
+  
   console.log('📬 Toast mostrado:', message);
   
   const closeBtn = toast.querySelector('.toast-close');
@@ -33,7 +37,7 @@ window.showToast = function(message, type = 'info', duration = 5000) {
   
   if (duration > 0) {
     setTimeout(() => {
-      console.log('⏱️ Toast auto-cierre después de', duration, 'ms');
+      console.log('⏱️ Toast cierre después de', duration, 'ms');
       removeToast(toast);
     }, duration);
   }
@@ -42,9 +46,15 @@ window.showToast = function(message, type = 'info', duration = 5000) {
 };
 
 function createToastContainer() {
-  const container = document.createElement('div');
-  container.className = 'toast-container';
-  document.body.appendChild(container);
+  let container = document.querySelector('.toast-container');
+  
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+    console.log('✓ Contenedor de toasts creado');
+  }
+  
   return container;
 }
 

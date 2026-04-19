@@ -93,13 +93,14 @@
 
 .toast-container {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
-  z-index: 10000;
+  z-index: 99999;
   max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  pointer-events: none;
 }
 
 .toast {
@@ -115,6 +116,9 @@
   animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  max-width: 100%;
+  word-wrap: break-word;
+  pointer-events: auto;
 }
 
 .toast.success {
@@ -181,8 +185,9 @@
 }
 
 .toast.removing {
-  animation: slideOutRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: slideOutRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   pointer-events: none;
+  opacity: 0;
 }
 
 /* ===== MODALS CON TRANSICIONES ===== */
@@ -538,8 +543,9 @@
 @media (max-width: 768px) {
   .toast-container {
     left: 10px;
-    right: 10px;
-    top: 10px;
+    right: auto;
+    bottom: 10px;
+    max-width: calc(100% - 20px);
   }
 
   .toast {

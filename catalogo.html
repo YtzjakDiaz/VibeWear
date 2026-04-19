@@ -892,6 +892,47 @@
     }, 5000);
   </script>
 
+  <!-- INICIALIZAR WISHLIST BUTTONS DEL CATALOGO -->
+  <script>
+    function initCatalogWishlistButtons() {
+      document.querySelectorAll('.product-card').forEach(card => {
+        const link = card.querySelector('a[href*="producto.html#"]');
+        if (!link) return;
+        
+        const prodId = link.getAttribute('href').split('#')[1];
+        const product = productsData[prodId];
+        if (!product) return;
+        
+        const wishlistDiv = card.querySelector('.product-wishlist');
+        if (!wishlistDiv) return;
+        
+        // Actualizar atributo data
+        wishlistDiv.setAttribute('data-product-wishlist', prodId);
+        
+        // Función para toggle del wishlist
+        wishlistDiv.onclick = (e) => {
+          e.stopPropagation();
+          addToWishlist(prodId, product.name, product.price, product.image);
+          wishlistDiv.textContent = isInWishlist(prodId) ? '♥' : '♡';
+          wishlistDiv.style.color = isInWishlist(prodId) ? 'var(--pink)' : 'var(--white)';
+        };
+        
+        // Inicializar estado visual
+        wishlistDiv.style.cursor = 'pointer';
+        wishlistDiv.style.transition = 'all 0.3s';
+        wishlistDiv.textContent = isInWishlist(prodId) ? '♥' : '♡';
+        wishlistDiv.style.color = isInWishlist(prodId) ? 'var(--pink)' : 'var(--white)';
+      });
+    }
+    
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCatalogWishlistButtons);
+    } else {
+      setTimeout(initCatalogWishlistButtons, 100);
+    }
+  </script>
+
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
   <!-- Init App: Activate all features -->

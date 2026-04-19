@@ -139,6 +139,9 @@ async function updateNavbarAuthenticated(btn, user) {
           <div onclick="event.stopPropagation(); window.location.href='account-profile.html?tab=orders'" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
             📦 Mis Órdenes
           </div>
+          <div onclick="event.stopPropagation(); window.location.href='account-profile.html?tab=wishlist'" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
+            ❤️ Favoritos
+          </div>
           <div onclick="event.stopPropagation(); window.location.href='account-profile.html?tab=security'" style="display: block; padding: 12px 16px; color: var(--white); text-decoration: none; font-size: 12px; border-bottom: 1px solid rgba(224, 162, 201, 0.1); transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(224, 162, 201, 0.1)'" onmouseout="this.style.background='transparent'">
             🔐 Seguridad
           </div>

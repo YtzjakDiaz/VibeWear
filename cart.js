@@ -27,11 +27,13 @@ function addToCart(prodId, prodName, prodPrice, prodImage, quantity = 1, size = 
   saveCart();
   updateCartUI();
   
-  // Animaciones modernas
+  // Usar showToast si está disponible, sino mostrar notificación simple
   if (typeof window.showToast === 'function') {
-    window.showToast(`✓ ${prodName} agregado al carrito`, 'success', 5000);
+    window.showToast(`✓ ${prodName} agregado al carrito`, 'success', 6000);
+  } else if (typeof showNotification === 'function') {
+    showNotification(`${prodName} agregado al carrito ✓`, 'success', 6000);
   } else {
-    showNotification(`${prodName} agregado al carrito ✓`);
+    alert(`✓ ${prodName} agregado al carrito`);
   }
   
   if (typeof window.bumpCart === 'function') {
@@ -75,9 +77,9 @@ function clearCart() {
   updateCartUI();
   
   if (typeof window.showToast === 'function') {
-    window.showToast('Carrito vaciado', 'info', 2000);
-  } else {
-    showNotification('Carrito vaciado');
+    window.showToast('Carrito vaciado', 'info', 5000);
+  } else if (typeof showNotification === 'function') {
+    showNotification('Carrito vaciado', 'info', 5000);
   }
 }
 

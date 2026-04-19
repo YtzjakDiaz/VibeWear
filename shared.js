@@ -3,12 +3,21 @@
 // ========== WISHLIST / FAVORITOS ==========
 let wishlist = JSON.parse(localStorage.getItem('vibewear-wishlist')) || [];
 
-function addToWishlist(prodId, prodName) {
-  if (!wishlist.includes(prodId)) {
-    wishlist.push(prodId);
+function addToWishlist(prodId, prodName, prodPrice, prodImage) {
+  // Verificar si el producto ya existe en el wishlist
+  const exists = wishlist.find(item => item.id === prodId);
+  
+  if (!exists) {
+    wishlist.push({
+      id: prodId,
+      name: prodName,
+      price: prodPrice,
+      image: prodImage
+    });
     localStorage.setItem('vibewear-wishlist', JSON.stringify(wishlist));
     showNotification(`${prodName} agregado a favoritos ❤️`);
     updateWishlistCount();
+    updateWishlistHearts();
     return true;
   } else {
     removeFromWishlist(prodId);
@@ -17,9 +26,10 @@ function addToWishlist(prodId, prodName) {
 }
 
 function removeFromWishlist(prodId) {
-  wishlist = wishlist.filter(id => id !== prodId);
+  wishlist = wishlist.filter(item => item.id !== prodId);
   localStorage.setItem('vibewear-wishlist', JSON.stringify(wishlist));
   updateWishlistCount();
+  updateWishlistHearts();
 }
 
 function updateWishlistCount() {
@@ -28,8 +38,23 @@ function updateWishlistCount() {
 }
 
 function isInWishlist(prodId) {
-  return wishlist.includes(prodId);
+  return wishlist.some(item => item.id === prodId);
 }
+
+function updateWishlistHearts() {
+  // Actualiza todos los corazones del wishlist en la página
+  document.querySelectorAll('[data-product-wishlist]').forEach(heart => {
+    const prodId = heart.getAttribute('data-product-wishlist');
+    const inWishlist = isInWishlist(prodId);
+    heart.textContent = inWishlist ? '♥' : '♡';
+    heart.style.color = inWishlist ? 'var(--pink)' : 'var(--white)';
+  });
+}
+
+// Inicializar corazones cuando se carga la página
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => updateWishlistHearts(), 100);
+});
 
 // ========== SISTEMA DE RESEÑAS ==========
 let reviews = JSON.parse(localStorage.getItem('vibewear-reviews')) || {};
@@ -288,7 +313,7 @@ function getOrders() {
 }
 
 // ========== NOTIFICACIONES PUSH MEJORADAS ==========
-function showNotification(msg, type = 'success', duration = 3000) {
+function showNotification(msg, type = 'success', duration = 4000) {
   const notif = document.createElement('div');
   
   const typeConfig = {
@@ -308,7 +333,7 @@ function showNotification(msg, type = 'success', duration = 3000) {
     color: ${config.color};
     padding: 16px 24px;
     border-radius: 8px;
-    z-index: 9999;
+    z-index: 99999;
     animation: slideInUp 0.3s ease;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
@@ -318,14 +343,15 @@ function showNotification(msg, type = 'success', duration = 3000) {
     display: flex;
     align-items: center;
     gap: 10px;
+    max-width: 90vw;
   `;
   
   notif.innerHTML = `<span style="font-size: 16px;">${config.icon}</span><span>${msg}</span>`;
   document.body.appendChild(notif);
   
   setTimeout(() => {
-    notif.style.animation = 'slideOutDown 0.3s ease';
-    setTimeout(() => notif.remove(), 300);
+    notif.style.animation = 'slideOutDown 0.6s ease';
+    setTimeout(() => notif.remove(), 600);
   }, duration);
 }
 
@@ -399,4 +425,135 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initWishlistButtons);
 } else {
   setTimeout(initWishlistButtons, 100);
+}
+
+// ========== MODAL PARA SELECCIONAR TALLA Y COLOR ==========
+let pendingProduct = null;
+
+function showSizeColorModal(prodId, prodName, prodPrice, prodImage) {
+  // Obtener datos del producto
+  const productData = {
+    'prod-1': { colores: [{color: '#ffffff', nombre: 'Blanco'}] },
+    'prod-2': { colores: [{color: '#1a1a1a', nombre: 'Negro'}] },
+    'prod-3': { colores: [{color: '#1a1a1a', nombre: 'Negro'}] },
+    'prod-4': { colores: [{color: '#ffffff', nombre: 'Blanco'}] }
+  };
+
+  const colors = productData[prodId]?.colores || [{color: '#ffffff', nombre: 'Blanco'}, {color: '#1a1a1a', nombre: 'Negro'}];
+  
+  pendingProduct = { prodId, prodName, prodPrice, prodImage, colors };
+  
+  let modal = document.getElementById('sizeColorModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'sizeColorModal';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50000;
+    `;
+    document.body.appendChild(modal);
+  }
+
+  // Generar colores HTML dinámicamente
+  const colorsHTML = colors.map((c, i) => `
+    <button class="color-selector" onclick="selectColorModal(this, '${c.nombre}')" 
+      style="width: 40px; height: 40px; background: ${c.color}${c.color === '#f5f5f5' || c.color === '#ffffff' ? ';border:2px solid rgba(224,162,201,0.5)' : ';border: 2px solid rgba(224, 162, 201, 0.3)'}; border-radius: 50%; cursor: pointer; transition: all 0.3s; ${i === 0 ? 'border-width: 3px; border-color: var(--pink) !important;' : ''}"></button>
+  `).join('');
+
+  modal.innerHTML = `
+    <div style="background: var(--black-soft); border: 1.5px solid rgba(224, 162, 201, 0.3); border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; animation: slideInUp 0.3s ease;">
+      <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--white); margin: 0 0 20px 0; text-transform: uppercase;">Selecciona una opción</h3>
+      
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; color: var(--pink); font-family: var(--font-sub); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">TALLA</label>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <button class="size-selector" onclick="selectSizeModal(this, 'XS')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">XS</button>
+          <button class="size-selector" onclick="selectSizeModal(this, 'S')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">S</button>
+          <button class="size-selector" onclick="selectSizeModal(this, 'M')" style="padding: 10px; background: var(--pink); border: 1.5px solid var(--pink); color: var(--black); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">M</button>
+          <button class="size-selector" onclick="selectSizeModal(this, 'L')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">L</button>
+          <button class="size-selector" onclick="selectSizeModal(this, 'XL')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">XL</button>
+          <button class="size-selector" onclick="selectSizeModal(this, 'XXL')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">XXL</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; color: var(--pink); font-family: var(--font-sub); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">COLOR</label>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          ${colorsHTML}
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button onclick="closeSizeColorModal()" style="flex: 1; padding: 12px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: var(--font-sub); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; transition: all 0.3s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.15)'" onmouseout="this.style.background='rgba(224, 162, 201, 0.1)'">Cancelar</button>
+        <button onclick="confirmSizeColorModal()" style="flex: 1; padding: 12px; background: var(--pink); border: 1.5px solid var(--pink); color: var(--black); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: var(--font-sub); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; transition: all 0.3s;" onmouseover="this.style.background='var(--pink-light)'" onmouseout="this.style.background='var(--pink)'">Agregar</button>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+  pendingProduct.selectedSize = 'M';
+  pendingProduct.selectedColor = colors[0].nombre;
+}
+
+function selectSizeModal(btn, size) {
+  document.querySelectorAll('.size-selector').forEach(b => {
+    if (b === btn) {
+      b.style.background = 'var(--pink)';
+      b.style.borderColor = 'var(--pink)';
+      b.style.color = 'var(--black)';
+    } else {
+      b.style.background = 'rgba(224, 162, 201, 0.1)';
+      b.style.borderColor = 'rgba(224, 162, 201, 0.3)';
+      b.style.color = 'var(--white)';
+    }
+  });
+  pendingProduct.selectedSize = size;
+}
+
+function selectColorModal(btn, color) {
+  document.querySelectorAll('.color-selector').forEach(b => {
+    b.style.borderWidth = '2px';
+    b.style.borderColor = 'rgba(224, 162, 201, 0.3)';
+  });
+  btn.style.borderWidth = '3px';
+  btn.style.borderColor = 'var(--pink)';
+  pendingProduct.selectedColor = color;
+}
+
+function closeSizeColorModal() {
+  const modal = document.getElementById('sizeColorModal');
+  if (modal) modal.style.display = 'none';
+  pendingProduct = null;
+}
+
+function confirmSizeColorModal() {
+  if (!pendingProduct) return;
+  if (!pendingProduct.selectedSize) {
+    showNotification('Por favor selecciona una talla', 'info');
+    return;
+  }
+  if (!pendingProduct.selectedColor) {
+    showNotification('Por favor selecciona un color', 'info');
+    return;
+  }
+
+  window.addToCart(
+    pendingProduct.prodId,
+    pendingProduct.prodName,
+    pendingProduct.prodPrice,
+    pendingProduct.prodImage,
+    1,
+    pendingProduct.selectedSize,
+    pendingProduct.selectedColor
+  );
+
+  closeSizeColorModal();
 }

@@ -53,6 +53,7 @@
       <div style="display:flex;gap:20px;border-bottom:1px solid rgba(224,162,201,0.2);margin-bottom:40px;overflow-x:auto;">
         <button class="tab-btn active" onclick="switchTab('profile')" style="padding:16px 20px;color:var(--white);border:none;background:transparent;border-bottom:2px solid var(--pink);font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Mi Perfil</button>
         <button class="tab-btn" onclick="switchTab('orders')" style="padding:16px 20px;color:var(--gray);border:none;background:transparent;border-bottom:2px solid transparent;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Mis Órdenes</button>
+        <button class="tab-btn" onclick="switchTab('wishlist')" style="padding:16px 20px;color:var(--gray);border:none;background:transparent;border-bottom:2px solid transparent;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">❤️ Favoritos</button>
         <button class="tab-btn" onclick="switchTab('security')" style="padding:16px 20px;color:var(--gray);border:none;background:transparent;border-bottom:2px solid transparent;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Seguridad</button>
       </div>
 
@@ -149,6 +150,21 @@
           <a href="catalogo.html" style="display:inline-block;background:var(--pink);color:var(--black);padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;letter-spacing:1px;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
             Ver Catálogo
           </a>
+        </div>
+      </div>
+
+      <!-- WISHLIST TAB -->
+      <div id="wishlistTab" class="tab-content" style="display:none;">
+        <div id="wishlistContent">
+          <div id="wishlistGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:25px;"></div>
+          <div id="noWishlist" style="text-align:center;padding:60px 40px;color:var(--gray);">
+            <p style="font-size:24px;margin-bottom:15px;">❤️</p>
+            <p style="font-size:16px;margin-bottom:20px;">Tu lista de favoritos está vacía</p>
+            <p style="font-size:13px;color:var(--gray);margin-bottom:25px;">Agrega productos a favoritos desde el catálogo</p>
+            <a href="catalogo.html" style="display:inline-block;background:var(--pink);color:var(--black);padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;letter-spacing:1px;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              Explorar Catálogo
+            </a>
+          </div>
         </div>
       </div>
 
@@ -250,6 +266,14 @@
       currentUser = user;
       loadUserProfile();
       loadUserOrders();
+      
+      // Verificar si hay parámetro tab=wishlist en la URL
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'wishlist') {
+        setTimeout(() => {
+          window.switchTab('wishlist');
+        }, 500);
+      }
     });
 
     // SWITCH TABS
@@ -266,6 +290,9 @@
         document.getElementById('profileTab').style.display = 'block';
       } else if (tab === 'orders') {
         document.getElementById('ordersTab').style.display = 'block';
+      } else if (tab === 'wishlist') {
+        document.getElementById('wishlistTab').style.display = 'block';
+        loadWishlist();
       } else if (tab === 'security') {
         document.getElementById('securityTab').style.display = 'block';
       }
@@ -681,6 +708,67 @@
 
       element.disabled = false;
     };
+
+    // LOAD WISHLIST
+    function loadWishlist() {
+      const wishlist = JSON.parse(localStorage.getItem('vibewear-wishlist') || '[]');
+      const wishlistGrid = document.getElementById('wishlistGrid');
+      const noWishlist = document.getElementById('noWishlist');
+      
+      wishlistGrid.innerHTML = '';
+      
+      if (wishlist.length === 0) {
+        wishlistGrid.style.display = 'none';
+        noWishlist.style.display = 'block';
+        return;
+      }
+      
+      wishlistGrid.style.display = 'grid';
+      noWishlist.style.display = 'none';
+      
+      wishlist.forEach(item => {
+        const productCard = document.createElement('div');
+        productCard.style.cssText = 'background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;overflow:hidden;transition:all 0.3s;cursor:pointer;position:relative;';
+        
+        const price = typeof item.price === 'number' ? item.price : parseInt(item.price) || 0;
+        
+        productCard.innerHTML = `
+          <div style="position:relative;overflow:hidden;background:rgba(0,0,0,0.3);aspect-ratio:1;">
+            <img src="${item.image || ''}" alt="${item.name || 'Producto'}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s;">
+            <button style="position:absolute;top:10px;right:10px;background:var(--pink);color:var(--white);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1';">✕</button>
+          </div>
+          <div style="padding:16px;">
+            <h4 style="margin:0 0 8px 0;color:var(--white);font-size:14px;font-weight:600;font-family:var(--font-sub);">${item.name || 'Producto'}</h4>
+            <p style="margin:0 0 12px 0;color:var(--gray);font-size:12px;">$${price.toLocaleString('es-CO')}</p>
+            <button style="width:100%;background:var(--pink);color:var(--black);border:none;padding:10px;border-radius:6px;font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1';">
+              Agregar al Carrito
+            </button>
+          </div>
+        `;
+        
+        // Obtener ambos botones
+        const buttons = productCard.querySelectorAll('button');
+        const removeBtn = buttons[0];
+        const addToCartBtn = buttons[1];
+        
+        // Botón para eliminar del wishlist
+        removeBtn.onclick = () => {
+          removeFromWishlist(item.id);
+          loadWishlist();
+          updateWishlistHearts();
+        };
+        
+        // Botón para agregar al carrito - abre modal de talla/color
+        addToCartBtn.onclick = () => {
+          window.showSizeColorModal(item.id, item.name, price, item.image);
+        };
+        
+        productCard.onmouseover = function() { this.style.borderColor = 'var(--pink)'; };
+        productCard.onmouseout = function() { this.style.borderColor = 'rgba(224,162,201,0.2)'; };
+        
+        wishlistGrid.appendChild(productCard);
+      });
+    }
   </script>
 
   <!-- PUSH NOTIFICATIONS -->

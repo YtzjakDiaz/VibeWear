@@ -1213,26 +1213,6 @@ footer {
 }
 
 /* ===== NOTIFICATION TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  background: var(--black-soft);
-  border: 1.5px solid var(--pink);
-  border-radius: 8px;
-  padding: 16px 24px;
-  font-family: var(--font-sub);
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: var(--white);
-  z-index: 9999;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: var(--transition);
-  box-shadow: var(--shadow-pink);
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast-icon { color: var(--pink); margin-right: 8px; }
 
 /* ===== FILTER BUTTONS ===== */
 .filter-btn {

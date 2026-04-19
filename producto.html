@@ -112,7 +112,7 @@
             </div>
             <span style="font-family:var(--font-sub);font-size:11px;letter-spacing:1.5px;color:var(--pink)">✔ En stock</span>
           </div>
-          <button class="btn-buy" onclick="addToCart()">
+          <button class="btn-buy" onclick="addToCartLocal()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Agregar al Carrito
           </button>
@@ -824,29 +824,23 @@
       document.getElementById('qty').value = qty;
     }
 
-    function addToCart() {
+    function addToCartLocal() {
       const product = productos[currentProductId];
-      // Agregar al carrito local
-      if (!cart[currentProductId]) {
-        cart[currentProductId] = { 
-          name: product.nombre, 
-          price: product.precio, 
-          qty: qty,
-          selectedSize: document.querySelector('.size-btn.active')?.textContent || 'M',
-          selectedColor: document.getElementById('colorName').textContent
-        };
-      } else {
-        cart[currentProductId].qty += qty;
-      }
-      localStorage.setItem('vibewear-cart', JSON.stringify(cart));
-      updateCartCount();
+      const selectedSize = document.querySelector('.size-btn.active')?.textContent || 'M';
+      const selectedColor = document.getElementById('colorName').textContent;
       
-      const panel = document.getElementById('cartPanel');
-      if (!panel) createCartPanel();
-      renderCart();
-      panel.style.display = 'block';
+      // Llamar a la función global de cart.js con todos los parámetros
+      window.addToCart(
+        currentProductId,
+        product.nombre,
+        product.precio,
+        product.imagenUrl,
+        qty,
+        selectedSize,
+        selectedColor
+      );
       
-      showNotification(`${product.nombre} agregado al carrito!`);
+      // Reset qty
       qty = 1;
       document.getElementById('qty').value = qty;
     }
@@ -912,7 +906,7 @@
               <h3 class="product-name">${p.nombre}</h3>
               <div class="product-footer">
                 <span class="product-price">$${p.precio.toLocaleString('es-CO')}</span>
-                <div class="product-wishlist" onclick="if(typeof toggleWishlistCard==='function')toggleWishlistCard('${id}','${p.nombre}'); else addToWishlist('${id}','${p.nombre}');" style="cursor: pointer;">♡</div>
+                <div class="product-wishlist" data-product-wishlist="${id}" onclick="toggleRecommendedWishlist(this, '${id}', '${p.nombre}', ${p.precio}, '${p.imagenUrl}')" style="cursor: pointer;">♡</div>
               </div>
             </div>
           </div>
@@ -1116,8 +1110,15 @@
     function toggleProductWishlist() {
       const btn = document.getElementById('wishlistBtn');
       const product = productos[currentProductId];
-      addToWishlist(currentProductId, product.nombre);
+      addToWishlist(currentProductId, product.nombre, product.precio, product.imagenUrl);
       btn.style.opacity = isInWishlist(currentProductId) ? '1' : '0.5';
+      updateWishlistHearts();
+    }
+
+    function toggleRecommendedWishlist(element, id, nombre, precio, imagenUrl) {
+      addToWishlist(id, nombre, precio, imagenUrl);
+      element.textContent = isInWishlist(id) ? '♥' : '♡';
+      element.style.color = isInWishlist(id) ? 'var(--pink)' : 'var(--white)';
     }
 
     function applyCouponCode() {
