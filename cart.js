@@ -94,9 +94,9 @@ function getCartTax(subtotal) {
 
 function getCartTotal() {
   const subtotal = getCartSubtotal();
-  const tax = getCartTax(subtotal);
   const shipping = getShippingCost(subtotal);
-  return subtotal + tax + shipping;
+  // Los precios ya incluyen IVA, no sumamos impuestos adicionales
+  return subtotal + shipping;
 }
 
 function getShippingCost(subtotal) {
@@ -180,19 +180,14 @@ function updateCartModal() {
 
     // Actualizar resumen
     const subtotal = getCartSubtotal();
-    const tax = getCartTax(subtotal);
     const shipping = getShippingCost(subtotal);
-    const total = getCartTotal();
+    const total = subtotal + shipping; // Los precios ya incluyen IVA
 
     const summaryHTML = `
       <div style="padding:16px;border-top:1px solid rgba(224,162,201,0.2);font-family:var(--font-body);font-size:13px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px;color:var(--gray);">
-          <span>Subtotal:</span>
+          <span>Subtotal (IVA incluido):</span>
           <span>${formatPrice(subtotal)}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;color:var(--gray);">
-          <span>IVA (19%):</span>
-          <span>${formatPrice(tax)}</span>
         </div>
         <div style="display:flex;justify-content:space-between;margin-bottom:16px;color:var(--gray);">
           <span>Envío:</span>

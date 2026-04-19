@@ -130,12 +130,8 @@
         <div id="summaryItems" style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(224,162,201,0.2);"></div>
 
         <div style="display:flex;justify-content:space-between;margin-bottom:12px;color:var(--gray);font-size:13px;">
-          <span>Subtotal:</span>
+          <span>Subtotal (IVA incluido):</span>
           <span id="subtotalSummary">$0</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:12px;color:var(--gray);font-size:13px;">
-          <span>IVA (19%):</span>
-          <span id="taxSummary">$0</span>
         </div>
         <div style="display:flex;justify-content:space-between;margin-bottom:24px;color:var(--gray);font-size:13px;">
           <span>Envío:</span>
@@ -241,12 +237,10 @@
 
     function updateSummary() {
       const subtotal = window.getCartSubtotal();
-      const tax = window.getCartTax(subtotal);
       const shipping = window.getShippingCost(subtotal);
       const total = window.getCartTotal();
 
       document.getElementById('subtotalSummary').textContent = window.formatPrice(subtotal);
-      document.getElementById('taxSummary').textContent = window.formatPrice(tax);
       document.getElementById('shippingSummary').textContent = shipping === 0 ? '¡Gratis!' : window.formatPrice(shipping);
       document.getElementById('totalSummary').textContent = window.formatPrice(total);
     }
@@ -329,7 +323,6 @@
           zipCode: zipCode,
           items: window.getCart(),
           subtotal: window.getCartSubtotal(),
-          tax: window.getCartTax(window.getCartSubtotal()),
           shipping: window.getShippingCost(window.getCartSubtotal()),
           total: window.getCartTotal(),
           status: 'Pendiente de confirmación',
