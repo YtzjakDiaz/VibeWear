@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pago Exitoso - VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body style="background:#0a0a0a;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;">
+
+  <div style="text-align:center;max-width:500px;">
+    <!-- SUCCESS ANIMATION -->
+    <div style="margin-bottom:40px;font-size:120px;animation:pulse 1s ease-in-out;display:inline-block;">✅</div>
+    
+    <h1 style="font-family:var(--font-display);font-size:42px;color:var(--white);margin:20px 0;letter-spacing:2px;">¡PAGO EXITOSO!</h1>
+    
+    <p style="font-family:var(--font-body);font-size:16px;color:var(--gray);margin-bottom:30px;line-height:1.6;">
+      Gracias por tu compra en <span style="color:var(--pink);font-weight:600;">VibeWear</span>. 
+      Tu pedido ha sido confirmado y pronto recibirás un email con los detalles del envío.
+    </p>
+
+    <div style="background:rgba(224,162,201,0.08);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:30px;margin-bottom:40px;">
+      <p style="margin:0 0 15px 0;color:var(--gray);font-size:13px;text-transform:uppercase;letter-spacing:2px;font-family:var(--font-sub);">Número de Orden</p>
+      <h2 id="orderNumber" style="font-family:var(--font-display);font-size:32px;color:var(--pink);margin:0;letter-spacing:1px;">VW-XXXXX</h2>
+      
+      <div style="margin-top:30px;padding-top:30px;border-top:1px solid rgba(224,162,201,0.2);">
+        <p style="margin:0 0 8px 0;color:var(--gray);font-size:12px;">Código de Rastreo</p>
+        <p id="trackingCode" style="margin:0;font-family:monospace;font-size:16px;color:var(--white);font-weight:600;background:rgba(255,255,255,0.05);padding:12px;border-radius:6px;">XXXXX</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:15px;">
+      <button onclick="window.location.href='index.html'" style="width:100%;background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        Volver al Inicio
+      </button>
+      <button onclick="window.location.href='catalogo.html'" style="width:100%;background:transparent;color:var(--pink);border:1.5px solid rgba(224,162,201,0.4);padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--pink)';this.style.background='rgba(224,162,201,0.08)'" onmouseout="this.style.borderColor='rgba(224,162,201,0.4)';this.style.background='transparent'">
+        Ver Más Productos
+      </button>
+    </div>
+
+    <p style="margin-top:40px;color:var(--gray);font-size:12px;line-height:1.6;">
+      Recibirás un email de confirmación. Si tienes preguntas, contáctanos en 
+      <span style="color:var(--pink);">soporte@vibewear.com</span> o por WhatsApp.
+    </p>
+  </div>
+
+  <script src="cart.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const orders = JSON.parse(localStorage.getItem('vibewear-orders')) || [];
+      if (orders.length > 0) {
+        const lastOrder = orders[orders.length - 1];
+        document.getElementById('orderNumber').textContent = lastOrder.id || 'VW-XXXXX';
+        document.getElementById('trackingCode').textContent = lastOrder.tracking || 'XXXXX';
+      }
+    });
+
+    if (document.readyState !== 'loading') {
+      const orders = JSON.parse(localStorage.getItem('vibewear-orders')) || [];
+      if (orders.length > 0) {
+        const lastOrder = orders[orders.length - 1];
+        document.getElementById('orderNumber').textContent = lastOrder.id || 'VW-XXXXX';
+        document.getElementById('trackingCode').textContent = lastOrder.tracking || 'XXXXX';
+      }
+    }
+  </script>
+
+  <style>
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  </style>
+
+</body>
+</html>

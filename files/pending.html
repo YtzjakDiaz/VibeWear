@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pago Pendiente - VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body style="background:#0a0a0a;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;">
+
+  <div style="text-align:center;max-width:500px;">
+    <!-- PENDING ANIMATION -->
+    <div style="margin-bottom:40px;font-size:120px;animation:bounce 2s ease-in-out infinite;display:inline-block;">⏳</div>
+    
+    <h1 style="font-family:var(--font-display);font-size:42px;color:var(--white);margin:20px 0;letter-spacing:2px;">PAGO PENDIENTE</h1>
+    
+    <p style="font-family:var(--font-body);font-size:16px;color:var(--gray);margin-bottom:30px;line-height:1.6;">
+      Tu pago está siendo procesado. Esto puede tomar algunos minutos. 
+      No cierres esta página.
+    </p>
+
+    <div style="background:rgba(224,162,201,0.08);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:30px;margin-bottom:40px;">
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
+        <div style="width:12px;height:12px;background:var(--pink);border-radius:50%;animation:pulse-dot 1s ease-in-out;animation-delay:0s;"></div>
+        <div style="width:12px;height:12px;background:var(--pink);border-radius:50%;animation:pulse-dot 1s ease-in-out;animation-delay:0.2s;"></div>
+        <div style="width:12px;height:12px;background:var(--pink);border-radius:50%;animation:pulse-dot 1s ease-in-out;animation-delay:0.4s;"></div>
+      </div>
+      
+      <p style="margin:0;color:var(--gray);font-size:14px;">
+        Tu pago está siendo validado por nuestro sistema de seguridad...
+      </p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:15px;">
+      <button onclick="window.location.href='checkout.html'" style="width:100%;background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        Volver al Checkout
+      </button>
+      <button onclick="window.location.href='index.html'" style="width:100%;background:transparent;color:var(--pink);border:1.5px solid rgba(224,162,201,0.4);padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--pink)';this.style.background='rgba(224,162,201,0.08)'" onmouseout="this.style.borderColor='rgba(224,162,201,0.4)';this.style.background='transparent'">
+        Ir al Inicio
+      </button>
+    </div>
+
+    <p style="margin-top:40px;color:var(--gray);font-size:12px;line-height:1.6;">
+      ¿Problemas con tu pago? Contacta a nuestro equipo en 
+      <span style="color:var(--pink);">soporte@vibewear.com</span> o llama al +57 (310) 604-5846
+    </p>
+  </div>
+
+  <script src="cart.js"></script>
+  <script src="shared.js"></script>
+
+  <style>
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+  </style>
+
+</body>
+</html>

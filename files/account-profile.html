@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Cuenta - VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="page-enter">
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="nav-brand">
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer;">
+        <div class="nav-logo">
+          <img src="images/logo.png" alt="VibeWear Logo" onerror="this.style.display='none';this.parentNode.innerHTML='VW';" />
+        </div>
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+      </a>
+    </div>
+    <div style="flex:1;"></div>
+    <div style="display:flex;gap:15px;align-items:center;">
+      <div class="nav-cart" data-cart onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cartCount">0</span>
+      </div>
+      <button id="logoutBtn" onclick="logoutHandler()" style="background:var(--pink);border:none;color:var(--black);padding:10px 16px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        Cerrar Sesión
+      </button>
+    </div>
+    <div class="nav-hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <!-- ACCOUNT PAGE -->
+  <section style="min-height:100vh;padding:150px 60px 80px;background:var(--black)">
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <!-- HEADER -->
+      <div style="margin-bottom:60px;">
+        <span class="section-label">✦ Tu Perfil</span>
+        <h1 class="section-title">MI CUENTA</h1>
+      </div>
+
+      <!-- TABS -->
+      <div style="display:flex;gap:20px;border-bottom:1px solid rgba(224,162,201,0.2);margin-bottom:40px;overflow-x:auto;">
+        <button class="tab-btn active" onclick="switchTab('profile')" style="padding:16px 20px;color:var(--white);border:none;background:transparent;border-bottom:2px solid var(--pink);font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Mi Perfil</button>
+        <button class="tab-btn" onclick="switchTab('orders')" style="padding:16px 20px;color:var(--gray);border:none;background:transparent;border-bottom:2px solid transparent;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Mis Órdenes</button>
+        <button class="tab-btn" onclick="switchTab('wishlist')" style="padding:16px 20px;color:var(--gray);border:none;background:transparent;border-bottom:2px solid transparent;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">❤️ Favoritos</button>
+        <button class="tab-btn" onclick="switchTab('security')" style="padding:16px 20px;color:var(--gray);border:none;background:transparent;border-bottom:2px solid transparent;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Seguridad</button>
+      </div>
+
+      <!-- TAB CONTENT -->
+
+      <!-- PROFILE TAB -->
+      <div id="profileTab" class="tab-content" style="display:block;">
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:60px;">
+
+          <!-- PROFILE CARD -->
+          <div style="background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.2);border-radius:12px;padding:40px;height:fit-content;">
+            <div style="text-align:center;">
+              <div style="position:relative;display:inline-block;margin-bottom:20px;">
+                <img id="userAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=usuario" alt="Avatar" style="width:120px;height:120px;border-radius:50%;border:2px solid var(--pink);object-fit:cover;background:rgba(224,162,201,0.1);cursor:pointer;" onclick="document.getElementById('avatarUpload').click();" />
+                <label for="avatarUpload" style="position:absolute;bottom:0;right:0;background:var(--pink);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.2);" title="Cambiar avatar" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">📸</label>
+                <input type="file" id="avatarUpload" accept="image/*" style="display:none;" onchange="uploadAvatar(event)" />
+              </div>
+              <h2 id="userName" style="font-family:var(--font-display);font-size:24px;color:var(--white);margin:20px 0 5px;font-weight:700;letter-spacing:0.5px;">Usuario</h2>
+              <p id="userEmail" style="color:var(--pink);font-size:13px;margin-bottom:30px;font-weight:500;letter-spacing:0.3px;">email@example.com</p>
+              
+              <div style="text-align:left;background:rgba(255,255,255,0.02);border-radius:8px;padding:20px;margin-top:20px;">
+                <p style="color:var(--gray);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">⭐ Puntos de Lealtad</p>
+                <p id="loyaltyPoints" style="font-family:var(--font-display);font-size:28px;color:var(--pink);margin:0;">0</p>
+                <p style="color:var(--gray);font-size:11px;margin-top:8px;">Gana 5% en cada compra</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROFILE FORM -->
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin-bottom:25px;">Editar Perfil</h3>
+
+            <form id="profileForm" style="display:flex;flex-direction:column;gap:20px;">
+
+              <div style="position:relative;">
+                <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Nombre Completo</label>
+                <input type="text" id="editName" placeholder="Tu nombre" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" />
+              </div>
+
+              <div style="position:relative;">
+                <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Foto de Perfil</label>
+                <label for="profilePhotoInput" style="display:flex;align-items:center;justify-content:center;width:100%;padding:40px 20px;background:rgba(255,255,255,0.02);border:2px dashed rgba(224,162,201,0.3);border-radius:var(--radius);cursor:pointer;transition:all 0.3s;font-family:var(--font-body);color:var(--gray);font-size:14px;" onmouseover="this.style.borderColor='rgba(224,162,201,0.6)';this.style.background='rgba(224,162,201,0.05)'" onmouseout="this.style.borderColor='rgba(224,162,201,0.3)';this.style.background='rgba(255,255,255,0.02)'">
+                  <span id="fileLabel" style="text-align:center;">
+                    <div style="font-size:20px;margin-bottom:8px;">📸</div>
+                    <div style="color:var(--white);font-weight:600;margin-bottom:4px;">Selecciona una imagen</div>
+                    <div style="font-size:12px;">Máximo 5MB - JPG, PNG o WebP</div>
+                  </span>
+                </label>
+                <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)" />
+                <div id="photoPreview" style="margin-top:12px;padding:12px;background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.3);border-radius:6px;text-align:center;display:none;">
+                  <img id="previewImage" src="" alt="Preview" style="max-width:100%;max-height:200px;border-radius:6px;" />
+                  <p style="color:var(--gray);font-size:11px;margin-top:8px;" id="previewName"></p>
+                </div>
+              </div>
+
+              <div style="position:relative;">
+                <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Email</label>
+                <input type="email" id="editEmail" placeholder="tu@email.com" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" disabled />
+                <p style="color:var(--gray);font-size:11px;margin-top:8px;">ℹ️ El email no se puede cambiar por seguridad</p>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div style="position:relative;">
+                  <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">País</label>
+                  <select id="editCountry" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;">
+                    <option>Colombia</option>
+                    <option>México</option>
+                    <option>España</option>
+                    <option>Argentina</option>
+                    <option>Otro</option>
+                  </select>
+                </div>
+                <div style="position:relative;">
+                  <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Teléfono</label>
+                  <input type="tel" id="editPhone" placeholder="+57 300 000 0000" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" />
+                </div>
+              </div>
+
+              <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:10px;box-shadow:0 4px 12px rgba(224,162,201,0.3);" onmouseover="this.style.opacity='0.85';this.style.boxShadow='0 6px 16px rgba(224,162,201,0.5)'" onmouseout="this.style.opacity='1';this.style.boxShadow='0 4px 12px rgba(224,162,201,0.3)'">
+                💾 Guardar Cambios
+              </button>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ORDERS TAB -->
+      <div id="ordersTab" class="tab-content" style="display:none;">
+        <div id="ordersList" style="display:grid;gap:20px;"></div>
+        <div id="noOrders" style="text-align:center;padding:40px;color:var(--gray);">
+          <p style="font-size:16px;margin-bottom:20px;">No tienes órdenes aún</p>
+          <a href="catalogo.html" style="display:inline-block;background:var(--pink);color:var(--black);padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;letter-spacing:1px;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            Ver Catálogo
+          </a>
+        </div>
+      </div>
+
+      <!-- WISHLIST TAB -->
+      <div id="wishlistTab" class="tab-content" style="display:none;">
+        <div id="wishlistContent">
+          <div id="wishlistGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:25px;"></div>
+          <div id="noWishlist" style="text-align:center;padding:60px 40px;color:var(--gray);">
+            <p style="font-size:24px;margin-bottom:15px;">❤️</p>
+            <p style="font-size:16px;margin-bottom:20px;">Tu lista de favoritos está vacía</p>
+            <p style="font-size:13px;color:var(--gray);margin-bottom:25px;">Agrega productos a favoritos desde el catálogo</p>
+            <a href="catalogo.html" style="display:inline-block;background:var(--pink);color:var(--black);padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;letter-spacing:1px;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              Explorar Catálogo
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECURITY TAB -->
+      <div id="securityTab" class="tab-content" style="display:none;">
+        <div style="max-width:600px;">
+
+          <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin-bottom:25px;">Cambiar Contraseña</h3>
+
+          <form id="passwordForm" style="display:flex;flex-direction:column;gap:20px;">
+
+            <div style="position:relative;">
+              <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Contraseña Actual</label>
+              <input type="password" id="currentPassword" placeholder="••••••••" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" required />
+            </div>
+
+            <div style="position:relative;">
+              <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Nueva Contraseña</label>
+              <input type="password" id="newPassword" placeholder="••••••••" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" required onchange="validateNewPassword()" />
+              <div id="passwordHints" style="display:none;margin-top:8px;font-size:12px;color:var(--gray);"></div>
+            </div>
+
+            <div style="position:relative;">
+              <label style="display:block;font-family:var(--font-sub);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;">Confirmar Nueva Contraseña</label>
+              <input type="password" id="confirmPassword" placeholder="••••••••" style="width:100%;font-family:var(--font-body);font-size:14px;color:var(--white);background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:16px 20px;outline:none;" required />
+            </div>
+
+            <div id="passwordError" style="display:none;background:rgba(255,107,157,0.1);border:1px solid #ff6b9d;color:#ff6b9d;padding:12px;border-radius:6px;font-size:12px;"></div>
+
+            <button type="submit" style="background:var(--pink);color:var(--black);border:none;padding:16px;border-radius:6px;font-family:var(--font-sub);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:10px;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              Actualizar Contraseña
+            </button>
+
+          </form>
+
+          <hr style="border:none;border-top:1px solid rgba(224,162,201,0.2);margin:40px 0;" />
+
+          <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin:40px 0 25px;">Notificaciones</h3>
+
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <p style="color:var(--white);font-weight:600;margin:0 0 8px 0;">Notificaciones Push</p>
+                <p style="color:var(--gray);font-size:12px;margin:0;">Recibe alertas sobre nuevos productos y estado de órdenes</p>
+              </div>
+              <label style="display:flex;align-items:center;cursor:pointer;">
+                <input type="checkbox" id="pushNotificationsToggle" onchange="handleNotificationToggle(this)" />
+              </label>
+            </div>
+
+            <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
+              <p style="color:var(--gray);font-size:13px;margin:0;"><strong>💡 Tip:</strong> Habilita las notificaciones para recibir alertas sobre productos que te interesan, ofertas especiales y actualizaciones de tus órdenes.</p>
+            </div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(224,162,201,0.2);margin:40px 0;" />
+
+          <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin:40px 0 25px;">Información de Seguridad</h3>
+
+          <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
+            <p style="color:var(--gray);font-size:13px;margin-bottom:15px;">
+              <strong>Email verificado:</strong> <span id="emailVerified" style="color:var(--pink);">-</span>
+            </p>
+            <p style="color:var(--gray);font-size:13px;margin-bottom:15px;">
+              <strong>Última sesión:</strong> <span id="lastSignIn" style="color:var(--pink);">-</span>
+            </p>
+            <p style="color:var(--gray);font-size:13px;">
+              <strong>Cuenta creada:</strong> <span id="createdAt" style="color:var(--pink);">-</span>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="cart.js"></script>
+  <script src="shared.js"></script>
+  <script type="module">
+    import { getCurrentUser, onAuthChange, logout, changePassword, updateUserProfile, getErrorMessage } from './firebase-auth.js';
+    import { getOrdersByEmail } from './firebase-orders.js';
+    import { auth, db } from './firebase-config.js';
+    import { uploadProfileImage, deleteProfileImage } from './profile-image-handler.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js';
+
+    let currentUser = null;
+
+    // Verificar autenticación al cargar - Esperar a Firebase
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // No hay usuario autenticado, redirigir al login
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Usuario autenticado, cargar perfil
+      currentUser = user;
+      loadUserProfile();
+      loadUserOrders();
+      
+      // Verificar si hay parámetro tab=wishlist en la URL
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'wishlist') {
+        setTimeout(() => {
+          window.switchTab('wishlist');
+        }, 500);
+      }
+    });
+
+    // SWITCH TABS
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.style.color = 'var(--gray)';
+        el.style.borderBottomColor = 'transparent';
+      });
+
+      const targetBtn = event?.target || document.querySelector(`button[onclick="switchTab('${tab}')"]`);
+
+      if (tab === 'profile') {
+        document.getElementById('profileTab').style.display = 'block';
+      } else if (tab === 'orders') {
+        document.getElementById('ordersTab').style.display = 'block';
+      } else if (tab === 'wishlist') {
+        document.getElementById('wishlistTab').style.display = 'block';
+        loadWishlist();
+      } else if (tab === 'security') {
+        document.getElementById('securityTab').style.display = 'block';
+      }
+
+      if (targetBtn) {
+        targetBtn.style.color = 'var(--white)';
+        targetBtn.style.borderBottomColor = 'var(--pink)';
+      }
+    };
+
+    // LOAD PROFILE
+    async function loadUserProfile() {
+      try {
+        // Cargar nombre y email
+        const displayName = currentUser.displayName?.trim() || currentUser.email.split('@')[0];
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('userEmail').textContent = currentUser.email;
+        
+        // Cargar foto real desde Firestore si existe
+        let photoURL = currentUser.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+        
+        try {
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists() && userDoc.data().photoURL) {
+            photoURL = userDoc.data().photoURL;
+          }
+        } catch (error) {
+          console.warn('Could not load photo from Firestore:', error);
+        }
+        
+        // Actualizar avatar con mejor manejo de errores
+        const avatarImg = document.getElementById('userAvatar');
+        if (avatarImg) {
+          avatarImg.src = photoURL;
+          avatarImg.onerror = () => {
+            avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+          };
+        }
+
+        // Llenar formulario
+        document.getElementById('editName').value = displayName;
+        document.getElementById('editEmail').value = currentUser.email;
+        document.getElementById('editCountry').value = 'Colombia';
+
+        const loyaltyPoints = parseInt(localStorage.getItem('vibewear-loyalty-points')) || 0;
+        document.getElementById('loyaltyPoints').textContent = loyaltyPoints.toLocaleString('es-CO');
+
+        // Cargar datos de seguridad si los elementos existen
+        if (document.getElementById('emailVerified')) {
+          document.getElementById('emailVerified').textContent = currentUser.emailVerified ? '✅ Verificado' : '❌ No verificado';
+        }
+        if (document.getElementById('lastSignIn')) {
+          document.getElementById('lastSignIn').textContent = new Date(currentUser.metadata.lastSignInTime).toLocaleDateString('es-CO');
+        }
+        if (document.getElementById('createdAt')) {
+          document.getElementById('createdAt').textContent = new Date(currentUser.metadata.creationTime).toLocaleDateString('es-CO');
+        }
+      } catch (error) {
+        console.error('Error loading user profile:', error);
+        showNotification('⚠️ Error cargando perfil');
+      }
+    }
+
+    // LOAD ORDERS
+    async function loadUserOrders() {
+      try {
+        const ordersList = document.getElementById('ordersList');
+        const noOrders = document.getElementById('noOrders');
+        
+        if (!ordersList || !noOrders) return;
+        
+        try {
+          const orders = await getOrdersByEmail(currentUser.email);
+          
+          if (!orders || orders.length === 0) {
+            ordersList.style.display = 'none';
+            noOrders.style.display = 'block';
+            return;
+          }
+
+          ordersList.style.display = 'grid';
+          noOrders.style.display = 'none';
+
+          ordersList.innerHTML = orders.map(order => `
+            <div style="background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;padding:20px;">
+              <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:15px;">
+                <div>
+                  <p style="color:var(--gray);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:0;">Orden #${order.id}</p>
+                  <p style="color:var(--white);font-size:18px;font-weight:600;margin:5px 0;">$${order.total?.toLocaleString('es-CO')}</p>
+                </div>
+                <span style="background:${getStatusColor(order.status)};color:var(--black);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">
+                  ${order.status}
+                </span>
+              </div>
+              <p style="color:var(--gray);font-size:12px;margin:10px 0;">
+                <strong>Rastreo:</strong> ${order.tracking || 'N/A'}
+              </p>
+              <p style="color:var(--gray);font-size:12px;margin:10px 0;">
+                <strong>Fecha:</strong> ${order.date || new Date(order.createdAt?.toDate?.()).toLocaleDateString('es-CO')}
+              </p>
+              <p style="color:var(--gray);font-size:12px;margin:10px 0;">
+                <strong>Items:</strong> ${order.items?.length || 0} producto${order.items?.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+          `).join('');
+        } catch (innerError) {
+          console.error('Error procesando órdenes:', innerError);
+          noOrders.style.display = 'block';
+          ordersList.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error cargando órdenes:', error);
+      }
+    }
+
+    function getStatusColor(status) {
+      const colors = {
+        'Pendiente de confirmación': '#e0a2c9',
+        'en-transito': '#4ade80',
+        'Entregado': '#22d3ee',
+        'Cancelado': '#ff6b9d'
+      };
+      return colors[status] || '#e0a2c9';
+    }
+
+    window.validateNewPassword = function() {
+      const password = document.getElementById('newPassword').value;
+      const hints = document.getElementById('passwordHints');
+
+      if (password.length > 0) {
+        const minLength = password.length < 6;
+        const hasUpper = /[A-Z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*]/.test(password);
+        
+        const errors = [];
+        if (minLength) errors.push('Mínimo 6 caracteres');
+        if (!hasUpper) errors.push('Al menos una mayúscula');
+        if (!hasNumber) errors.push('Al menos un número');
+        if (!hasSpecial) errors.push('Al menos un carácter especial (!@#$%^&*)');
+        
+        hints.style.display = 'block';
+        if (errors.length > 0) {
+          hints.innerHTML = errors.map(e => `❌ ${e}`).join('<br>');
+          hints.style.color = '#ff6b9d';
+        } else {
+          hints.innerHTML = '✅ Contraseña válida';
+          hints.style.color = '#4ade80';
+        }
+      } else {
+        hints.style.display = 'none';
+      }
+    };
+
+    // UPLOAD AVATAR
+    window.uploadAvatar = async function(event) {
+      console.log('📸 uploadAvatar llamado');
+      const file = event.target.files?.[0];
+      if (!file) {
+        console.log('❌ No file selected');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        showNotification('❌ Por favor selecciona una imagen');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('❌ La imagen debe ser menor a 5MB');
+        return;
+      }
+
+      try {
+        console.log('📸 Iniciando upload de avatar...');
+        showNotification('📸 Subiendo avatar...');
+        
+        // Subir nuevo avatar a Firestore (base64)
+        console.log('⬆️ Subiendo a Firestore...');
+        const photoURL = await uploadProfileImage(file, currentUser.uid);
+        console.log('✓ Avatar guardado en Firestore');
+        
+        showNotification('✅ Avatar actualizado');
+        
+        // Actualizar avatar directamente sin esperar
+        const avatarImg = document.getElementById('userAvatar');
+        if (avatarImg) {
+          avatarImg.src = photoURL;
+        }
+        
+        // Recargar perfil completo
+        await loadUserProfile();
+        
+        // Limpiar input
+        event.target.value = '';
+      } catch (error) {
+        console.error('❌ Error en uploadAvatar:', error);
+        showNotification('❌ Error: ' + getErrorMessage(error));
+      }
+    };
+
+    // PREVIEW PROFILE PHOTO
+    window.previewProfilePhoto = async function(event) {
+      console.log('👁️ previewProfilePhoto llamado');
+      const file = event.target.files?.[0];
+      if (!file) {
+        console.log('❌ No file selected');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        showNotification('❌ Solo se permiten imágenes');
+        event.target.value = '';
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('❌ La imagen debe ser menor a 5MB');
+        event.target.value = '';
+        return;
+      }
+
+      try {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const preview = document.getElementById('photoPreview');
+          const previewImg = document.getElementById('previewImage');
+          const previewName = document.getElementById('previewName');
+          const fileLabel = document.getElementById('fileLabel');
+          
+          previewImg.src = e.target.result;
+          previewName.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`;
+          preview.style.display = 'block';
+          
+          // Actualizar label para mostrar archivo seleccionado
+          fileLabel.innerHTML = `
+            <span style="text-align:center;">
+              <div style="font-size:20px;margin-bottom:8px;">✓</div>
+              <div style="color:var(--pink);font-weight:600;margin-bottom:4px;">Archivo seleccionado</div>
+              <div style="font-size:12px;color:var(--gray);">${file.name}</div>
+            </span>
+          `;
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        showNotification('❌ Error procesando imagen: ' + error.message);
+      }
+    };
+
+    // PROFILE FORM
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const newName = document.getElementById('editName').value.trim();
+      const photoInput = document.getElementById('profilePhotoInput');
+      
+      if (newName.length < 3) {
+        showNotification('❌ El nombre debe tener al menos 3 caracteres');
+        return;
+      }
+
+      try {
+        let photoURL = currentUser.photoURL;
+
+        // Si se subió una foto, procesarla con Firebase Storage
+        if (photoInput.files && photoInput.files[0]) {
+          const file = photoInput.files[0];
+          if (file.size > 5 * 1024 * 1024) {
+            showNotification('❌ La imagen debe ser menor a 5MB');
+            return;
+          }
+
+          showNotification('📸 Guardando imagen...');
+          
+          // Eliminar foto anterior si existe
+          if (currentUser.photoURL && currentUser.photoURL.includes('firebasestorage')) {
+            await deleteProfileImage(currentUser.uid, currentUser.photoURL);
+          }
+          
+          // Subir nueva foto a Firebase Storage
+          console.log('⬆️ Subiendo nueva foto a Firebase Storage...');
+          photoURL = await uploadProfileImage(file, currentUser.uid);
+          console.log('✓ Foto URL recibida:', photoURL?.substring(0, 50));
+        }
+
+        console.log('💾 Actualizando perfil con nombre...');
+        await updateUserProfile({
+          displayName: newName
+        });
+
+        showNotification('✅ Perfil actualizado correctamente');
+        
+        // Esperar a que Firebase se sincronice
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Si se cambió la foto, actualizar el avatar directamente
+        if (photoInput.files && photoInput.files[0] && photoURL) {
+          const avatarImg = document.getElementById('userAvatar');
+          if (avatarImg) {
+            console.log('🖼️ Actualizando avatar con nueva foto');
+            avatarImg.src = photoURL;
+          }
+        }
+        
+        currentUser = getCurrentUser();
+        await loadUserProfile();
+        photoInput.value = '';
+        document.getElementById('photoPreview').style.display = 'none';
+      } catch (error) {
+        console.error('❌ Error en profileForm:', error);
+        showNotification('❌ Error: ' + getErrorMessage(error));
+      }
+    });
+
+    // PASSWORD FORM
+    document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const newPass = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      const errorDiv = document.getElementById('passwordError');
+
+      if (newPass !== confirm) {
+        errorDiv.textContent = 'Las contraseñas no coinciden';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        await changePassword(newPass);
+        errorDiv.style.display = 'none';
+        showNotification('✅ Contraseña actualizada');
+        document.getElementById('passwordForm').reset();
+      } catch (error) {
+        errorDiv.textContent = getErrorMessage(error);
+        errorDiv.style.display = 'block';
+      }
+    });
+
+    window.logoutHandler = async function() {
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        try {
+          await logout();
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 300);
+        } catch (error) {
+          showNotification('❌ Error cerrando sesión: ' + getErrorMessage(error));
+        }
+      }
+    };
+
+    function showNotification(msg) {
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position:fixed;
+        bottom:20px;
+        right:20px;
+        background:var(--pink);
+        color:white;
+        padding:15px 20px;
+        border-radius:8px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        z-index:9998;
+        animation:slideIn 0.3s ease;
+        font-family:var(--font-body);
+        font-weight:600;
+      `;
+      notif.textContent = msg;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+
+    // Manejador de Toggle de Notificaciones
+    window.handleNotificationToggle = async function(element) {
+      if (!element.checked) {
+        // Desactivar
+        if (window.pushManager) {
+          await pushManager.unsubscribe();
+        }
+        return;
+      }
+
+      // Activar - Mostrar cargando
+      element.disabled = true;
+      showNotification('⏳ Activando notificaciones...');
+
+      // Esperar a que push-notifications.js cargue
+      const startTime = Date.now();
+      while (!window.pushManager && Date.now() - startTime < 5000) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+
+      if (!window.pushManager) {
+        showNotification('❌ Error: Push Notifications no disponible');
+        element.checked = false;
+        element.disabled = false;
+        return;
+      }
+
+      // Intentar suscribirse
+      try {
+        const success = await pushManager.subscribe();
+        if (!success) {
+          element.checked = false;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al activar notificaciones');
+        element.checked = false;
+      }
+
+      element.disabled = false;
+    };
+
+    // LOAD WISHLIST
+    function loadWishlist() {
+      const wishlist = JSON.parse(localStorage.getItem('vibewear-wishlist') || '[]');
+      const wishlistGrid = document.getElementById('wishlistGrid');
+      const noWishlist = document.getElementById('noWishlist');
+      
+      wishlistGrid.innerHTML = '';
+      
+      if (wishlist.length === 0) {
+        wishlistGrid.style.display = 'none';
+        noWishlist.style.display = 'block';
+        return;
+      }
+      
+      wishlistGrid.style.display = 'grid';
+      noWishlist.style.display = 'none';
+      
+      wishlist.forEach(item => {
+        const productCard = document.createElement('div');
+        productCard.style.cssText = 'background:rgba(224,162,201,0.05);border:1px solid rgba(224,162,201,0.2);border-radius:8px;overflow:hidden;transition:all 0.3s;cursor:pointer;position:relative;';
+        
+        const price = typeof item.price === 'number' ? item.price : parseInt(item.price) || 0;
+        
+        productCard.innerHTML = `
+          <div style="position:relative;overflow:hidden;background:rgba(0,0,0,0.3);aspect-ratio:1;">
+            <img src="${item.image || ''}" alt="${item.name || 'Producto'}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s;">
+            <button style="position:absolute;top:10px;right:10px;background:var(--pink);color:var(--white);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1';">✕</button>
+          </div>
+          <div style="padding:16px;">
+            <h4 style="margin:0 0 8px 0;color:var(--white);font-size:14px;font-weight:600;font-family:var(--font-sub);">${item.name || 'Producto'}</h4>
+            <p style="margin:0 0 12px 0;color:var(--gray);font-size:12px;">$${price.toLocaleString('es-CO')}</p>
+            <button style="width:100%;background:var(--pink);color:var(--black);border:none;padding:10px;border-radius:6px;font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1';">
+              Agregar al Carrito
+            </button>
+          </div>
+        `;
+        
+        // Obtener ambos botones
+        const buttons = productCard.querySelectorAll('button');
+        const removeBtn = buttons[0];
+        const addToCartBtn = buttons[1];
+        
+        // Botón para eliminar del wishlist
+        removeBtn.onclick = () => {
+          removeFromWishlist(item.id);
+          loadWishlist();
+          updateWishlistHearts();
+        };
+        
+        // Botón para agregar al carrito - abre modal de talla/color
+        addToCartBtn.onclick = () => {
+          window.showSizeColorModal(item.id, item.name, price, item.image);
+        };
+        
+        productCard.onmouseover = function() { this.style.borderColor = 'var(--pink)'; };
+        productCard.onmouseout = function() { this.style.borderColor = 'rgba(224,162,201,0.2)'; };
+        
+        wishlistGrid.appendChild(productCard);
+      });
+    }
+  </script>
+
+  <!-- PUSH NOTIFICATIONS -->
+  <script src="push-notifications.js"></script>
+
+  <!-- NOTIFICATION TESTING TOOLS -->
+  <script src="test-notifications.js"></script>
+
+  <!-- WHATSAPP FLOAT BUTTON -->
+  <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
+
+</body>
+</html>

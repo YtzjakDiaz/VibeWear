@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ui-animations.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- 5 Mejoras VibeWear -->
+  <script src="search-advanced.js"></script>
+  <script src="breadcrumb.js"></script>
+  <script src="auth-system.js"></script>
+  <script src="ui-components.js"></script>
+</head>
+<body class="page-enter">
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Cargando...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-brand">
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer;">
+        <div class="nav-logo">
+          <img src="images/logo.png" alt="VibeWear Logo" onerror="this.style.display='none';this.parentNode.innerHTML='VW';" />
+        </div>
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+      </a>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="catalogo.html" class="active">Catálogo</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div style="display:flex;gap:15px;align-items:center;">
+      <div style="position:relative;display:flex;align-items:center;">
+        <input type="text" id="searchInput" placeholder="Buscar..." onkeyup="searchProducts()" onfocus="showSearchSuggestions()" style="padding:8px 15px;background:rgba(224,162,201,0.1);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);font-size:12px;width:150px;transition:border-color 0.3s;"/>
+        <div id="searchSuggestions" class="search-suggestions" style="display:none;"></div>
+      </div>
+      <div class="nav-cart" data-cart onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cartCount">0</span>
+      </div>
+      <a href="wishlist.html" style="color:var(--pink);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;padding:8px 12px;border:1.5px solid rgba(224,162,201,0.3);border-radius:50px;background:rgba(224,162,201,0.05);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> <span id="wishlistCount">0</span>
+      </a>
+
+      <button style="background:var(--pink);border:none;color:var(--black);padding:10px 20px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:8px;" title="Mi cuenta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Mi cuenta
+      </button>
+    </div>
+    <div class="nav-hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="catalogue-header">
+    <span class="section-label">✦ Toda la colección</span>
+    <h1 class="catalogue-title">CATÁ<span>LOGO</span></h1>
+    <p class="section-sub" style="margin:16px auto 0;text-align:center">Diseños únicos para quienes viven sin límites.</p>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">HOODIES</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">CAMISETAS</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">NEW DROP</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">HOODIES</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">CAMISETAS</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">NEW DROP</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">HOODIES</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">CAMISETAS</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">NEW DROP</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">HOODIES</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">CAMISETAS</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">NEW DROP</span><span class="ticker-dot">✦</span>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <span class="filter-label">Tipo de Prenda:</span>
+    <button class="filter-btn active" onclick="filterByClothing('all')">Todas</button>
+    <button class="filter-btn" onclick="filterByClothing('camisetas')">👕 Camisetas</button>
+    <button class="filter-btn" onclick="filterByClothing('hoodies')">🧥 Hoodies</button>
+    <span style="margin-left: auto; display: flex; gap: 10px;">
+      <a href="compare.html" class="filter-btn" style="background: rgba(224,162,201,0.15); border-color: var(--pink); color: var(--pink);">⚖️ Comparar</a>
+    </span>
+  </div>
+
+  <!-- CATEGORY FILTERS (por tipo temático) -->
+  <div class="filters" style="margin-top: 15px; border-top: 1px solid rgba(224,162,201,0.2); padding-top: 15px;">
+    <span class="filter-label">Categoría:</span>
+    <select id="categorySelect" onchange="filterByTheme(this.value)" class="category-select">
+      <option value="all">Todas las categorías</option>
+      <option value="cantante">Cantantes</option>
+      <option value="anime">Anime</option>
+      <option value="personaje">Personajes</option>
+      <option value="diseño">Diseños</option>
+    </select>
+  </div>
+
+  <!-- GRID -->
+  <div class="catalogue-grid" id="productsGrid">
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 1/Eladio-Back.jpg" alt="Eladio Carrión Oversized" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-1" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Eladio Carrión Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="hoodies">
+      <div class="product-card-img">
+        <span class="product-badge badge-sale">−20%</span>
+        <img src="images/Productos/Producto 2/hoodie.jpg" alt="Pokémon Gengar Hoodie" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-2" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Hoodies</p>
+        <h3 class="product-name">Pokémon Gengar Hoodie</h3>
+        <div class="product-footer"><div><span class="product-price-old">$126.900</span><span class="product-price">$111.000</span></div><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 3/Álvarito.jpg" alt="Álvarito Díaz Oversized" onerror="this.src='https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-3" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Álvarito Díaz Oversized</h3>
+        <div class="product-footer"><span class="product-price">$70.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 4/Snoopy-3.jpg" alt="Snoopy Slim" onerror="this.src='https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-4" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Snoopy Slim</h3>
+        <div class="product-footer"><span class="product-price">$60.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 5/Alvarito.jpg" alt="Sayonara Oversized" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-5" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Sayonara Oversized</h3>
+        <div class="product-footer"><span class="product-price">$70.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 6/BadBunny.jpg" alt="BadBunny Albums" onerror="this.src='https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-6" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">BadBunny Albums</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 7/Blessd.jpg" alt="Blessd Oversized" onerror="this.src='https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-7" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Blessd Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 8/Gustavo-Cerati-1.jpg" alt="Gustavo Cerati Oversized" onerror="this.src='https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-8" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Gustavo Cerati Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 9/KanyeWest-1.jpg" alt="Kanye West Oversized" onerror="this.src='https://images.unsplash.com/photo-1554521734-3fc5a9cfb237?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-9" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Kanye West Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 10/Sabrina-Carpenter-1.jpg" alt="Sabrina Carpenter" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-10" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Sabrina Carpenter</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 11/Snoopy.jpg" alt="Snoopy Slim" onerror="this.src='https://images.unsplash.com/photo-1540821906220-3ec7eef20b49?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-11" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Snoopy Slim</h3>
+        <div class="product-footer"><span class="product-price">$60.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 12/Yan-Block.jpg" alt="Yan Block Oversized" onerror="this.src='https://images.unsplash.com/photo-1612436782212-429461cab7ab?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-12" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">camisetas</p>
+        <h3 class="product-name">Yan Block Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 13/Trueno-1.jpg" alt="Trueno Oversized" onerror="this.src='https://images.unsplash.com/photo-1598554416244-bce3f33bce4e?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-13" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Trueno Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 14/Tyler-The-Creator.jpg" alt="Tyler The Creator Oversized" onerror="this.src='https://images.unsplash.com/photo-1505042430149-1b084d7d19dd?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-14" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Tyler The Creator Oversized</h3>
+        <div class="product-footer"><span class="product-price">$70.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 15/Stitch.jpg" alt="Stitch Slim" onerror="this.src='https://images.unsplash.com/photo-1546775352-ad2eab48e4fd?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-15" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Stitch Slim</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 16/The-Weeknd--1.jpg" alt="The Weeknd Oversized" onerror="this.src='https://images.unsplash.com/photo-1599193425857-de88e0c5f2f9?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-16" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">The Weeknd Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 17/Snoopy-2.jpg" alt="Snoopy Slim" onerror="this.src='https://images.unsplash.com/photo-1534080564643-e7a2d6a18a5d?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-17" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Snoopy Slim</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 18/NAVIDAD1.jpg" alt="Navidad Slim" onerror="this.src='https://images.unsplash.com/photo-1535738066402-b5ffe3ee6122?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-18" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Navidad Slim</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 19/Black-Clover-2.jpg" alt="Black Clover Oversized" onerror="this.src='https://images.unsplash.com/photo-1550508739-b0a4603778ff?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-19" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Black Clover Oversized</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 20/Dexter-Morgan-1.jpg" alt="Dexter Morgan" onerror="this.src='https://images.unsplash.com/photo-1556821840-d0f1a1ae4edd?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-20" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Dexter Morgan</h3>
+        <div class="product-footer"><span class="product-price">$75.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 21/VillanosDB.jpg" alt="Dragon Ball Slim" onerror="this.src='https://images.unsplash.com/photo-1506629082632-34a394a82848?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-21" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Dragon Ball Slim</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 22/Naruto.jpg" alt="Naruto Slim" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-22" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Naruto Slim</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 23/Lemon.jpg" alt="Urban Lemon Oversized" onerror="this.src='https://images.unsplash.com/photo-1542062692-6d2c5c4d84d1?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-23" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Urban Lemon Oversized</h3>
+        <div class="product-footer"><span class="product-price">$70.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 24/High.jpg" alt="High as Fu**" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-24" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">High as Fu**</h3>
+        <div class="product-footer"><span class="product-price">$70.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 25/Halloween.jpg" alt="Halloween Slim" onerror="this.src='https://images.unsplash.com/photo-1556821552-3c6e0eecd66a?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-25" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Halloween Slim</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <img src="images/Productos/Producto 26/Dinosaur.jpg" alt="Tired Dinosaur" onerror="this.src='https://images.unsplash.com/photo-1548690312-9a3d0c7bef8f?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-26" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Tired Dinosaur</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-new">New</span>
+        <img src="images/Productos/Producto 27/Cartoon-Edition-1.jpg" alt="Cartoon Edition" onerror="this.src='https://images.unsplash.com/photo-1522345572912-147b029b6e22?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-27" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Cartoon Edition</h3>
+        <div class="product-footer"><span class="product-price">$65.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" data-cat="camisetas">
+      <div class="product-card-img">
+        <span class="product-badge badge-hot">🔥 Hot</span>
+        <img src="images/Productos/Producto 28/Evangelion.jpg" alt="Evangelion Oversized" onerror="this.src='https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80'" />
+        <div class="product-overlay"><a href="producto.html#prod-28" class="btn-card">Ver Producto</a></div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Camisetas</p>
+        <h3 class="product-name">Evangelion Oversized</h3>
+        <div class="product-footer"><span class="product-price">$70.000</span><div class="product-wishlist">♡</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+        <p class="footer-desc">Streetwear auténtico para los que definen su propio estilo. Sin filtros. Sin límites.</p>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Tienda</h4>
+        <ul class="footer-links">
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="producto.html">Nuevo Drop</a></li>
+          <li><a href="#">Hoodies</a></li>
+          <li><a href="#">Camisetas</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Ayuda</h4>
+        <ul class="footer-links">
+          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="#">Envíos</a></li>
+          <li><a href="#">Devoluciones</a></li>
+          <li><a href="#">Tallas</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Marca</h4>
+        <ul class="footer-links">
+          <li><a href="#">Nuestra Historia</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Colaboraciones</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 <span>VibeWear</span>. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+    function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
+
+    function filterProducts(btn, cat) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.product-card').forEach(card => {
+        const show = cat === 'all' || card.dataset.cat === cat;
+        card.style.opacity = show ? '1' : '0';
+        card.style.transform = show ? 'scale(1)' : 'scale(0.95)';
+        card.style.display = show ? 'block' : 'none';
+        if (show) setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 10);
+      });
+    }
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+      });
+    });
+    document.querySelectorAll('.product-card').forEach((el, i) => {
+      el.style.opacity = '0'; el.style.transform = 'translateY(30px)';
+      el.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s ease ${i * 0.08}s`;
+      observer.observe(el);
+    });
+
+    // El carrito ya está manejado por cart.js
+    // Solo actualizar el contador cuando la página carga
+    if (typeof updateCartUI === 'function') {
+      updateCartUI();
+    }
+  </script>
+
+  <!-- CARRITO SCRIPT -->
+  <script src="cart.js"></script>
+
+  <!-- NAVBAR AUTH -->
+  <script type="module" src="navbar-auth.js"></script>
+
+  <!-- ADMIN BUTTON -->
+  <script type="module" src="admin-button.js"></script>
+
+  <!-- SHARED FUNCTIONS -->
+  <script src="shared.js"></script>
+
+  <!-- PUSH NOTIFICATIONS -->
+  <script src="push-notifications.js"></script>
+
+  <!-- PRODUCTOS DATA -->
+  <script src="products-data.js"></script>
+
+  <!-- RECOMENDACIONES PERSONALIZADAS -->
+  <script src="recommendations.js"></script>
+
+  <script>
+    let currentClothingFilter = 'all';
+    let currentThemeFilter = 'all';
+
+    function searchProducts() {
+      const searchTerm = document.getElementById('searchInput').value;
+      
+      if (!searchTerm.trim()) {
+        applyFilters();
+        return;
+      }
+      
+      const term = searchTerm.toLowerCase();
+      const cards = document.querySelectorAll('.product-card');
+      
+      cards.forEach(card => {
+        const name = card.querySelector('.product-name')?.textContent.toLowerCase() || '';
+        const categoryText = card.querySelector('.product-category')?.textContent.toLowerCase() || '';
+        const clothing = getProductClothing(card);
+        const theme = getProductTheme(card);
+        
+        const matches = name.includes(term) || categoryText.includes(term);
+        const clothingMatches = currentClothingFilter === 'all' || clothing === currentClothingFilter;
+        const themeMatches = currentThemeFilter === 'all' || theme === currentThemeFilter;
+        
+        if (matches && clothingMatches && themeMatches) {
+          card.style.display = 'block';
+          card.style.animation = 'fadeInUp 0.6s ease forwards';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Filtrar por tipo de prenda (Camisetas, Hoodies, etc)
+    function filterByClothing(clothing) {
+      // Actualizar botones activos
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      currentClothingFilter = clothing;
+      currentThemeFilter = 'all'; // Reset tema
+      
+      // Limpiar búsqueda
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = '';
+      
+      console.log('👕 Filtrando por prenda:', clothing);
+      
+      // Actualizar botones de tema disponibles
+      updateThemeButtons();
+      
+      // Aplicar filtro
+      applyFilters();
+    }
+
+    // Filtrar por categoría temática (Cantante, Anime, etc)
+    function filterByTheme(theme) {
+      currentThemeFilter = theme;
+      
+      // Limpiar búsqueda
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = '';
+      
+      console.log('🎨 Filtrando por tema:', theme);
+      
+      // Aplicar filtro
+      applyFilters();
+    }
+
+    // Aplicar ambos filtros
+    function applyFilters() {
+      const cards = document.querySelectorAll('.product-card');
+      let shown = 0;
+      
+      cards.forEach(card => {
+        const clothing = getProductClothing(card);
+        const theme = getProductTheme(card);
+        
+        const clothingMatches = currentClothingFilter === 'all' || clothing === currentClothingFilter;
+        const themeMatches = currentThemeFilter === 'all' || theme === currentThemeFilter;
+        
+        if (clothingMatches && themeMatches) {
+          card.style.display = 'block';
+          card.style.animation = 'fadeInUp 0.6s ease forwards';
+          shown++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      console.log(`📊 Mostrando ${shown} productos`);
+    }
+
+    // Obtener tipo de prenda
+    function getProductClothing(card) {
+      const link = card.querySelector('a[href*="producto.html#"]');
+      if (link && typeof productsData !== 'undefined') {
+        const productId = link.getAttribute('href').split('#')[1];
+        const product = productsData[productId];
+        if (product) return product.category;
+      }
+      return null;
+    }
+
+    // Obtener categoría temática
+    function getProductTheme(card) {
+      const link = card.querySelector('a[href*="producto.html#"]');
+      if (link && typeof productsData !== 'undefined') {
+        const productId = link.getAttribute('href').split('#')[1];
+        const product = productsData[productId];
+        if (product) return product.type;
+      }
+      return null;
+    }
+
+    // Actualizar qué opciones de tema están disponibles en el dropdown
+    function updateThemeButtons() {
+      const themeCounts = { cantante: 0, anime: 0, personaje: 0, diseño: 0 };
+      
+      // Contar productos de cada tema en la prenda seleccionada
+      document.querySelectorAll('.product-card').forEach(card => {
+        const clothing = getProductClothing(card);
+        const theme = getProductTheme(card);
+        
+        if (currentClothingFilter === 'all' || clothing === currentClothingFilter) {
+          if (themeCounts[theme] !== undefined) {
+            themeCounts[theme]++;
+          }
+        }
+      });
+      
+      console.log('📊 Temas disponibles:', themeCounts);
+      
+      // Actualizar estado de opciones en el select
+      const selectElement = document.getElementById('categorySelect');
+      if (selectElement) {
+        selectElement.querySelectorAll('option[value!="all"]').forEach(option => {
+          const theme = option.value;
+          const count = themeCounts[theme] || 0;
+          if (count === 0) {
+            option.disabled = true;
+            option.textContent = option.textContent.split(' (')[0] + ' (no disponible)';
+          } else {
+            option.disabled = false;
+            // Remover el "(no disponible)" si existe
+            option.textContent = option.textContent.split(' (')[0];
+          }
+        });
+        
+        // Reset a "Todas las categorías"
+        selectElement.value = 'all';
+        currentThemeFilter = 'all';
+      }
+    }
+
+    // Actualizar wishlist si la función existe
+    if (typeof updateWishlistCount === 'function') {
+      updateWishlistCount();
+    }
+    
+    // ============= INICIALIZAR DATOS DE PRODUCTOS =============
+    function initializeProducts() {
+      console.log('📦 Inicializando productos...');
+      console.log('productsData disponible:', typeof productsData !== 'undefined');
+      
+      if (typeof productsData === 'undefined') {
+        console.warn('⚠️ productsData no está disponible, reintentando...');
+        setTimeout(initializeProducts, 100);
+        return;
+      }
+      
+      let clothingCounts = { camisetas: 0, hoodies: 0, otro: 0 };
+      let themeCounts = { cantante: 0, anime: 0, personaje: 0, diseño: 0, otro: 0 };
+      
+      document.querySelectorAll('.product-card').forEach(card => {
+        const link = card.querySelector('a[href*="producto.html#"]');
+        if (link) {
+          const productId = link.getAttribute('href').split('#')[1];
+          const product = productsData[productId];
+          
+          if (product) {
+            console.log(`✓ ${productId}: ${product.name}`);
+            card.setAttribute('data-clothing', product.category);
+            card.setAttribute('data-theme', product.type);
+            
+            if (clothingCounts[product.category] !== undefined) {
+              clothingCounts[product.category]++;
+            } else {
+              clothingCounts.otro++;
+            }
+            
+            if (themeCounts[product.type] !== undefined) {
+              themeCounts[product.type]++;
+            } else {
+              themeCounts.otro++;
+            }
+          }
+        }
+      });
+      
+      console.log('📊 Prendas encontradas:', clothingCounts);
+      console.log('📊 Temas encontrados:', themeCounts);
+      
+      // Actualizar disponibilidad de botones de prenda
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const clothing = btn.textContent.toLowerCase();
+        if (clothing.includes('camisetas') && clothingCounts.camisetas === 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+        } else if (clothing.includes('hoodies') && clothingCounts.hoodies === 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+        }
+      });
+      
+      // Actualizar botones de tema
+      updateThemeButtons();
+    }
+    
+    // Ejecutar cuando los scripts de productos carguen
+    function onProductDataReady() {
+      if (typeof productsData !== 'undefined') {
+        initializeProducts();
+      } else {
+        console.log('⏳ Esperando productsData...');
+        setTimeout(onProductDataReady, 200);
+      }
+    }
+    
+    // Llamar inmediatamente y después de un delay para asegurar que se cargue
+    setTimeout(onProductDataReady, 500);
+    
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+    });
+    
+    function toggleNav() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    // ============= BÚSQUEDA MEJORADA CON SUGERENCIAS =============
+    function showSearchSuggestions() {
+      const searchInput = document.getElementById('searchInput');
+      const suggestionsDiv = document.getElementById('searchSuggestions');
+      const term = searchInput.value.toLowerCase().trim();
+      
+      if (!term) {
+        suggestionsDiv.style.display = 'none';
+        return;
+      }
+      
+      const suggestions = [];
+      const seen = new Set();
+      
+      // Buscar coincidencias en productos
+      if (typeof productsData !== 'undefined') {
+        Object.values(productsData).forEach(product => {
+          const name = product.name.toLowerCase();
+          const artist = (product.artist || '').toLowerCase();
+          const franchise = (product.franchise || '').toLowerCase();
+          
+          if (name.includes(term) && !seen.has(product.name)) {
+            suggestions.push(product.name);
+            seen.add(product.name);
+          }
+          if (artist.includes(term) && !seen.has(artist) && artist) {
+            suggestions.push(artist);
+            seen.add(artist);
+          }
+          if (franchise.includes(term) && !seen.has(franchise) && franchise) {
+            suggestions.push(franchise);
+            seen.add(franchise);
+          }
+        });
+      }
+      
+      // Mostrar sugerencias
+      if (suggestions.length > 0) {
+        suggestionsDiv.innerHTML = suggestions.slice(0, 8).map(s => 
+          `<div class="search-suggestion-item" onclick="document.getElementById('searchInput').value='${s.replace(/'/g, "\\'")}';searchProducts();">${s}</div>`
+        ).join('');
+        suggestionsDiv.style.display = 'block';
+      } else {
+        suggestionsDiv.style.display = 'none';
+      }
+    }
+    
+    // Ocultar sugerencias al hacer click fuera
+    document.addEventListener('click', (e) => {
+      if (e.target.id !== 'searchInput') {
+        document.getElementById('searchSuggestions').style.display = 'none';
+      }
+    });
+
+    // ============= LOADING SCREEN =============
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 600);
+        }
+      }, 800);
+    });
+
+    // Fallback: ocultar loading después de 5 segundos de todas formas
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 600);
+      }
+    }, 5000);
+  </script>
+
+  <!-- INICIALIZAR WISHLIST BUTTONS DEL CATALOGO -->
+  <script>
+    function initCatalogWishlistButtons() {
+      document.querySelectorAll('.product-card').forEach(card => {
+        const link = card.querySelector('a[href*="producto.html#"]');
+        if (!link) return;
+        
+        const prodId = link.getAttribute('href').split('#')[1];
+        const product = productsData[prodId];
+        if (!product) return;
+        
+        const wishlistDiv = card.querySelector('.product-wishlist');
+        if (!wishlistDiv) return;
+        
+        // Actualizar atributo data
+        wishlistDiv.setAttribute('data-product-wishlist', prodId);
+        
+        // Función para toggle del wishlist
+        wishlistDiv.onclick = (e) => {
+          e.stopPropagation();
+          addToWishlist(prodId, product.name, product.price, product.image);
+          wishlistDiv.textContent = isInWishlist(prodId) ? '♥' : '♡';
+          wishlistDiv.style.color = isInWishlist(prodId) ? 'var(--pink)' : 'var(--white)';
+        };
+        
+        // Inicializar estado visual
+        wishlistDiv.style.cursor = 'pointer';
+        wishlistDiv.style.transition = 'all 0.3s';
+        wishlistDiv.textContent = isInWishlist(prodId) ? '♥' : '♡';
+        wishlistDiv.style.color = isInWishlist(prodId) ? 'var(--pink)' : 'var(--white)';
+      });
+    }
+    
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCatalogWishlistButtons);
+    } else {
+      setTimeout(initCatalogWishlistButtons, 100);
+    }
+  </script>
+
+  <!-- WHATSAPP FLOAT BUTTON -->
+  <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
+  <!-- Init App: Activate all features -->
+  <script src="init-app.js"></script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VibeWear | Streetwear</title>
+  <link rel="icon" href="images/VIBEWEAR-1.ico" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ui-animations.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- 5 Mejoras VibeWear -->
+  <script src="search-advanced.js"></script>
+  <script src="breadcrumb.js"></script>
+  <script src="auth-system.js"></script>
+  <script src="ui-components.js"></script>
+</head>
+<body class="page-enter">
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Cargando...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer;">
+        <div class="nav-logo">
+          <img src="images/logo.png" alt="VibeWear Logo" onerror="this.style.display='none';this.parentNode.innerHTML='VW';" />
+        </div>
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+      </a>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Inicio</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div style="display:flex;gap:15px;align-items:center;">
+      <div class="nav-cart" data-cart onclick="toggleCart()" style="cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--pink);font-weight:600;margin:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cartCount">0</span>
+      </div>
+
+      <button style="background:var(--pink);border:none;color:var(--black);padding:10px 20px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:8px;" title="Mi cuenta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Mi cuenta
+      </button>
+    </div>
+    <div class="nav-hamburger" id="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <br/><br><br><br>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" style="background-image:url('hero.jpg')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-tag">✦ Nueva Colección 2026</div>
+      <h1 class="hero-title">
+        DEFINE
+        <span>YOUR</span>
+        VIBE
+      </h1>
+      <p class="hero-subtitle">Streetwear que habla tu lenguaje. Sin filtros.</p>
+      <div class="hero-cta">
+        <a href="catalogo.html" class="btn-primary">
+          <span>Ver Colección</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="producto.html" class="btn-outline">Best Sellers</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">STREETWEAR</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">DEFINE YOUR VIBE</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">NUEVA COLECCIÓN</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">ENVÍO GRATIS +$150K</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">URBAN CULTURE</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">VIBEWEAR</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">STREETWEAR</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">DEFINE YOUR VIBE</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">NUEVA COLECCIÓN</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">ENVÍO GRATIS +$150K</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">URBAN CULTURE</span><span class="ticker-dot">✦</span>
+      <span class="ticker-item">VIBEWEAR</span><span class="ticker-dot">✦</span>
+    </div>
+  </div>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="featured">
+    <div class="section-header">
+      <div>
+        <span class="section-label">✦ Lo más pedido</span>
+        <h2 class="section-title">DROP<br/><span>DESTACADO</span></h2>
+        <p class="section-sub">Los estilos que están moviendo las calles esta temporada.</p>
+      </div>
+      <a href="catalogo.html" class="btn-outline">Ver Todo</a>
+    </div>
+    <div class="products-grid">
+
+      <div class="product-card" style="animation-delay:0.1s">
+        <div class="product-card-img">
+          <span class="product-badge badge-hot">🔥 Hot</span>
+          <img src="images/Productos/Producto 1/Eladio-Back.jpg" alt="VW Oversized Tee" onerror="this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80'" />
+          <div class="product-overlay">
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-1" class="btn-card">Ver Detalles</a>
+              <button onclick="showSizeColorModal('prod-1', 'Eladio Carrión Oversized', 75000, 'images/Productos/Producto 1/Eladio-Back.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <p class="product-category">Camisetas</p>
+          <h3 class="product-name">Eladio Carrión Oversized</h3>
+          <div class="product-footer">
+            <span class="product-price">$75.000</span>
+            <div class="product-wishlist" data-product-wishlist="prod-1" onclick="toggleWishlistButton(this, 'prod-1', 'Eladio Carrión Oversized', 75000, 'images/Productos/Producto 1/Eladio-Back.jpg')" style="cursor: pointer; transition: all 0.3s;" title="Agregar a favoritos">♡</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" style="animation-delay:0.2s">
+        <div class="product-card-img">
+          <span class="product-badge badge-sale">−20%</span>
+          <img src="images/Productos/Producto 2/hoodie.jpg" alt="Pink Vibe Hoodie" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80'" />
+          <div class="product-overlay">
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-2" class="btn-card">Ver Detalles</a>
+              <button onclick="showSizeColorModal('prod-2', 'Pokémon Gengar Hoodie', 111000, 'images/Productos/Producto 2/hoodie.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <p class="product-category">Hoodies</p>
+          <h3 class="product-name">Pokémon Gengar Hoodie</h3>
+          <div class="product-footer">
+            <div>
+              <span class="product-price-old">$126.900</span>
+              <span class="product-price">$111.000</span>
+            </div>
+            <div class="product-wishlist" data-product-wishlist="prod-2" onclick="toggleWishlistButton(this, 'prod-2', 'Pokémon Gengar Hoodie', 111000, 'images/Productos/Producto 2/hoodie.jpg')" style="cursor: pointer; transition: all 0.3s;" title="Agregar a favoritos">♡</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" style="animation-delay:0.3s">
+        <div class="product-card-img">
+          <span class="product-badge badge-new">New</span>
+          <img src="images/Productos/Producto 3/Álvarito.jpg" alt="Street Jogger Set" onerror="this.src='https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&q=80'" />
+          <div class="product-overlay">
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-3" class="btn-card">Ver Detalles</a>
+              <button onclick="showSizeColorModal('prod-3', 'Álvarito Díaz Oversized', 70000, 'images/Productos/Producto 3/Álvarito.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <p class="product-category">Camisetas</p>
+          <h3 class="product-name">Álvarito Díaz Oversized</h3>
+          <div class="product-footer">
+            <span class="product-price">$70.000</span>
+            <div class="product-wishlist" data-product-wishlist="prod-3" onclick="toggleWishlistButton(this, 'prod-3', 'Álvarito Díaz Oversized', 70000, 'images/Productos/Producto 3/Álvarito.jpg')" style="cursor: pointer; transition: all 0.3s;" title="Agregar a favoritos">♡</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" style="animation-delay:0.4s">
+        <div class="product-card-img">
+          <span class="product-badge badge-new">New</span>
+          <img src="images/Productos/Producto 4/Snoopy-3.jpg" alt="VW Cargo Pants" onerror="this.src='https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80'" />
+          <div class="product-overlay">
+            <div style="display:flex;gap:8px;width:100%;flex-direction:column;">
+              <a href="producto.html#prod-4" class="btn-card">Ver Detalles</a>
+              <button onclick="showSizeColorModal('prod-4', 'Snoopy Slim', 60000, 'images/Productos/Producto 4/Snoopy-3.jpg')" style="padding:10px 20px;background:rgba(224,162,201,0.9);color:var(--black);border:none;border-radius:var(--radius);font-family:var(--font-sub);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;width:100%;" onmouseover="this.style.background='var(--pink)'" onmouseout="this.style.background='rgba(224,162,201,0.9)'">➕ Carrito</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <p class="product-category">Camisetas</p>
+          <h3 class="product-name">Snoopy Slim</h3>
+          <div class="product-footer">
+            <span class="product-price">$60.000</span>
+            <div class="product-wishlist" data-product-wishlist="prod-4" onclick="toggleWishlistButton(this, 'prod-4', 'Snoopy Slim', 60000, 'images/Productos/Producto 4/Snoopy-3.jpg')" style="cursor: pointer; transition: all 0.3s;" title="Agregar a favoritos">♡</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT STRIP -->
+  <div class="about-strip">
+    <div class="about-img-wrap" style="animation:fadeInLeft 0.9s ease both">
+      <img src="images/about.png" alt="VibeWear Culture" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80'" />
+      <div class="about-img-accent"></div>
+    </div>
+    <div style="animation:fadeInRight 0.9s ease 0.2s both">
+      <span class="section-label">✦ Nuestra historia</span>
+      <h2 class="section-title">BORN IN<br/><span>THE STREETS</span></h2>
+      <p class="section-sub">VibeWear nació de la cultura urbana. Diseñamos para los que viven la calle, que crean su propio lenguaje y no piden permiso para ser auténticos.</p>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-num">12K+</div>
+          <div class="stat-label">Clientes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4+</div>
+          <div class="stat-label">Colecciones</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">98%</div>
+          <div class="stat-label">Satisfacción</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">2024</div>
+          <div class="stat-label">Fundada</div>
+        </div>
+      </div>
+      <a href="catalogo.html" class="btn-primary" style="margin-top:40px;display:inline-flex">
+        <span>Explorar Colección</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section style="padding:100px 60px;background:rgba(224,162,201,0.03);border-top:1px solid rgba(224,162,201,0.1);border-bottom:1px solid rgba(224,162,201,0.1);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="section-header" style="text-align:center;margin-bottom:50px;">
+        <span class="section-label">✦ Historias de clientes</span>
+        <h2 class="section-title">QUÉ DICEN<br/><span>NUESTROS CLIENTES</span></h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;">
+        <div class="testimonial-item">
+          <div class="testimonial-rating">★★★★★</div>
+          <p class="testimonial-text">"La calidad es increíble. Mis amigos preguntaban dónde compré la camiseta. VibeWear es mi nueva obsesión."</p>
+          <div class="testimonial-author">— Juan Morales, Bogotá</div>
+        </div>
+        <div class="testimonial-item">
+          <div class="testimonial-rating">★★★★★</div>
+          <p class="testimonial-text">"Envío rápido, el diseño es fuego. El ajuste oversized es exacto como esperaba. 10/10 volvería a comprar."</p>
+          <div class="testimonial-author">— Laura Gómez, Medellín</div>
+        </div>
+        <div class="testimonial-item">
+          <div class="testimonial-rating">★★★★★</div>
+          <p class="testimonial-text">"Finalmente ropa que refleja mi estilo urbano. VibeWear entiende la cultura. Muy recomendado hermanos."</p>
+          <div class="testimonial-author">— Carlos Rojas, Cali</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER SECTION -->
+  <section style="padding:80px 60px;background:linear-gradient(135deg,rgba(224,162,201,0.1) 0%,rgba(224,162,201,0.03) 100%);">
+    <div style="max-width:600px;margin:0 auto;text-align:center;">
+      <span class="section-label">✦ Únete a nuestra comunidad</span>
+      <h2 class="section-title">RECIBE<br/><span>OFERTAS EXCLUSIVAS</span></h2>
+      <p class="section-sub" style="margin-bottom:30px;">Suscríbete y obtén un 15% de descuento en tu primer compra.</p>
+      <div style="display:flex;gap:10px;max-width:400px;margin:0 auto;">
+        <input type="email" id="newsletterEmail" placeholder="Tu correo electrónico" style="flex:1;padding:14px 20px;background:rgba(255,255,255,0.05);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);font-size:13px;transition:border-color 0.3s;"/>
+        <button onclick="handleNewsletterSubscribe()" class="btn-primary" style="padding:14px 30px;letter-spacing:1px;text-transform:uppercase;font-size:12px;font-weight:bold;border:none;cursor:pointer;">Suscribir</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo-text">VIBE<span>WEAR</span></span>
+        <p class="footer-desc">Streetwear auténtico para los que definen su propio estilo. Sin filtros. Sin límites.</p>
+        <div class="contact-socials" style="margin-top:24px">
+          <a class="social-link" href="https://www.instagram.com/vibewear.designs/">IG</a>
+          <a class="social-link" href="#">TK</a>
+          <a class="social-link" href="https://x.com/VibeWear_Design">TW</a>
+          <a class="social-link" href="#">FB</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Tienda</h4>
+        <ul class="footer-links">
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="wishlist.html">Favoritos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Ayuda</h4>
+        <ul class="footer-links">
+          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="#">Envíos</a></li>
+          <li><a href="#">Devoluciones</a></li>
+          <li><a href="#">Tallas</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-col-title">Marca</h4>
+        <ul class="footer-links">
+          <li><a href="#">Nuestra Historia</a></li>
+          <li><a href="#">Sostenibilidad</a></li>
+          <li><a href="#">Colaboraciones</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 <span>VibeWear</span>. Todos los derechos reservados.</p>
+      <p class="footer-copy">Hecho con ♡ para la cultura urbana</p>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+    // Mobile nav toggle
+    function toggleNav() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+    
+    function formatPrice(price) {
+      return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(price);
+    }
+
+    // ========== MODAL PARA SELECCIONAR TALLA Y COLOR ==========
+    let pendingProduct = null;
+
+    function showSizeColorModal(prodId, prodName, prodPrice, prodImage) {
+      // Obtener datos del producto
+      const productData = {
+        'prod-1': { colores: [{color: '#ffffff', nombre: 'Blanco'}] },
+        'prod-2': { colores: [{color: '#1a1a1a', nombre: 'Negro'}] },
+        'prod-3': { colores: [{color: '#1a1a1a', nombre: 'Negro'}] },
+        'prod-4': { colores: [{color: '#ffffff', nombre: 'Blanco'}] }
+      };
+
+      const colors = productData[prodId]?.colores || [{color: '#ffffff', nombre: 'Blanco'}, {color: '#1a1a1a', nombre: 'Negro'}];
+      
+      pendingProduct = { prodId, prodName, prodPrice, prodImage, colors };
+      
+      let modal = document.getElementById('sizeColorModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'sizeColorModal';
+        modal.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.7);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 50000;
+        `;
+        document.body.appendChild(modal);
+      }
+
+      // Generar colores HTML dinámicamente
+      const colorsHTML = colors.map((c, i) => `
+        <button class="color-selector" onclick="selectColorModal(this, '${c.nombre}')" 
+          style="width: 40px; height: 40px; background: ${c.color}${c.color === '#f5f5f5' || c.color === '#ffffff' ? ';border:2px solid rgba(224,162,201,0.5)' : ';border: 2px solid rgba(224, 162, 201, 0.3)'}; border-radius: 50%; cursor: pointer; transition: all 0.3s; ${i === 0 ? 'border-width: 3px; border-color: var(--pink) !important;' : ''}"></button>
+      `).join('');
+
+      modal.innerHTML = `
+        <div style="background: var(--black-soft); border: 1.5px solid rgba(224, 162, 201, 0.3); border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; animation: slideInUp 0.3s ease;">
+          <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--white); margin: 0 0 20px 0; text-transform: uppercase;">Selecciona una opción</h3>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; color: var(--pink); font-family: var(--font-sub); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">TALLA</label>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <button class="size-selector" onclick="selectSizeModal(this, 'XS')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">XS</button>
+              <button class="size-selector" onclick="selectSizeModal(this, 'S')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">S</button>
+              <button class="size-selector" onclick="selectSizeModal(this, 'M')" style="padding: 10px; background: var(--pink); border: 1.5px solid var(--pink); color: var(--black); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">M</button>
+              <button class="size-selector" onclick="selectSizeModal(this, 'L')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">L</button>
+              <button class="size-selector" onclick="selectSizeModal(this, 'XL')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">XL</button>
+              <button class="size-selector" onclick="selectSizeModal(this, 'XXL')" style="padding: 10px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-family: var(--font-sub);">XXL</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; color: var(--pink); font-family: var(--font-sub); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px;">COLOR</label>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              ${colorsHTML}
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <button onclick="closeSizeColorModal()" style="flex: 1; padding: 12px; background: rgba(224, 162, 201, 0.1); border: 1.5px solid rgba(224, 162, 201, 0.3); color: var(--white); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: var(--font-sub); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; transition: all 0.3s;" onmouseover="this.style.background='rgba(224, 162, 201, 0.15)'" onmouseout="this.style.background='rgba(224, 162, 201, 0.1)'">Cancelar</button>
+              <button onclick="confirmSizeColorModal()" style="flex: 1; padding: 12px; background: var(--pink); border: 1.5px solid var(--pink); color: var(--black); border-radius: 6px; cursor: pointer; font-weight: 600; font-family: var(--font-sub); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; transition: all 0.3s;" onmouseover="this.style.background='var(--pink-light)'" onmouseout="this.style.background='var(--pink)'">Agregar</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      pendingProduct.selectedSize = 'M';
+      pendingProduct.selectedColor = colors[0].nombre;
+    }
+
+    function selectSizeModal(btn, size) {
+      document.querySelectorAll('.size-selector').forEach(b => {
+        if (b === btn) {
+          b.style.background = 'var(--pink)';
+          b.style.borderColor = 'var(--pink)';
+          b.style.color = 'var(--black)';
+        } else {
+          b.style.background = 'rgba(224, 162, 201, 0.1)';
+          b.style.borderColor = 'rgba(224, 162, 201, 0.3)';
+          b.style.color = 'var(--white)';
+        }
+      });
+      pendingProduct.selectedSize = size;
+    }
+
+    function selectColorModal(btn, color) {
+      document.querySelectorAll('.color-selector').forEach(b => {
+        b.style.borderWidth = '2px';
+        b.style.borderColor = 'rgba(224, 162, 201, 0.3)';
+      });
+      btn.style.borderWidth = '3px';
+      btn.style.borderColor = 'var(--pink)';
+      pendingProduct.selectedColor = color;
+    }
+
+    function closeSizeColorModal() {
+      const modal = document.getElementById('sizeColorModal');
+      if (modal) modal.style.display = 'none';
+      pendingProduct = null;
+    }
+
+    function confirmSizeColorModal() {
+      if (!pendingProduct) return;
+      if (!pendingProduct.selectedSize) {
+        showNotification('Por favor selecciona una talla', 'info');
+        return;
+      }
+      if (!pendingProduct.selectedColor) {
+        showNotification('Por favor selecciona un color', 'info');
+        return;
+      }
+
+      window.addToCart(
+        pendingProduct.prodId,
+        pendingProduct.prodName,
+        pendingProduct.prodPrice,
+        pendingProduct.prodImage,
+        1,
+        pendingProduct.selectedSize,
+        pendingProduct.selectedColor
+      );
+
+      closeSizeColorModal();
+    }
+  </script>
+
+  <!-- WHATSAPP FLOAT BUTTON -->
+  <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
+
+  <!-- CARRITO SCRIPT -->
+  <script src="cart.js"></script>
+
+  <!-- NAVBAR AUTH -->
+  <script type="module" src="navbar-auth.js"></script>
+
+  <!-- ADMIN BUTTON -->
+  <script type="module" src="admin-button.js"></script>
+
+  <!-- SHARED FUNCTIONS -->
+  <script src="shared.js"></script>
+
+  <!-- PUSH NOTIFICATIONS -->
+  <script src="push-notifications.js"></script>
+
+  <script>
+    function handleNewsletterSubscribe() {
+      const email = document.getElementById('newsletterEmail').value;
+      if (!email || !email.includes('@')) {
+        showNotification('Por favor ingresa un email válido');
+        return;
+      }
+      if (window.subscribeNewsletter && window.subscribeNewsletter(email)) {
+        document.getElementById('newsletterEmail').value = '';
+        showNotification('¡Suscripción completada! Revisa tu correo.');
+      }
+    }
+
+    // Update button onclick
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector('[onclick="subscribeNewsletter()"]');
+      if (btn) btn.onclick = handleNewsletterSubscribe;
+    });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.product-card, .testimonial-item, .stat-item').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+      observer.observe(el);
+    });
+
+    // ============= LOADING SCREEN =============
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 600);
+        }
+      }, 800);
+    });
+
+    // Fallback: ocultar loading después de 5 segundos de todas formas
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 600);
+      }
+    }, 5000);
+  </script>
+  <!-- Init App: Activate all features -->
+  <script src="init-app.js"></script>
+  <script>
+    function toggleWishlistButton(element, prodId, prodName, prodPrice, prodImage) {
+      addToWishlist(prodId, prodName, prodPrice, prodImage);
+      element.textContent = isInWishlist(prodId) ? '♥' : '♡';
+      element.style.color = isInWishlist(prodId) ? 'var(--pink)' : 'var(--white)';
+    }
+  </script>

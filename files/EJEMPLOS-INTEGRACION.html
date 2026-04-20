@@ -1,0 +1,420 @@
+<!-- ================ EJEMPLOS DE INTEGRACIÓN ESPECÍFICOS ================ -->
+
+<!-- EJEMPLO 1: AGREGAR A index.html -->
+<!-- Copiar esto en el HEAD, después de otros scripts -->
+<script src="search-advanced.js"></script>
+<script src="breadcrumb.js"></script>
+
+<!-- Copiar esto antes de </body>, al final del archivo -->
+<script src="auth-system.js"></script>
+
+<!-- Copiar esto en el navbar, donde está el input de búsqueda: -->
+<div style="position:relative;display:flex;align-items:center;">
+  <input type="text" id="searchInput" placeholder="Buscar..." 
+    onkeyup="handleSearch()" 
+    onfocus="showSearchSuggestions()" 
+    style="padding:8px 15px;background:rgba(224,162,201,0.1);border:1px solid rgba(224,162,201,0.3);border-radius:6px;color:var(--white);font-family:var(--font-body);font-size:12px;width:150px;transition:border-color 0.3s;"/>
+  <div id="searchSuggestions" class="search-suggestions" style="display:none;position:absolute;top:100%;left:0;background:var(--black-soft);border:1px solid rgba(224,162,201,0.2);border-radius:6px;min-width:200px;max-height:300px;overflow-y:auto;z-index:1000;padding:8px 0;"></div>
+</div>
+
+<!-- Script helper para búsqueda -->
+<script>
+  function handleSearch() {
+    const query = document.getElementById('searchInput').value;
+    if (!query.trim()) {
+      document.getElementById('searchSuggestions').style.display = 'none';
+      return;
+    }
+
+    // Buscar y mostrar sugerencias
+    const suggestions = advancedSearch.getSuggestions(query, productsData, 6);
+    const recent = advancedSearch.getRecentSearches();
+    
+    let html = '';
+    
+    if (suggestions.length > 0) {
+      html += '<div style="padding:8px 0;border-bottom:1px solid rgba(224,162,201,0.1);">';
+      suggestions.forEach(s => {
+        html += `<div style="padding:8px 15px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(224,162,201,0.1)'" onmouseout="this.style.background='transparent'" onclick="search('${s}')" style="font-size:12px;color:var(--gray);">🔍 ${s}</div>`;
+      });
+      html += '</div>';
+    }
+
+    if (recent.length > 0) {
+      html += '<div style="padding:8px 0;"><p style="padding:8px 15px;font-size:10px;color:var(--gray);margin:0;letter-spacing:1px;text-transform:uppercase;">Recientes</p>';
+      recent.slice(0, 3).forEach(r => {
+        html += `<div style="padding:8px 15px;cursor:pointer;font-size:12px;color:var(--gray);" onclick="search('${r}')">${r}</div>`;
+      });
+      html += '</div>';
+    }
+
+    document.getElementById('searchSuggestions').innerHTML = html;
+    document.getElementById('searchSuggestions').style.display = 'block';
+  }
+
+  function search(query) {
+    const results = advancedSearch.executeSearch(query, productsData, {}, 'relevancia');
+    console.log(`Resultados para "${query}":`, results);
+    // Redirigir a catálogo con resultados o mostrar en modal
+    window.location.href = `catalogo.html?search=${encodeURIComponent(query)}`;
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[id*="search"]')) {
+      document.getElementById('searchSuggestions').style.display = 'none';
+    }
+  });
+</script>
+
+
+<!-- ================ EJEMPLO 2: AGREGAR A catalogo.html ================ -->
+<!-- En HEAD -->
+<script src="search-advanced.js"></script>
+<script src="breadcrumb.js"></script>
+
+<!-- Antes de </body> -->
+<script src="auth-system.js"></script>
+
+<!-- Agregar después del navbar, como sección de búsqueda avanzada -->
+<div style="padding:30px 60px;background:rgba(224,162,201,0.03);border:1px solid rgba(224,162,201,0.1);margin:20px 60px;border-radius:8px;">
+  <h3 style="font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin:0 0 20px;">🔍 Búsqueda Avanzada</h3>
+  
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:15px;">
+    <!-- Filtro de Precio -->
+    <div>
+      <label style="display:block;font-size:10px;color:var(--gray);margin-bottom:5px;letter-spacing:1px;">Precio Máximo</label>
+      <input type="number" id="filterPrice" value="200000" min="0" max="200000" step="10000" 
+        onchange="applyFiltersAdvanced()" 
+        style="width:100%;padding:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);"/>
+    </div>
+
+    <!-- Filtro de Stock -->
+    <div>
+      <label style="display:block;font-size:10px;color:var(--gray);margin-bottom:5px;letter-spacing:1px;">En Stock</label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="filterStock" onchange="applyFiltersAdvanced()"/>
+        <span style="font-size:12px;">Solo disponibles</span>
+      </label>
+    </div>
+
+    <!-- Ordenamiento -->
+    <div>
+      <label style="display:block;font-size:10px;color:var(--gray);margin-bottom:5px;letter-spacing:1px;">Ordenar Por</label>
+      <select id="filterSort" onchange="applyFiltersAdvanced()" style="width:100%;padding:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);">
+        <option value="relevancia">Relevancia</option>
+        <option value="precio-asc">Precio: Menor a Mayor</option>
+        <option value="precio-desc">Precio: Mayor a Menor</option>
+        <option value="nombre-asc">Nombre A-Z</option>
+        <option value="nuevo">Nuevos Primero</option>
+        <option value="stock-alto">Más Stock</option>
+      </select>
+    </div>
+
+    <!-- Botón Buscar -->
+    <div style="display:flex;align-items:flex-end;">
+      <button class="btn-primary" onclick="applyFiltersAdvanced()" style="width:100%;">🔍 Aplicar Filtros</button>
+    </div>
+  </div>
+</div>
+
+<!-- Script para filtros avanzados -->
+<script>
+  function applyFiltersAdvanced() {
+    const filters = {
+      priceMin: 0,
+      priceMax: parseInt(document.getElementById('filterPrice').value) || 200000,
+      category: document.getElementById('categorySelect')?.value || 'all',
+      inStock: document.getElementById('filterStock')?.checked || false,
+      tags: [],
+      sortBy: document.getElementById('filterSort')?.value || 'relevancia'
+    };
+
+    const results = advancedSearch.applyFilters(
+      Object.values(productsData),
+      filters
+    );
+
+    const sorted = advancedSearch.sortResults(results, filters.sortBy);
+    console.log('Resultados filtrados:', sorted);
+    
+    // Renderizar productos filtrados
+    renderFilteredProducts(sorted);
+  }
+
+  function renderFilteredProducts(products) {
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return;
+
+    grid.innerHTML = products.map(p => `
+      <div class="product-card">
+        <div class="product-card-img">
+          <span class="product-badge">${p.badge ? p.badge : ''}</span>
+          ${getStockBadge(p.id, productsData)}
+          <img src="${p.image}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=600&q=80'" />
+          <div class="product-overlay"><a href="producto.html#${p.id}" class="btn-card">Ver Producto</a></div>
+        </div>
+        <div class="product-info">
+          <p class="product-category">${p.category}</p>
+          <h3 class="product-name">${p.name}</h3>
+          <div class="product-footer">
+            <span class="product-price">$${p.price.toLocaleString('es-CO')}</span>
+            <div class="product-wishlist" onclick="toggleWishlist('${p.id}', '${p.name}')">♡</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    showNotification(`✓ ${products.length} producto${products.length !== 1 ? 's' : ''} encontrado${products.length !== 1 ? 's' : ''}`);
+  }
+</script>
+
+
+<!-- ================ EJEMPLO 3: AGREGAR A producto.html ================ -->
+<!-- En HEAD -->
+<script src="image-gallery.js"></script>
+<script src="breadcrumb.js"></script>
+
+<!-- Antes de </body> -->
+<script src="auth-system.js"></script>
+
+<!-- Script para inicializar galería -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Obtener ID del producto de la URL
+    const prodId = window.location.hash.substring(1) || 'prod-1';
+    const product = productsData[prodId];
+
+    if (product) {
+      // Generar URLs de imágenes (asumiendo existe carpeta con múltiples imágenes)
+      const imageUrls = [
+        product.image,
+        product.image.replace(/\.[^.]+$/, '-2.jpg'),
+        product.image.replace(/\.[^.]+$/, '-3.jpg')
+      ];
+
+      // Inicializar galería
+      const gallery = new ImageGallery('productGallery');
+      gallery.init(imageUrls, 'mainImg', 'thumbsContainer');
+
+      // Mostrar stock dinámico
+      const stockBadge = getStockBadge(prodId, productsData);
+      document.getElementById('stockInfo').innerHTML = stockBadge;
+
+      // Deshabilitar botón si no hay stock
+      updateBuyButtonState('addToCartBtn', prodId, productsData);
+
+      // Breadcrumb del producto
+      breadcrumbNav.renderProductBreadcrumb(product.name, prodId, 'breadcrumb');
+    }
+  });
+
+  // Validar cantidad antes de agregar al carrito
+  function addToCart() {
+    const prodId = window.location.hash.substring(1) || 'prod-1';
+    const qty = parseInt(document.getElementById('qty').value);
+    
+    const validation = validatePurchaseQuantity(prodId, qty, productsData);
+    
+    if (!validation.valid) {
+      showNotification(validation.message);
+      return;
+    }
+
+    // Reducir cantidad a la máxima permitida si es necesario
+    const finalQty = Math.min(qty, validation.maxQty);
+    
+    // Agregar al carrito (código existente)
+    // ... adicionar lógica del carrito ...
+
+    // Mostrar alerta si el stock es bajo
+    showStockWarning(prodId, productsData);
+  }
+</script>
+
+
+<!-- ================ EJEMPLO 4: AGREGAR A login.html ================ -->
+<!-- Agregar esto antes de </body> -->
+<script src="auth-system.js"></script>
+
+<!-- Agregar este script para manejar login -->
+<script>
+  // Elemento del formulario
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        // Simular login (en producción, usar Firebase)
+        const mockUser = {
+          uid: 'user-' + Date.now(),
+          email: email,
+          displayName: email.split('@')[0],
+          photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
+        };
+
+        // Guardar en auth system
+        authSystem.saveUser(mockUser);
+
+        showNotification('✓ Sesión iniciada');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+      } catch (error) {
+        showNotification('✗ Error en login: ' + error.message);
+      }
+    });
+  }
+
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('registerName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirm = document.getElementById('registerConfirm').value;
+
+      if (password !== confirm) {
+        showNotification('✗ Las contraseñas no coinciden');
+        return;
+      }
+
+      try {
+        // Simular registro
+        const mockUser = {
+          uid: 'user-' + Date.now(),
+          email: email,
+          displayName: name,
+          photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+          createdAt: new Date().toISOString()
+        };
+
+        // Guardar en auth system
+        authSystem.saveUser(mockUser);
+
+        showNotification('✓ Cuenta creada exitosamente');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+      } catch (error) {
+        showNotification('✗ Error en registro: ' + error.message);
+      }
+    });
+  }
+</script>
+
+
+<!-- ================ EJEMPLO 5: AGREGAR A TODOS LOS HTML ================ -->
+<!-- Después del navbar, copiar en TODOS los archivos HTML -->
+<div id="breadcrumb"></div>
+
+<!-- Esto permitirá que los breadcrumbs se generen automáticamente en cada página -->
+
+
+<!-- ================ FUNCIONES HELPER GLOBALES ================ -->
+<!-- Agregar en shared.js o en el HTML que ejecute primero -->
+
+<script>
+  /**
+   * Mostrar notificación toast
+   */
+  function showNotification(message) {
+    if (!document.getElementById('notificationContainer')) {
+      const container = document.createElement('div');
+      container.id = 'notificationContainer';
+      container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+      `;
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      background: rgba(0,0,0,0.9);
+      color: var(--white);
+      padding: 15px 20px;
+      border-radius: 6px;
+      border-left: 3px solid var(--pink);
+      margin-bottom: 10px;
+      animation: slideIn 0.3s ease;
+      font-family: var(--font-body);
+      font-size: 13px;
+    `;
+    toast.textContent = message;
+
+    const container = document.getElementById('notificationContainer');
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.animation = 'slideOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  /**
+   * Toggle Wishlist
+   */
+  function toggleWishlist(prodId, prodName) {
+    if (isInWishlist(prodId)) {
+      removeFromWishlist(prodId);
+      showNotification(`✓ Removido de favoritos`);
+    } else {
+      addToWishlist(prodId, prodName);
+    }
+  }
+
+  /**
+   * Toggle Cart
+   */
+  function toggleCart() {
+    const cart = document.getElementById('cartPanel');
+    if (cart) {
+      cart.style.display = cart.style.display === 'none' ? 'block' : 'none';
+    }
+  }
+
+  /**
+   * Cambiar navegación
+   */
+  function toggleNav() {
+    const navLinks = document.getElementById('navLinks');
+    if (navLinks) {
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    }
+  }
+</script>
+
+<!-- ========== KEYFRAMES PARA ANIMACIONES ========== -->
+<style>
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+</style>
