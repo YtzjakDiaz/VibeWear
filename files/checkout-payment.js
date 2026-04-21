@@ -22,7 +22,7 @@ async function pagar() {
 }));
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/create-preference", {
+    const response = await fetch("https://vibewear-server-w0z2.onrender.com/create-preference", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
