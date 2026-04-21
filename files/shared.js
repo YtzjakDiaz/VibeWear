@@ -428,7 +428,7 @@ if (document.readyState === 'loading') {
 }
 
 // ========== MODAL PARA SELECCIONAR TALLA Y COLOR ==========
-let pendingProduct = null;
+window.pendingProduct = null;
 
 function showSizeColorModal(prodId, prodName, prodPrice, prodImage) {
   // Obtener datos del producto
@@ -441,7 +441,7 @@ function showSizeColorModal(prodId, prodName, prodPrice, prodImage) {
 
   const colors = productData[prodId]?.colores || [{color: '#ffffff', nombre: 'Blanco'}, {color: '#1a1a1a', nombre: 'Negro'}];
   
-  pendingProduct = { prodId, prodName, prodPrice, prodImage, colors };
+  window.pendingProduct = { prodId, prodName, prodPrice, prodImage, colors };
   
   let modal = document.getElementById('sizeColorModal');
   if (!modal) {
@@ -499,8 +499,8 @@ function showSizeColorModal(prodId, prodName, prodPrice, prodImage) {
   `;
 
   modal.style.display = 'flex';
-  pendingProduct.selectedSize = 'M';
-  pendingProduct.selectedColor = colors[0].nombre;
+  window.pendingProduct.selectedSize = 'M';
+  window.pendingProduct.selectedColor = colors[0].nombre;
 }
 
 function selectSizeModal(btn, size) {
@@ -515,7 +515,7 @@ function selectSizeModal(btn, size) {
       b.style.color = 'var(--white)';
     }
   });
-  pendingProduct.selectedSize = size;
+  window.pendingProduct.selectedSize = size;
 }
 
 function selectColorModal(btn, color) {
@@ -525,34 +525,34 @@ function selectColorModal(btn, color) {
   });
   btn.style.borderWidth = '3px';
   btn.style.borderColor = 'var(--pink)';
-  pendingProduct.selectedColor = color;
+  window.pendingProduct.selectedColor = color;
 }
 
 function closeSizeColorModal() {
   const modal = document.getElementById('sizeColorModal');
   if (modal) modal.style.display = 'none';
-  pendingProduct = null;
+  window.pendingProduct = null;
 }
 
 function confirmSizeColorModal() {
-  if (!pendingProduct) return;
-  if (!pendingProduct.selectedSize) {
+  if (!window.pendingProduct) return;
+  if (!window.pendingProduct.selectedSize) {
     showNotification('Por favor selecciona una talla', 'info');
     return;
   }
-  if (!pendingProduct.selectedColor) {
+  if (!window.pendingProduct.selectedColor) {
     showNotification('Por favor selecciona un color', 'info');
     return;
   }
 
   window.addToCart(
-    pendingProduct.prodId,
-    pendingProduct.prodName,
-    pendingProduct.prodPrice,
-    pendingProduct.prodImage,
+    window.pendingProduct.prodId,
+    window.pendingProduct.prodName,
+    window.pendingProduct.prodPrice,
+    window.pendingProduct.prodImage,
     1,
-    pendingProduct.selectedSize,
-    pendingProduct.selectedColor
+    window.pendingProduct.selectedSize,
+    window.pendingProduct.selectedColor
   );
 
   closeSizeColorModal();
