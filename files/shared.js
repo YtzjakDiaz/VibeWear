@@ -535,7 +535,11 @@ function closeSizeColorModal() {
 }
 
 function confirmSizeColorModal() {
-  if (!window.pendingProduct) return;
+  if (!window.pendingProduct) {
+    console.error('pendingProduct no está definido');
+    showNotification('Error: Producto no definido', 'error');
+    return;
+  }
   if (!window.pendingProduct.selectedSize) {
     showNotification('Por favor selecciona una talla', 'info');
     return;
@@ -545,7 +549,8 @@ function confirmSizeColorModal() {
     return;
   }
 
-  window.addToCart(
+  // Llamar la función directamente, no a través de window
+  addToCart(
     window.pendingProduct.prodId,
     window.pendingProduct.prodName,
     window.pendingProduct.prodPrice,
