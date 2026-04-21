@@ -545,13 +545,20 @@
     });
 
     // El carrito ya está manejado por cart.js
-    // Solo actualizar el contador cuando la página carga
-    if (typeof updateCartUI === 'function') {
-      updateCartUI();
+    // Esperar a que cart.js se cargue antes de actualizar
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
+      }
+    });
+    if (document.readyState !== 'loading') {
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
+      }
     }
   </script>
 
-  <!-- CARRITO SCRIPT -->
+  <!-- CARRITO SCRIPT - DEBE IR ANTES DE CUALQUIER CÓDIGO QUE LO USE -->
   <script src="cart.js"></script>
 
   <!-- NAVBAR AUTH -->
