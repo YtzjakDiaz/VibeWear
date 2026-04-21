@@ -1,6 +1,27 @@
 // ============= CARRITO DE COMPRAS VIBEWEAR =============
 
-let cart = JSON.parse(localStorage.getItem('vibewear-cart')) || [];
+let cart = [];
+
+// Inicializar carrito desde localStorage con validación
+(function initCart() {
+  try {
+    const cartData = localStorage.getItem('vibewear-cart');
+    if (cartData) {
+      const parsed = JSON.parse(cartData);
+      if (Array.isArray(parsed)) {
+        cart = parsed;
+      } else {
+        console.warn('Datos del carrito inválidos, reiniciando...', parsed);
+        cart = [];
+        localStorage.setItem('vibewear-cart', JSON.stringify([]));
+      }
+    }
+  } catch (error) {
+    console.error('Error al cargar carrito desde localStorage:', error);
+    cart = [];
+    localStorage.setItem('vibewear-cart', JSON.stringify([]));
+  }
+})();
 
 // ========== AGREGAR AL CARRITO ==========
 function addToCart(prodId, prodName, prodPrice, prodImage, quantity = 1, size = '', color = '') {
