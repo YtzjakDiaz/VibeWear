@@ -11,20 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <!-- 5 Mejoras VibeWear -->
-  <script src="search-advanced.js"></script>
-  <script src="breadcrumb.js"></script>
-  <script src="auth-system.js"></script>
-  <script src="ui-components.js"></script>
+  <script defer src="search-advanced.js"></script>
+  <script defer src="breadcrumb.js"></script>
+  <script defer src="auth-system.js"></script>
+  <script defer src="ui-components.js"></script>
+  <!-- Scripts críticos para interactividad inmediata -->
+  <script defer src="shared.js"></script>
+  <script defer src="cart.js"></script>
 </head>
 <body class="page-enter">
-
-  <!-- LOADING SCREEN -->
-  <div id="loadingScreen" class="loading-screen">
-    <div class="loading-container">
-      <div class="loading-spinner"></div>
-      <p class="loading-text">Cargando...</p>
-    </div>
-  </div>
 
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
@@ -52,7 +47,7 @@
         <span id="cartCount">0</span>
       </div>
 
-      <button style="background:var(--pink);border:none;color:var(--black);padding:10px 20px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:8px;" title="Mi cuenta">
+      <button onclick="goToLogin()" style="background:var(--pink);border:none;color:var(--black);padding:10px 20px;border-radius:4px;cursor:pointer;font-family:var(--font-sub);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:8px;" title="Mi cuenta">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         Mi cuenta
       </button>
@@ -478,17 +473,52 @@
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
 
-  <!-- CARRITO SCRIPT -->
-  <script src="cart.js"></script>
+  <!-- INICIALIZACIÓN DE PÁGINA -->
+  <script>
+    // Función para ir a login
+    function goToLogin() {
+      window.location.href = 'login.html';
+    }
+
+    // Inicializar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+      // Crear el modal del carrito
+      if (typeof createCartModal === 'function') {
+        createCartModal();
+      }
+      
+      // Actualizar UI del carrito si existe
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
+      }
+    });
+  </script>
+
+  <!-- ERROR HANDLER -->
+  <script>
+    window.addEventListener('error', (event) => {
+      console.error('❌ Script Error:', event.message);
+    });
+
+    // Handle module loading errors
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('❌ Unhandled Promise Rejection:', event.reason);
+    });
+  </script>
 
   <!-- NAVBAR AUTH -->
-  <script type="module" src="navbar-auth.js"></script>
+  <script type="module">
+    import('./navbar-auth.js').catch(error => {
+      console.warn('⚠️ navbar-auth.js no se pudo cargar:', error);
+    });
+  </script>
 
   <!-- ADMIN BUTTON -->
-  <script type="module" src="admin-button.js"></script>
-
-  <!-- SHARED FUNCTIONS -->
-  <script src="shared.js"></script>
+  <script type="module">
+    import('./admin-button.js').catch(error => {
+      console.warn('⚠️ admin-button.js no se pudo cargar:', error);
+    });
+  </script>
 
   <!-- PUSH NOTIFICATIONS -->
   <script src="push-notifications.js"></script>
@@ -529,29 +559,8 @@
       observer.observe(el);
     });
 
-    // ============= LOADING SCREEN =============
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loadingScreen');
-        if (loadingScreen) {
-          loadingScreen.classList.add('hidden');
-          setTimeout(() => {
-            loadingScreen.style.display = 'none';
-          }, 600);
-        }
-      }, 800);
-    });
-
-    // Fallback: ocultar loading después de 5 segundos de todas formas
-    setTimeout(() => {
-      const loadingScreen = document.getElementById('loadingScreen');
-      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
-        loadingScreen.classList.add('hidden');
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-        }, 600);
-      }
-    }, 5000);
+    // Absolute fallback: ocultar loading después de 2.5 segundos de todas formas
+    setTimeout(() => hideLoadingScreen(), 2500);
   </script>
   <!-- Init App: Activate all features -->
   <script src="init-app.js"></script>

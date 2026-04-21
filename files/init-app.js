@@ -4,6 +4,11 @@
  * Ejecutar este script al final del body en cada HTML
  */
 
+// Clear any existing timeout from module loading
+if (window.moduleLoadTimeout) {
+  clearTimeout(window.moduleLoadTimeout);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   
   // ===== 1. BREADCRUMB NAVIGATION =====
