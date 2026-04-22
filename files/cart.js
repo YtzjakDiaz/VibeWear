@@ -111,10 +111,7 @@ function getCartTotal() {
 }
 
 function getShippingCost(subtotal) {
-  if (subtotal >= 150000) return 0; // Envío gratis
-  if (subtotal >= 100000) return 5000;
-  if (subtotal >= 50000) return 8000;
-  return 12000; // Envío mínimo
+  return 0; // Sin costo de envío
 }
 
 // ========== CONTAR ITEMS ==========
