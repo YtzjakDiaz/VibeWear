@@ -354,10 +354,11 @@
           address: address,
           city: city,
           zipCode: zipCode
-      }));
+        }));
 
-      pagar();
-
+        // ahora sí pagar
+        pagar();
+        
       } catch (error) {
         console.error('Error procesando orden:', error);
         window.showNotification('Error al procesar tu orden: ' + error.message);
