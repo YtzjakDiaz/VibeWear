@@ -11,11 +11,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <!-- UI Components -->
-  <script defer src="ui-components.js"></script>
+  <script defer src="files/ui-components.js"></script>
   <!-- Scripts críticos para checkout -->
-  <script defer src="shared.js"></script>
-  <script defer src="cart.js"></script>
-  <script defer src="auth-system.js"></script>
+  <script defer src="files/shared.js"></script>
+  <script defer src="files/cart.js"></script>
+  <script defer src="files/auth-system.js"></script>
 </head>
 <body class="page-enter">
 
@@ -156,7 +156,7 @@
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
 
-  <script defer src="checkout-payment.js"></script>
+  <script defer src="files/checkout-payment.js"></script>
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -172,13 +172,13 @@
 </script>
 
   <!-- NAVBAR AUTH -->
-  <script type="module" defer src="navbar-auth.js"></script>
+  <script type="module" defer src="files/navbar-auth.js"></script>
 
   <!-- CHECKOUT SCRIPT -->
   <script type="module" defer>
     // Importar módulos de Firebase y notificaciones
-    import { saveOrderToFirestore, getOrdersByEmail } from './firebase-orders.js';
-    import { sendOrderConfirmationEmail, validateEmail, validatePhone, validateZipCode } from './notifications-email.js';
+    import { saveOrderToFirestore, getOrdersByEmail } from './files/firebase-orders.js';
+    import { sendOrderConfirmationEmail, validateEmail, validatePhone, validateZipCode } from './files/notifications-email.js';
 
     // Inicializar funciones globales si no están disponibles
     if (!window.showNotification) {

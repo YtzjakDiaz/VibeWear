@@ -242,13 +242,13 @@
     </div>
   </section>
 
-  <script src="cart.js"></script>
-  <script src="shared.js"></script>
+  <script src="files/cart.js"></script>
+  <script src="files/shared.js"></script>
   <script type="module">
-    import { getCurrentUser, onAuthChange, logout, changePassword, updateUserProfile, getErrorMessage } from './firebase-auth.js';
-    import { getOrdersByEmail } from './firebase-orders.js';
-    import { auth, db } from './firebase-config.js';
-    import { uploadProfileImage, deleteProfileImage } from './profile-image-handler.js';
+    import { getCurrentUser, onAuthChange, logout, changePassword, updateUserProfile, getErrorMessage } from './files/firebase-auth.js';
+    import { getOrdersByEmail } from './files/firebase-orders.js';
+    import { auth, db } from './files/firebase-config.js';
+    import { uploadProfileImage, deleteProfileImage } from './files/profile-image-handler.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
     import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js';
 
@@ -772,10 +772,10 @@
   </script>
 
   <!-- PUSH NOTIFICATIONS -->
-  <script src="push-notifications.js"></script>
+  <script src="files/push-notifications.js"></script>
 
   <!-- NOTIFICATION TESTING TOOLS -->
-  <script src="test-notifications.js"></script>
+  <script src="files/test-notifications.js"></script>
 
   <!-- WHATSAPP FLOAT BUTTON -->
   <a href="https://wa.me/573206045846" target="_blank" class="whatsapp-float" title="Chat por WhatsApp"><img src="images/WA.png" alt="WhatsApp"></a>
