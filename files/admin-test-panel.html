@@ -208,10 +208,10 @@
     <textarea id="cartOutput" placeholder="Info del carrito..."></textarea>
   </div>
 
-  <script src="files/cart.js"></script>
+  <script src="cart.js"></script>
   <script type="module">
-    import { saveOrderToFirestore, getOrdersByEmail, getAllOrders } from './files/firebase-orders.js';
-    import { getEmailLog, clearEmailLog, validateEmail, validatePhone } from './files/notifications-email.js';
+    import { saveOrderToFirestore, getOrdersByEmail, getAllOrders } from './firebase-orders.js';
+    import { getEmailLog, clearEmailLog, validateEmail, validatePhone } from './notifications-email.js';
 
     // FIREBASE OPERATIONS
     window.loadOrdersFromFirebase = async function() {
