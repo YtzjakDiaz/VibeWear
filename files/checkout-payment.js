@@ -10,7 +10,7 @@ async function pagar() {
 
   // 🧠 Obtener datos del cliente desde el checkout
   const customer = {
-    name: document.getElementById("name")?.value || "",
+    name: document.getElementById("fullName")?.value || "",
     email: document.getElementById("email")?.value || "",
     phone: document.getElementById("phone")?.value || "",
     address: document.getElementById("address")?.value || ""
