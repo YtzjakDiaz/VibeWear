@@ -157,19 +157,6 @@
 
   <script defer src="checkout-payment.js"></script>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("paymentBtn");
-
-    if (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault(); // evita submit del form
-        pagar();
-      });
-    }
-  });
-</script>
-
   <!-- NAVBAR AUTH -->
   <script type="module" defer src="navbar-auth.js"></script>
 
@@ -360,15 +347,16 @@
           // Continuar aunque falle el email
         }
 
-        // Limpiar carrito
-        window.clearCart();
+        localStorage.setItem("vibewear-customer", JSON.stringify({
+          name: fullName,
+          email: email,
+          phone: phone,
+          address: address,
+          city: city,
+          zipCode: zipCode
+      }));
 
-        window.showNotification('¡Orden creada exitosamente! Número: ' + orderData.id, 4000);
-        
-        // Redirigir a página de éxito después de 2 segundos
-        setTimeout(() => {
-          window.location.href = 'success.html';
-        }, 2000);
+      pagar();
 
       } catch (error) {
         console.error('Error procesando orden:', error);

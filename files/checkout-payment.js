@@ -8,18 +8,32 @@ async function pagar() {
     return;
   }
 
-  // Convertir carrito real → formato MercadoPago
+  // 🧠 Obtener datos del cliente desde el checkout
+  const customer = {
+    name: document.getElementById("name")?.value || "",
+    email: document.getElementById("email")?.value || "",
+    phone: document.getElementById("phone")?.value || "",
+    address: document.getElementById("address")?.value || ""
+  };
+
+  // 🚨 Validación básica
+  if (!customer.name || !customer.email) {
+    alert("Por favor completa nombre y correo");
+    return;
+  }
+
+  // Convertir carrito → formato MercadoPago
   const itemsMP = cart.map(product => ({
-  title: `${product.name}${product.size ? " - Talla " + product.size : ""}${product.color ? " - " + product.color : ""}`,
-  quantity: Number(product.quantity),
-  currency_id: "COP",
-  unit_price: Number(
-    String(product.price)
-      .replace(/\$/g, "")
-      .replace(/\./g, "")
-      .replace(/,/g, "")
-  )
-}));
+    title: `${product.name}${product.size ? " - Talla " + product.size : ""}${product.color ? " - " + product.color : ""}`,
+    quantity: Number(product.quantity),
+    currency_id: "COP",
+    unit_price: Number(
+      String(product.price)
+        .replace(/\$/g, "")
+        .replace(/\./g, "")
+        .replace(/,/g, "")
+    )
+  }));
 
   try {
     const response = await fetch("https://vibewear-server-w0z2.onrender.com/create-preference", {
@@ -27,7 +41,10 @@ async function pagar() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ items: itemsMP }),
+      body: JSON.stringify({
+        items: itemsMP,
+        customer // 🔥 aquí enviamos los datos al backend
+      }),
     });
 
     const data = await response.json();
