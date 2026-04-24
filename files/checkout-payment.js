@@ -41,11 +41,13 @@ async function pagar() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        items: itemsMP,
-        customer // 🔥 aquí enviamos los datos al backend
-      }),
-    });
+        body: JSON.stringify({
+          items: req.body.items,
+          metadata: {
+            customer: req.body.customer
+          },
+        }),
+      });
 
     const data = await response.json();
 
