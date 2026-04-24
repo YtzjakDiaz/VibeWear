@@ -10,11 +10,12 @@ async function pagar() {
 
   // 🧠 Obtener datos del cliente desde el checkout
   const customer = {
-    order_id: 'VW-' + Date.now(), // 👈 NUEVO
-    name: document.getElementById("fullName")?.value || "",
-    email: document.getElementById("email")?.value || "",
-    phone: document.getElementById("phone")?.value || "",
-    address: document.getElementById("address")?.value || ""
+    name: document.getElementById("fullName").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    address: document.getElementById("address").value,
+    city: document.getElementById("city").value,
+    zipCode: document.getElementById("zipCode").value
   };
 
   // 🚨 Validación básica
