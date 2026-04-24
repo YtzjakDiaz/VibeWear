@@ -43,12 +43,10 @@ async function pagar() {
         "Content-Type": "application/json",
       },
         body: JSON.stringify({
-          items: req.body.items,
-          metadata: {
-            customer: req.body.customer
-          },
+          items: itemsMP,
+          customer: customer
         }),
-      });
+    });
 
     const data = await response.json();
 
