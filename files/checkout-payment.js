@@ -10,6 +10,7 @@ async function pagar() {
 
   // 🧠 Obtener datos del cliente desde el checkout
   const customer = {
+    order_id: 'VW-' + Date.now(), // 👈 NUEVO
     name: document.getElementById("fullName")?.value || "",
     email: document.getElementById("email")?.value || "",
     phone: document.getElementById("phone")?.value || "",
